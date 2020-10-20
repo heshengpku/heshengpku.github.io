@@ -137,13 +137,6 @@
   </url>
   
   <url>
-    <loc>http://yoursite.com/tags/Cello/</loc>
-    <lastmod>2020-10-20</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/tags/Chaincode/</loc>
     <lastmod>2020-10-20</lastmod>
     <changefreq>daily</changefreq>
@@ -172,6 +165,20 @@
   </url>
   
   <url>
+    <loc>http://yoursite.com/tags/Cello/</loc>
+    <lastmod>2020-10-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/tags/Explorer/</loc>
+    <lastmod>2020-10-20</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/tags/Shell/</loc>
     <lastmod>2020-10-20</lastmod>
     <changefreq>daily</changefreq>
@@ -187,13 +194,6 @@
   
   <url>
     <loc>http://yoursite.com/tags/Ubuntu/</loc>
-    <lastmod>2020-10-20</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/tags/Explorer/</loc>
     <lastmod>2020-10-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
