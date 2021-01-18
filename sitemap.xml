@@ -4,7 +4,7 @@
   <url>
     <loc>http://yoursite.com/about/index.html</loc>
     
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     
   </url>
   
@@ -102,113 +102,113 @@
 
   <url>
     <loc>http://yoursite.com/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
 
   
   <url>
+    <loc>http://yoursite.com/tags/Docker/</loc>
+    <lastmod>2021-01-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/tags/Blockchain/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Hyperledger/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Fabric/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Chaincode/</loc>
-    <lastmod>2021-01-06</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/tags/Docker/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Git/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/GitHub/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/GitLab/</loc>
-    <lastmod>2021-01-06</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/tags/Explorer/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Cello/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/tags/Explorer/</loc>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Shell/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Linux/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Ubuntu/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Composer/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>http://yoursite.com/tags/Ethereum/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -217,7 +217,7 @@
   
   <url>
     <loc>http://yoursite.com/categories/Blockchain/</loc>
-    <lastmod>2021-01-06</lastmod>
+    <lastmod>2021-01-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
