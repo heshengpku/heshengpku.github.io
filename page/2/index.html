@@ -386,7 +386,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-05-17 13:58:10" itemprop="dateModified" datetime="2018-05-17T13:58:10+08:00">2018-05-17</time>
+                <time title="修改时间：2021-03-04 14:27:18" itemprop="dateModified" datetime="2021-03-04T14:27:18+08:00">2021-03-04</time>
               
             
           </span>
@@ -420,15 +420,34 @@
 
       
         
-          <p>Git命令初始化</p>
-<p>Git忽略文件</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/01/01/Git/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+          
+            <a id="more"></a>
+<h2 id="Git初始化"><a href="#Git初始化" class="headerlink" title="Git初始化"></a>Git初始化</h2><p>Command line instructions<br>本地Git全局设置（Git global setup）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name "yourname"</span><br><span class="line">git config --global user.email "your@email"</span><br></pre></td></tr></table></figure>
+<p>克隆新仓库（Create a new repository）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git clone http://your.repository.address.git</span><br><span class="line">cd repo</span><br><span class="line">touch README.md</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m "add README"</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>对于已经存在的文件夹（Existing folder）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd existing_folder</span><br><span class="line">git init</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m "Initial commit"</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>对于本地已经存在的仓库（Existing Git repository）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd existing_repo</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git push -u origin --all</span><br><span class="line">git push -u origin --tags</span><br></pre></td></tr></table></figure>
+<h2 id="Git忽略的文件"><a href="#Git忽略的文件" class="headerlink" title="Git忽略的文件"></a>Git忽略的文件</h2><h3 id="1-查看所有被Git忽略的文件"><a href="#1-查看所有被Git忽略的文件" class="headerlink" title="1. 查看所有被Git忽略的文件"></a>1. 查看所有被Git忽略的文件</h3><p>Git 1.6+:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git ls-files --others -i --exclude-standard</span><br></pre></td></tr></table></figure>
+<p>Git 1.4, 1.5:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git ls-files --others -i \</span><br><span class="line">--exclude-from="`git rev-parse --git-dir`/info/exclude" \</span><br><span class="line">--exclude-per-directory=.gitignore</span><br></pre></td></tr></table></figure>
+<h3 id="2-清除所有被Git忽略的文件或文件夹-小心"><a href="#2-清除所有被Git忽略的文件或文件夹-小心" class="headerlink" title="2. 清除所有被Git忽略的文件或文件夹(小心)"></a>2. 清除所有被Git忽略的文件或文件夹(小心)</h3><ul>
+<li>查看在清理之前会做的操作</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clean -Xn</span><br></pre></td></tr></table></figure>
+<ul>
+<li>清除文件或文件夹， -f 选项强制删除，-d删除目录（小心）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clean -Xdf</span><br></pre></td></tr></table></figure>
+<h2 id="Git变更远程仓库地址"><a href="#Git变更远程仓库地址" class="headerlink" title="Git变更远程仓库地址"></a>Git变更远程仓库地址</h2><h3 id="1-通过命令直接修改远程地址"><a href="#1-通过命令直接修改远程地址" class="headerlink" title="1. 通过命令直接修改远程地址"></a>1. 通过命令直接修改远程地址</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote set-url origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
+<h3 id="2-通过命令先删除再添加远程仓库"><a href="#2-通过命令先删除再添加远程仓库" class="headerlink" title="2. 通过命令先删除再添加远程仓库"></a>2. 通过命令先删除再添加远程仓库</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote rm origin</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
+<h2 id="Git撤销已同步的远程提交"><a href="#Git撤销已同步的远程提交" class="headerlink" title="Git撤销已同步的远程提交"></a>Git撤销已同步的远程提交</h2><p>先在本地回退到指定版本：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git reflog // 查看commits记录</span><br><span class="line">git reset --hard &lt;版本号&gt; // 注意使用 --hard 参数会抛弃当前工作区的修改</span><br><span class="line">// git reset HEAD~1 // 撤回至上一个commit</span><br><span class="line">git push origin &lt;分支名&gt; --force</span><br></pre></td></tr></table></figure>
+
+          
         
       
     </div>
