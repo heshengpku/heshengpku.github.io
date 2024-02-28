@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -337,7 +337,7 @@
           <p>整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。</p>
 <h2 id="Pell方程的描述"><a href="#Pell方程的描述" class="headerlink" title="Pell方程的描述"></a>Pell方程的描述</h2><p>Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。</p>
 <p>即在整数域$\mathbb{Z}$中，求解如下形式方程的问题：</p>
-<p>$$ x^2 - N y^2 = 1$$</p>
+<p>$$ x^2 - N y^2 &#x3D; 1$$</p>
 <p>其中$N$是一个不为平方数的正整数，使得$x$和$y$都为整数。</p>
           <!--noindex-->
             <div class="post-button">
@@ -501,7 +501,7 @@
 
       
           <h2 id="《椭圆曲线上的有理点》（对Introduction的翻译）"><a href="#《椭圆曲线上的有理点》（对Introduction的翻译）" class="headerlink" title="《椭圆曲线上的有理点》（对Introduction的翻译）"></a>《椭圆曲线上的有理点》（对Introduction的翻译）</h2><p>丢番图方程（Diophantine equations）的理论是数论（number theory ）的一个分支，主要研究多项式方程的整数解或有理数解。这个学科本身是以古希腊最伟大的代数学家之一，亚历山大的丢番图命名的，因为他提出并解决了许多这方面的问题。</p>
-<p>大多数读者应该都熟悉费马大定理。这个定理是费马在17世纪提出的，即如果$n \geq 3$是一个整数，那么方程：<br>$$X^n + Y^n = Z^n$$<br>没有非零的整数解$X,Y,Z$。相应地，这断言了方程：<br>$$x^n + y^n = 1$$<br>在有理数上有解的唯一情况是$x=0$或$y=0$。</p>
+<p>大多数读者应该都熟悉费马大定理。这个定理是费马在17世纪提出的，即如果$n \geq 3$是一个整数，那么方程：<br>$$X^n + Y^n &#x3D; Z^n$$<br>没有非零的整数解$X,Y,Z$。相应地，这断言了方程：<br>$$x^n + y^n &#x3D; 1$$<br>在有理数上有解的唯一情况是$x&#x3D;0$或$y&#x3D;0$。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2022/11/04/RationalPointOnEllipticCurves/#more" rel="contents">
@@ -920,8 +920,8 @@
       
           <p>Cello 遵循典型的”主-从”工作体系结构。群集中有两种类型的节点。</p>
 <ul>
-<li>Master Node：Cello服务通过Worker Nodes提供的API接口管理（create/delete等）在Worker Nodes上的链，Master Node 提供web 面板(port 8080) and RESTful APIs (port 80).</li>
-<li>Worker Node： Cello支持从单个服务器到集群的多种类型的工作节点。以Docker主机或Swarm集群为例，Worker Nodes提供的API接口应该可以从主节点访问（通常在端口2375） </li>
+<li>Master Node：Cello服务通过Worker Nodes提供的API接口管理（create&#x2F;delete等）在Worker Nodes上的链，Master Node 提供web 面板(port 8080) and RESTful APIs (port 80).</li>
+<li>Worker Node： Cello支持从单个服务器到集群的多种类型的工作节点。以Docker主机或Swarm集群为例，Worker Nodes提供的API接口应该可以从主节点访问（通常在端口2375）</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
@@ -1005,6 +1005,7 @@
       
           <h2 id="数据持久化"><a href="#数据持久化" class="headerlink" title="数据持久化"></a>数据持久化</h2><p>如果需要对peer或CouchDB容器的数据持久化，一种选择是将容器的相关目录挂载到docker主机。<br>例如，将下面两行内容放到docker-compose.yaml文件中的对应peer处：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/peer0:/var/hyperledger/production</span></span><br></pre></td></tr></table></figure>
+
 <p>将下面两行放到对应的CouchDB处：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/couchdb0:/opt/couchdb/data</span></span><br></pre></td></tr></table></figure>
 

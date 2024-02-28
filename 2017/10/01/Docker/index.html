@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -262,13 +262,19 @@
 <li>Docker 容器镜像删除</li>
 </ul>
 <span id="more"></span>
+
 <h2 id="1-停止所有的container，这样才能够删除其中的images："><a href="#1-停止所有的container，这样才能够删除其中的images：" class="headerlink" title="1.停止所有的container，这样才能够删除其中的images："></a>1.停止所有的container，这样才能够删除其中的images：</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+
 <p>如果想要删除所有container的话再加一个指令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+
 <h2 id="2-查看当前有些什么images"><a href="#2-查看当前有些什么images" class="headerlink" title="2.查看当前有些什么images"></a>2.查看当前有些什么images</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+
 <h2 id="3-删除images，通过image的id来指定删除谁"><a href="#3-删除images，通过image的id来指定删除谁" class="headerlink" title="3.删除images，通过image的id来指定删除谁"></a>3.删除images，通过image的id来指定删除谁</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
-<p>想要删除untagged images，也就是那些id为\&lt;None>的image的话可以用</p>
+
+<p>想要删除untagged images，也就是那些id为&lt;None&gt;的image的话可以用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images | grep &quot;^&lt;none&gt;&quot; | awk &quot;&#123;print $3&#125;&quot;)</span><br></pre></td></tr></table></figure>
+
 <p>要删除全部image的话</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
 

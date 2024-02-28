@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -261,36 +261,37 @@
       
         <h2 id="一元二次、三次、四次方程的求根公式"><a href="#一元二次、三次、四次方程的求根公式" class="headerlink" title="一元二次、三次、四次方程的求根公式"></a>一元二次、三次、四次方程的求根公式</h2><p>整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。</p>
 <span id="more"></span>
+
 <h3 id="一元二次方程求根公式"><a href="#一元二次方程求根公式" class="headerlink" title="一元二次方程求根公式"></a>一元二次方程求根公式</h3><p>对于一元二次方程：</p>
-<p>$$ ax^2+bx+c = 0 $$</p>
+<p>$$ ax^2+bx+c &#x3D; 0 $$</p>
 <p>通过配方可以得到：</p>
-<p>$$ (x+b/2a)^2 = -c/a+b^2/4a^2 $$</p>
+<p>$$ (x+b&#x2F;2a)^2 &#x3D; -c&#x2F;a+b^2&#x2F;4a^2 $$</p>
 <p>令判别式为：</p>
-<p>$$ \Delta = b^2-4ac $$</p>
+<p>$$ \Delta &#x3D; b^2-4ac $$</p>
 <p>可以得到求根公式为：</p>
-<p>$$ x_1 = \frac{-b+\sqrt{\Delta}}{2a} $$<br>$$ x_2 = \frac{-b-\sqrt{\Delta}}{2a} $$</p>
+<p>$$ x_1 &#x3D; \frac{-b+\sqrt{\Delta}}{2a} $$<br>$$ x_2 &#x3D; \frac{-b-\sqrt{\Delta}}{2a} $$</p>
 <h3 id="一元三次方程求根公式"><a href="#一元三次方程求根公式" class="headerlink" title="一元三次方程求根公式"></a>一元三次方程求根公式</h3><p>对于一元三次方程：</p>
-<p>$$ ax^3+bx^2+cx+d = 0 $$</p>
-<p>做变量代换$X = x-\frac{b}{3a}$得到不包括二次项的形式：</p>
-<p>$$ x^3+qx+r= 0 $$</p>
+<p>$$ ax^3+bx^2+cx+d &#x3D; 0 $$</p>
+<p>做变量代换$X &#x3D; x-\frac{b}{3a}$得到不包括二次项的形式：</p>
+<p>$$ x^3+qx+r&#x3D; 0 $$</p>
 <p>可以得到求根公式为：</p>
-<p>$$ x_1 = g+h $$<br>$$ x_2 = \omega g + \omega ^2 h$$<br>$$ x_3 = \omega ^2 g + \omega h $$</p>
+<p>$$ x_1 &#x3D; g+h $$<br>$$ x_2 &#x3D; \omega g + \omega ^2 h$$<br>$$ x_3 &#x3D; \omega ^2 g + \omega h $$</p>
 <p>其中：</p>
-<p>$$ g^3 = \frac{-r+\sqrt{R}}{2} $$<br>$$ h = -\frac{q}{3g} $$</p>
+<p>$$ g^3 &#x3D; \frac{-r+\sqrt{R}}{2} $$<br>$$ h &#x3D; -\frac{q}{3g} $$</p>
 <p>其中：</p>
-<p>$$ R = r^2+\frac{4}{27}q^3 $$<br>$$ \omega = -\frac{1}{2}+i\frac{\sqrt{3}}{2} $$</p>
+<p>$$ R &#x3D; r^2+\frac{4}{27}q^3 $$<br>$$ \omega &#x3D; -\frac{1}{2}+i\frac{\sqrt{3}}{2} $$</p>
 <h3 id="一元四次方程求根公式"><a href="#一元四次方程求根公式" class="headerlink" title="一元四次方程求根公式"></a>一元四次方程求根公式</h3><p>对于一元四次方程：</p>
-<p>$$ ax^4+bx^3+cx^2+dx+e = 0 $$</p>
-<p>做变量代换$X = x-\frac{b}{4a}$得到不包括三次项的形式：</p>
-<p>$$ x^4+qx^2+rx+s = 0 $$</p>
+<p>$$ ax^4+bx^3+cx^2+dx+e &#x3D; 0 $$</p>
+<p>做变量代换$X &#x3D; x-\frac{b}{4a}$得到不包括三次项的形式：</p>
+<p>$$ x^4+qx^2+rx+s &#x3D; 0 $$</p>
 <p>左边可以化为一元二次方程的形式：</p>
-<p>$$ x^4+qx^2+rx+s = (x^2+jx+l)(x^2-jx+m) $$</p>
+<p>$$ x^4+qx^2+rx+s &#x3D; (x^2+jx+l)(x^2-jx+m) $$</p>
 <p>可以求得：</p>
-<p>$$ l+m-j^2 = q $$<br>$$ j(m-l) = r $$<br>$$ lm = s $$</p>
+<p>$$ l+m-j^2 &#x3D; q $$<br>$$ j(m-l) &#x3D; r $$<br>$$ lm &#x3D; s $$</p>
 <p>前两个方程可以得到：</p>
-<p>$$ 2m = j^2 + q + r/j $$<br>$$ 2l = j^2 + q - r/j $$</p>
+<p>$$ 2m &#x3D; j^2 + q + r&#x2F;j $$<br>$$ 2l &#x3D; j^2 + q - r&#x2F;j $$</p>
 <p>代入第三个方程，可以得到$j^2$的三次方程：</p>
-<p>$$ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2 = 0 $$</p>
+<p>$$ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2 &#x3D; 0 $$</p>
 <p>通过一元三次方程的求根公式，可以得到$j^2$，然后得到$m$和$l$，再利用一元二次方程的求根公式得到最终的结果。</p>
 
     </div>

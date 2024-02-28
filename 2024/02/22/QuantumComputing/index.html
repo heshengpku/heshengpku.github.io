@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -260,6 +260,7 @@
       
         <h2 id="量子计算概述"><a href="#量子计算概述" class="headerlink" title="量子计算概述"></a>量子计算概述</h2><p>介绍量子计算的关键概念、技术、算法、实施方案以及应用等内容。</p>
 <span id="more"></span>
+
 <h3 id="什么是量子计算"><a href="#什么是量子计算" class="headerlink" title="什么是量子计算?"></a>什么是量子计算?</h3><h4 id="传统计算机与量子计算机的区别"><a href="#传统计算机与量子计算机的区别" class="headerlink" title="传统计算机与量子计算机的区别"></a>传统计算机与量子计算机的区别</h4><p>传统计算机使用二进制比特，每个比特只能是0或1之中的一个状态。量子计算机使用量子比特，每个量子比特可以是0和1的叠加态，表示为$\alpha|0&gt; + \beta|1&gt;$，其中$\alpha$和$\beta$为概率振幅。</p>
 <p>传统计算机的每个比特的状态是确定的，量子计算机的量子比特的状态是概率性的，直到测量时才会坍缩到0或1。</p>
 <p>传统计算机的比特之间是相互独立的，量子计算机的量子比特可以通过纠缠实现相互关联。</p>
@@ -269,8 +270,8 @@
 <p>当观察或测量一个量子比特时，它的叠加态会坍缩到基态或激发态，概率是$\alpha^2$和$\beta^2$。这被称为观察者效应。</p>
 <h4 id="量子叠加和量子纠缠"><a href="#量子叠加和量子纠缠" class="headerlink" title="量子叠加和量子纠缠"></a>量子叠加和量子纠缠</h4><p>量子叠加：多个量子比特可以处于组合多个基态和激发态的叠加态，这使得少量的量子比特可以代表指数级数量的状态。这是量子计算获得超高并行性的源头。</p>
 <p>量子纠缠：多个量子比特之间的一种相互关联，使得多个量子比特构成一个整体，无法将它们的量子态描述为各个量子比特的独立态的叠加。当观察其中一个量子比特时，相互纠缠的其他量子比特的状态也会受到影响。这使得量子比特之间可以瞬间关联和传递信息。</p>
-<h3 id="量子计算机构建"><a href="#量子计算机构建" class="headerlink" title="量子计算机构建"></a>量子计算机构建</h3><h4 id="量子逻辑门"><a href="#量子逻辑门" class="headerlink" title="量子逻辑门"></a>量子逻辑门</h4><p>混沌门（Hadamard门）：将量子比特的状态从$|0&gt;$转换成$(|0&gt; + |1&gt;)/\sqrt{2}$，实现把基态叠加到激发态的效果。</p>
-<p>Pauli门：包括位翻转门X、相位翻转门Y和Z门。用于完成量子比特的旋转和位/相位翻转操作。</p>
+<h3 id="量子计算机构建"><a href="#量子计算机构建" class="headerlink" title="量子计算机构建"></a>量子计算机构建</h3><h4 id="量子逻辑门"><a href="#量子逻辑门" class="headerlink" title="量子逻辑门"></a>量子逻辑门</h4><p>混沌门（Hadamard门）：将量子比特的状态从$|0&gt;$转换成$(|0&gt; + |1&gt;)&#x2F;\sqrt{2}$，实现把基态叠加到激发态的效果。</p>
+<p>Pauli门：包括位翻转门X、相位翻转门Y和Z门。用于完成量子比特的旋转和位&#x2F;相位翻转操作。</p>
 <p>受控门（Controlled门）：条件性地对目标量子比特执行操作，实施控制的是控制量子比特。如CNOT门可以将控制量子比特的状态传递给目标量子比特。</p>
 <h4 id="量子电路"><a href="#量子电路" class="headerlink" title="量子电路"></a>量子电路</h4><p>量子电路是由一系列量子逻辑门按时间顺序构成的计算电路，用于设计和实现量子算法。</p>
 <p>量子电路可以对量子寄存器中的多个量子比特执行操作，实现 evoluation（进化） 和 entanglement（纠缠）。</p>

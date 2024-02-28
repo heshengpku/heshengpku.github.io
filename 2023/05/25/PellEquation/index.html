@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"heshengpku.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。 Pell方程的描述Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。 即在整数域$\mathbb{Z}$中，求解如下形式方程的问题： $$ x^2 - N y^2 &#x3D; 1$$ 其中$N$是一个不为平方数的正">
+  <meta name="description" content="整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。 Pell方程的描述Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。 即在整数域$\mathbb{Z}$中，求解如下形式方程的问题： $$ x^2 - N y^2 &#x3D; 1$$ 其中$N$是一个不为">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Pell方程的解法">
 <meta property="og:url" content="https://heshengpku.github.io/2023/05/25/PellEquation/index.html">
 <meta property="og:site_name" content="何晟">
-<meta property="og:description" content="整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。 Pell方程的描述Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。 即在整数域$\mathbb{Z}$中，求解如下形式方程的问题： $$ x^2 - N y^2 &#x3D; 1$$ 其中$N$是一个不为平方数的正">
+<meta property="og:description" content="整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。 Pell方程的描述Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。 即在整数域$\mathbb{Z}$中，求解如下形式方程的问题： $$ x^2 - N y^2 &#x3D; 1$$ 其中$N$是一个不为">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-05-25T11:23:02.000Z">
 <meta property="article:modified_time" content="2024-02-20T07:24:52.000Z">
@@ -261,49 +261,50 @@
         <p>整理自John Stillwell的《Mathematics and Its History》（2010）的Chapter 5。</p>
 <h2 id="Pell方程的描述"><a href="#Pell方程的描述" class="headerlink" title="Pell方程的描述"></a>Pell方程的描述</h2><p>Pell方程（Pell’s Equation）是一种特殊的丢番图方程（Diophantine Equation）。</p>
 <p>即在整数域$\mathbb{Z}$中，求解如下形式方程的问题：</p>
-<p>$$ x^2 - N y^2 = 1$$</p>
+<p>$$ x^2 - N y^2 &#x3D; 1$$</p>
 <p>其中$N$是一个不为平方数的正整数，使得$x$和$y$都为整数。</p>
 <span id="more"></span>
+
 <h2 id="Pell方程的求解思路"><a href="#Pell方程的求解思路" class="headerlink" title="Pell方程的求解思路"></a>Pell方程的求解思路</h2><p>首先，考虑一个比Pell方程更泛化的问题：</p>
-<p>$$ x^2 - N y^2 = k$$</p>
+<p>$$ x^2 - N y^2 &#x3D; k$$</p>
 <p>其中$k$为整数。这个问题的一组解可以用一个三元组表示为$(x,y,k)$。</p>
 <p>利用恒等式：</p>
-<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) = (x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2$$</p>
-<p>所以，如果$x_1$和$y_1$是$x^2 - N y^2 = k_1$的解，且$x_2$和$y_2$是$x^2 - N y^2 = k_2$的解，那么$x = x_1 x_2 + N y_1 y_2$和$y = x_1y_2 + x_2 y_1$是$x^2 - N y^2 = k_1 k_2$的解。</p>
+<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) &#x3D; (x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2$$</p>
+<p>所以，如果$x_1$和$y_1$是$x^2 - N y^2 &#x3D; k_1$的解，且$x_2$和$y_2$是$x^2 - N y^2 &#x3D; k_2$的解，那么$x &#x3D; x_1 x_2 + N y_1 y_2$和$y &#x3D; x_1y_2 + x_2 y_1$是$x^2 - N y^2 &#x3D; k_1 k_2$的解。</p>
 <p>用三元组表示，即存在合成法则：由$(x_1,y_1,k_1)$和$(x_2,y_2,k_2)$，可以合成$(x_1 x_2 + N y_1 y_2,x_1y_2 + x_2 y_1,k_1 k_2)$。</p>
-<p>为了求解Pell方程，可以先给定两个互素的数$a$和$b$（$\gcd(a,b)=1$），使得$a^2 - N b^2 = k$，即$(a,b,k)$。</p>
-<p>将这个三元组与一个自然的解$(m,1,m^2-N)$（即$m^2 - N \times 1^2 = m^2 - N$）进行合成，得到$(am+Nb,a+bm,k(m^2-N))$。</p>
+<p>为了求解Pell方程，可以先给定两个互素的数$a$和$b$（$\gcd(a,b)&#x3D;1$），使得$a^2 - N b^2 &#x3D; k$，即$(a,b,k)$。</p>
+<p>将这个三元组与一个自然的解$(m,1,m^2-N)$（即$m^2 - N \times 1^2 &#x3D; m^2 - N$）进行合成，得到$(am+Nb,a+bm,k(m^2-N))$。</p>
 <p>从方程左右约去$k^2$，即得到一个（不一定是整数的）三元组：</p>
 <p>$$(\frac{am+Nb}{k},\frac{a+bm}{k},\frac{m^2-N}{k})$$</p>
-<p>现在，选取一个整数$m$使得$(a+bm)/k=b_1$为整数。可以证明，这使得$(am+Nb)/k=a_1$和$(m^2-N)/k=k_1$也都为整数。</p>
-<p>如果选取的$m$使得$m^2-N$尽可能的小，那么最终三元组$(a_i,b_i,k_i)$将满足$k_i = \plusmn 1,\plusmn 2,\plusmn 4$。</p>
+<p>现在，选取一个整数$m$使得$(a+bm)&#x2F;k&#x3D;b_1$为整数。可以证明，这使得$(am+Nb)&#x2F;k&#x3D;a_1$和$(m^2-N)&#x2F;k&#x3D;k_1$也都为整数。</p>
+<p>如果选取的$m$使得$m^2-N$尽可能的小，那么最终三元组$(a_i,b_i,k_i)$将满足$k_i &#x3D; \plusmn 1,\plusmn 2,\plusmn 4$。</p>
 <p>这时，通过多次运用合成法则，就可以求解Pell方程。</p>
-<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="求解：-x-2-61y-2-1"><a href="#求解：-x-2-61y-2-1" class="headerlink" title="求解：$x^2 - 61y^2 = 1$"></a>求解：$x^2 - 61y^2 = 1$</h3><p>解：因为$8^2 - 61 \times 1^2 = 3$，即得到三元组$(8,1,3)$。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><h3 id="求解：-x-2-61y-2-x3D-1"><a href="#求解：-x-2-61y-2-x3D-1" class="headerlink" title="求解：$x^2 - 61y^2 &#x3D; 1$"></a>求解：$x^2 - 61y^2 &#x3D; 1$</h3><p>解：因为$8^2 - 61 \times 1^2 &#x3D; 3$，即得到三元组$(8,1,3)$。</p>
 <p>将$(8,1,3)$与$(m,1,m^2-61)$合成，得到三元组$(8m+61,8+m,3(m^2-61))$，即：</p>
 <p>$$(\frac{8m+61}{3},\frac{8+m}{3},\frac{m^2-61}{3})$$</p>
-<p>选择$m=7$（使得$m^2-61$尽可能的小，且$8+m$能被$3$整除），得到$(39,5,-4)$。</p>
-<p>从方程左右约去$4$，得到$(39/2,5/2,-1)$。</p>
-<p>将$(39/2,5/2,-1)$与其自身合成，得到$(1523/2,195/2,1)$，然后再次与$(39/2,5/2,-1)$合成，得到$(29718,3805,-1)$。</p>
+<p>选择$m&#x3D;7$（使得$m^2-61$尽可能的小，且$8+m$能被$3$整除），得到$(39,5,-4)$。</p>
+<p>从方程左右约去$4$，得到$(39&#x2F;2,5&#x2F;2,-1)$。</p>
+<p>将$(39&#x2F;2,5&#x2F;2,-1)$与其自身合成，得到$(1523&#x2F;2,195&#x2F;2,1)$，然后再次与$(39&#x2F;2,5&#x2F;2,-1)$合成，得到$(29718,3805,-1)$。</p>
 <p>将$(29718,3805,-1)$与其自身合成，就得到$(1766319049, 226153980, 1)$。</p>
-<p>即Pell方程$x^2 - 61y^2 = 1$的整数解为$x=1766319049, y=226153980$。</p>
-<p>事实上，这也是Pell方程$x^2 - 61y^2 = 1$的最小整数解。</p>
+<p>即Pell方程$x^2 - 61y^2 &#x3D; 1$的整数解为$x&#x3D;1766319049, y&#x3D;226153980$。</p>
+<p>事实上，这也是Pell方程$x^2 - 61y^2 &#x3D; 1$的最小整数解。</p>
 <h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><h3 id="1-恒等式的证明"><a href="#1-恒等式的证明" class="headerlink" title="1. 恒等式的证明"></a>1. 恒等式的证明</h3><p>证明恒等式：</p>
-<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) = (x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2$$</p>
+<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) &#x3D; (x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2$$</p>
 <p>等式左边：</p>
-<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) = x_1^2 x_2^2 - N x_1^2 y_2^2 - N x_2^2 y_1^2 + N^2 y_1^2 y_2^2$$</p>
-<p>等式右边：<br>$$\begin{aligned}<br>(x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2 &amp;= (x_1^2 x_2^2 + 2N x_1 x_2 y_1 y_2 + N^2 y_1^2 y_2^2) - N ( x_1^2 y_2^2 + 2 x_1 x_2 y_1 y_2 + x_2^2 y_1^2) \newline<br>&amp;= x_1^2 x_2^2 - N x_1^2 y_2^2 - N x_2^2 y_1^2 + N^2 y_1^2 y_2^2<br>\end{aligned}$$</p>
+<p>$$(x_1^2 - N y_1^2)(x_2^2 - N y_2^2) &#x3D; x_1^2 x_2^2 - N x_1^2 y_2^2 - N x_2^2 y_1^2 + N^2 y_1^2 y_2^2$$</p>
+<p>等式右边：<br>$$\begin{aligned}<br>(x_1 x_2 + N y_1 y_2)^2 - N (x_1y_2 + x_2 y_1)^2 &amp;&#x3D; (x_1^2 x_2^2 + 2N x_1 x_2 y_1 y_2 + N^2 y_1^2 y_2^2) - N ( x_1^2 y_2^2 + 2 x_1 x_2 y_1 y_2 + x_2^2 y_1^2) \newline<br>&amp;&#x3D; x_1^2 x_2^2 - N x_1^2 y_2^2 - N x_2^2 y_1^2 + N^2 y_1^2 y_2^2<br>\end{aligned}$$</p>
 <p>左右相等。$\square$</p>
-<h3 id="2-整数解的证明"><a href="#2-整数解的证明" class="headerlink" title="2. 整数解的证明"></a>2. 整数解的证明</h3><p>证明选取一个整数$m$使得$(a+bm)/k$为整数，则$(am+Nb)/k$和$(m^2-N)/k$也都为整数。</p>
-<p>假设$a+bm = kl$（且$l$为整数），将一个$a=kl-bm$代入方程$a^2 - Nb^2=k$，得到:</p>
-<p>$$\begin{align}<br>a (kl - bm) - N b^2 &amp;= k \newline<br>akl - abm - N b^2 &amp;= k \newline<br>(al - 1)k &amp;= b(am + Nb)<br>\end{align}$$</p>
+<h3 id="2-整数解的证明"><a href="#2-整数解的证明" class="headerlink" title="2. 整数解的证明"></a>2. 整数解的证明</h3><p>证明选取一个整数$m$使得$(a+bm)&#x2F;k$为整数，则$(am+Nb)&#x2F;k$和$(m^2-N)&#x2F;k$也都为整数。</p>
+<p>假设$a+bm &#x3D; kl$（且$l$为整数），将一个$a&#x3D;kl-bm$代入方程$a^2 - Nb^2&#x3D;k$，得到:</p>
+<p>$$\begin{align}<br>a (kl - bm) - N b^2 &amp;&#x3D; k \newline<br>akl - abm - N b^2 &amp;&#x3D; k \newline<br>(al - 1)k &amp;&#x3D; b(am + Nb)<br>\end{align}$$</p>
 <p>因此$k$整除$b(am + Nb)$。</p>
-<p>将$bm=kl-a$代入方程$a^2 m^2 - Nb^2 m^2=km^2$，得到：<br>$$\begin{align}<br>a^2 m^2 - N (kl-a)^2 &amp;= km^2 \newline<br>a^2 m^2 - Nk^2 l^2 + 2Nkla - Na^2 &amp;= km^2 \newline<br>(m^2 - N)a^2 &amp;= (Nkl^2-2Nla+m^2)k<br>\end{align}$$</p>
+<p>将$bm&#x3D;kl-a$代入方程$a^2 m^2 - Nb^2 m^2&#x3D;km^2$，得到：<br>$$\begin{align}<br>a^2 m^2 - N (kl-a)^2 &amp;&#x3D; km^2 \newline<br>a^2 m^2 - Nk^2 l^2 + 2Nkla - Na^2 &amp;&#x3D; km^2 \newline<br>(m^2 - N)a^2 &amp;&#x3D; (Nkl^2-2Nla+m^2)k<br>\end{align}$$</p>
 <p>因此$k$整除$a^2(m^2 - N)$。</p>
-<p>将$a+bm=kl$代入方程$(am + Nb)^2 - N(a+bm)^2 = k(m^2 - N)$，得到：<br>$$\begin{align}<br>(am + Nb)^2 - Nk^2 l^2 &amp;= k(m^2 - N) \newline<br>(am + Nb)^2 &amp;= k(m^2 - N + Nk l^2) \newline<br>a^2(am + Nb)^2 &amp;= k((m^2 - N)a^2 + Nka^2 l^2) \newline<br>a^2(am + Nb)^2 &amp;= k^2(Nkl^2-2Nla+m^2 + Na^2 l^2) \newline<br>\end{align}$$</p>
+<p>将$a+bm&#x3D;kl$代入方程$(am + Nb)^2 - N(a+bm)^2 &#x3D; k(m^2 - N)$，得到：<br>$$\begin{align}<br>(am + Nb)^2 - Nk^2 l^2 &amp;&#x3D; k(m^2 - N) \newline<br>(am + Nb)^2 &amp;&#x3D; k(m^2 - N + Nk l^2) \newline<br>a^2(am + Nb)^2 &amp;&#x3D; k((m^2 - N)a^2 + Nka^2 l^2) \newline<br>a^2(am + Nb)^2 &amp;&#x3D; k^2(Nkl^2-2Nla+m^2 + Na^2 l^2) \newline<br>\end{align}$$</p>
 <p>因此$k^2$整除$a^2(am + Nb)^2$，即$k$整除$a(am + Nb)$。</p>
-<p>由$k$整除$b(am + Nb)$和$k$整除$a(am + Nb)$可以得到$k$整除两个数的任意线性组合，即对于任意整数$r$和$s$有$k$整除$(ar + bs)(am + Nb)$，又因为$a$和$b$互素（$\gcd(a,b)=1$），所以根据Bezout引理，存在整数$r$和$s$使得$ar + bs = 1$。</p>
+<p>由$k$整除$b(am + Nb)$和$k$整除$a(am + Nb)$可以得到$k$整除两个数的任意线性组合，即对于任意整数$r$和$s$有$k$整除$(ar + bs)(am + Nb)$，又因为$a$和$b$互素（$\gcd(a,b)&#x3D;1$），所以根据Bezout引理，存在整数$r$和$s$使得$ar + bs &#x3D; 1$。</p>
 <p>因此$k$整除$am + Nb$。</p>
-<p>因为$(a+bm)/k$为整数且$(am+Nb)/k$为整数，所以$(m^2-N)/k = [(a+bm)/k]^2 - N [(am+Nb)/k]^2$也为整数。$\square$</p>
+<p>因为$(a+bm)&#x2F;k$为整数且$(am+Nb)&#x2F;k$为整数，所以$(m^2-N)&#x2F;k &#x3D; [(a+bm)&#x2F;k]^2 - N [(am+Nb)&#x2F;k]^2$也为整数。$\square$</p>
 
     </div>
 
@@ -387,7 +388,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pell%E6%96%B9%E7%A8%8B%E7%9A%84%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">Pell方程的描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pell%E6%96%B9%E7%A8%8B%E7%9A%84%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">Pell方程的求解思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%EF%BC%9A-x-2-61y-2-1"><span class="nav-number">3.1.</span> <span class="nav-text">求解：$x^2 - 61y^2 &#x3D; 1$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-number">4.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%81%92%E7%AD%89%E5%BC%8F%E7%9A%84%E8%AF%81%E6%98%8E"><span class="nav-number">4.1.</span> <span class="nav-text">1. 恒等式的证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%95%B4%E6%95%B0%E8%A7%A3%E7%9A%84%E8%AF%81%E6%98%8E"><span class="nav-number">4.2.</span> <span class="nav-text">2. 整数解的证明</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Pell%E6%96%B9%E7%A8%8B%E7%9A%84%E6%8F%8F%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">Pell方程的描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pell%E6%96%B9%E7%A8%8B%E7%9A%84%E6%B1%82%E8%A7%A3%E6%80%9D%E8%B7%AF"><span class="nav-number">2.</span> <span class="nav-text">Pell方程的求解思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B1%82%E8%A7%A3%EF%BC%9A-x-2-61y-2-x3D-1"><span class="nav-number">3.1.</span> <span class="nav-text">求解：$x^2 - 61y^2 &#x3D; 1$</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%A5%E5%85%85"><span class="nav-number">4.</span> <span class="nav-text">补充</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%81%92%E7%AD%89%E5%BC%8F%E7%9A%84%E8%AF%81%E6%98%8E"><span class="nav-number">4.1.</span> <span class="nav-text">1. 恒等式的证明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%95%B4%E6%95%B0%E8%A7%A3%E7%9A%84%E8%AF%81%E6%98%8E"><span class="nav-number">4.2.</span> <span class="nav-text">2. 整数解的证明</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="generator" content="Hexo 5.4.1">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
@@ -266,19 +266,52 @@
 <li>需要已经安装：<code>docker</code>、<code>docker-compose</code>和<code>Fabric</code>的相关镜像，<br><code>Go</code>和<code>Fabric</code>的源码不是必需的，因为调试仍然是在<code>Fabric</code>镜像中进行。</li>
 </ul>
 <span id="more"></span>
+
 <h3 id="1-首先下载官方提供的fabric-samples："><a href="#1-首先下载官方提供的fabric-samples：" class="headerlink" title="1. 首先下载官方提供的fabric-samples："></a>1. 首先下载官方提供的fabric-samples：</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/fabric-samples.git</span><br></pre></td></tr></table></figure>
+
 <p>将需要调试的chaincode源码（比如<code>gocc</code>）放入链码目录（<code>fabric-samples/chaincode</code>）</p>
-<p>如果要使用couchdb作为状态数据库, 应该在<code>docker-comose-simple.yaml</code>的<code>peer</code>环境变量中添加：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984</span></span><br></pre></td></tr></table></figure><br>在依赖中添加：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">depends_on:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">orderer</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">couchdb</span></span><br></pre></td></tr></table></figure><br>并添加couchdb容器：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">couchdb:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">couchdb</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-couchdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5984</span><span class="string">:5984</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">DB_URL:</span> <span class="string">http://localhost:5984/member_db</span></span><br></pre></td></tr></table></figure></p>
-<p>为了使用<code>DEBUG</code>模式调试链码，需要在<code>chaincode</code>容器中添加环境变量：<br><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_CHAINCODE_LOGGING_LEVEL=DEBUG</span></span><br></pre></td></tr></table></figure></p>
-<h4 id="2-打开终端1"><a href="#2-打开终端1" class="headerlink" title="2. 打开终端1"></a>2. 打开终端1</h4><p>启动网络：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd fabric-samples/chaincode-docker-devmode</span><br><span class="line">docker-compose -f docker-compose-simple.yaml up -d</span><br></pre></td></tr></table></figure></p>
-<p>进入链码容器：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it chaincode bash</span><br></pre></td></tr></table></figure></p>
-<p>编译链码（假设链码文件夹为<code>/gocc</code>）<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd gocc</span><br><span class="line">go build</span><br></pre></td></tr></table></figure><br>启动链码：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./gocc</span><br></pre></td></tr></table></figure></p>
-<h4 id="3-打开终端2"><a href="#3-打开终端2" class="headerlink" title="3. 打开终端2"></a>3. 打开终端2</h4><p>进入fabric客户端：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it cli bash</span><br></pre></td></tr></table></figure><br>安装并实例化：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0</span><br><span class="line">peer chaincode instantiate -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure><br>调用<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode invoke -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
-<p>查询<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode query -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
-<h4 id="4-关闭网络"><a href="#4-关闭网络" class="headerlink" title="4. 关闭网络"></a>4. 关闭网络</h4><p>退出终端<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure></p>
-<p>关闭网络：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose -f docker-compose-simple.yaml down</span><br></pre></td></tr></table></figure></p>
-<p>删除<code>myc.block</code>文件，下次才能正常启动网络:<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm myc.block</span><br></pre></td></tr></table></figure></p>
-<h2 id="Fabric-CouchDB-实现排序查询"><a href="#Fabric-CouchDB-实现排序查询" class="headerlink" title="Fabric + CouchDB 实现排序查询"></a>Fabric + CouchDB 实现排序查询</h2><p>在<a href="localhost:5984/_utils">localhost:5984/_utils</a>可以打开<code>Fauxton</code>直接查看couchdb信息<br>为需要排序的字段创建索引文件（index），然后即可在网页客户端或者chaincode中的<code>rich query</code>中查询：</p>
+<p>如果要使用couchdb作为状态数据库, 应该在<code>docker-comose-simple.yaml</code>的<code>peer</code>环境变量中添加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984</span></span><br></pre></td></tr></table></figure>
+<p>在依赖中添加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">depends_on:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">orderer</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">couchdb</span></span><br></pre></td></tr></table></figure>
+<p>并添加couchdb容器：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">couchdb:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">couchdb</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-couchdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5984</span><span class="string">:5984</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">DB_URL:</span> <span class="string">http://localhost:5984/member_db</span></span><br></pre></td></tr></table></figure>
+
+<p>为了使用<code>DEBUG</code>模式调试链码，需要在<code>chaincode</code>容器中添加环境变量：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_CHAINCODE_LOGGING_LEVEL=DEBUG</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-打开终端1"><a href="#2-打开终端1" class="headerlink" title="2. 打开终端1"></a>2. 打开终端1</h4><p>启动网络：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd fabric-samples/chaincode-docker-devmode</span><br><span class="line">docker-compose -f docker-compose-simple.yaml up -d</span><br></pre></td></tr></table></figure>
+
+<p>进入链码容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it chaincode bash</span><br></pre></td></tr></table></figure>
+
+<p>编译链码（假设链码文件夹为<code>/gocc</code>）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd gocc</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
+<p>启动链码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./gocc</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-打开终端2"><a href="#3-打开终端2" class="headerlink" title="3. 打开终端2"></a>3. 打开终端2</h4><p>进入fabric客户端：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it cli bash</span><br></pre></td></tr></table></figure>
+<p>安装并实例化：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0</span><br><span class="line">peer chaincode instantiate -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure>
+<p>调用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode invoke -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure>
+
+<p>查询</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">peer chaincode query -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-关闭网络"><a href="#4-关闭网络" class="headerlink" title="4. 关闭网络"></a>4. 关闭网络</h4><p>退出终端</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>关闭网络：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose -f docker-compose-simple.yaml down</span><br></pre></td></tr></table></figure>
+
+<p>删除<code>myc.block</code>文件，下次才能正常启动网络:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm myc.block</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Fabric-CouchDB-实现排序查询"><a href="#Fabric-CouchDB-实现排序查询" class="headerlink" title="Fabric + CouchDB 实现排序查询"></a>Fabric + CouchDB 实现排序查询</h2><p>在<a href="localhost:5984/_utils">localhost:5984&#x2F;_utils</a>可以打开<code>Fauxton</code>直接查看couchdb信息<br>为需要排序的字段创建索引文件（index），然后即可在网页客户端或者chaincode中的<code>rich query</code>中查询：</p>
 <ul>
 <li>在<code>Design Documents</code>中添加<code>Mango Indexes</code></li>
 <li>创建索引文件，例如：</li>
