@@ -636,7 +636,7 @@ class="math inline">\(y=0\)</span>。</p>
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-20 15:24:52" itemprop="dateModified" datetime="2024-02-20T15:24:52+08:00">2024-02-20</time>
+                <time title="修改时间：2024-02-29 13:12:50" itemprop="dateModified" datetime="2024-02-29T13:12:50+08:00">2024-02-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1030,7 +1030,7 @@ target="_blank" rel="noopener" href="https://github.com/hyperledger/blockchain-e
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-20 15:24:52" itemprop="dateModified" datetime="2024-02-20T15:24:52+08:00">2024-02-20</time>
+                <time title="修改时间：2024-02-29 13:15:28" itemprop="dateModified" datetime="2024-02-29T13:15:28+08:00">2024-02-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1067,12 +1067,15 @@ target="_blank" rel="noopener" href="https://github.com/hyperledger/blockchain-e
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Cello 遵循典型的"主-从"工作体系结构。群集中有两种类型的节点。 -
-Master Node：Cello服务通过Worker
+          <p>Cello 遵循典型的"主-从"工作体系结构。群集中有两种类型的节点：</p>
+<ul>
+<li>Master Node：Cello服务通过Worker
 Nodes提供的API接口管理（create/delete等）在Worker Nodes上的链，Master
-Node 提供web 面板(port 8080) and RESTful APIs (port 80). - Worker Node：
+Node 提供web 面板(port 8080) and RESTful APIs (port 80).</li>
+<li>Worker Node：
 Cello支持从单个服务器到集群的多种类型的工作节点。以Docker主机或Swarm集群为例，Worker
-Nodes提供的API接口应该可以从主节点访问（通常在端口2375）</p>
+Nodes提供的API接口应该可以从主节点访问（通常在端口2375）</li>
+</ul>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2018/05/17/Hyperledger-Cello/#more" rel="contents">
@@ -1130,7 +1133,7 @@ Nodes提供的API接口应该可以从主节点访问（通常在端口2375）</
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-20 15:24:52" itemprop="dateModified" datetime="2024-02-20T15:24:52+08:00">2024-02-20</time>
+                <time title="修改时间：2024-02-29 13:16:09" itemprop="dateModified" datetime="2024-02-29T13:16:09+08:00">2024-02-29</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1168,8 +1171,8 @@ Nodes提供的API接口应该可以从主节点访问（通常在端口2375）</
 
       
           <h2 id="数据持久化">数据持久化</h2>
-<p>如果需要对peer或CouchDB容器的数据持久化，一种选择是将容器的相关目录挂载到docker主机。
-例如，将下面两行内容放到docker-compose.yaml文件中的对应peer处：</p>
+<p>如果需要对peer或CouchDB容器的数据持久化，一种选择是将容器的相关目录挂载到docker主机。</p>
+<p>例如，将下面两行内容放到docker-compose.yaml文件中的对应peer处：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/peer0:/var/hyperledger/production</span></span><br></pre></td></tr></table></figure>
 <p>将下面两行放到对应的CouchDB处：</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/couchdb0:/opt/couchdb/data</span></span><br></pre></td></tr></table></figure>
