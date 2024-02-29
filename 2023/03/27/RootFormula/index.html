@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"heshengpku.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="一元二次、三次、四次方程的求根公式整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。">
+  <meta name="description" content="一元二次、三次、四次方程的求根公式 整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Roots Formula of Quadratics, Cubics and Quartics">
 <meta property="og:url" content="https://heshengpku.github.io/2023/03/27/RootFormula/index.html">
 <meta property="og:site_name" content="何晟">
-<meta property="og:description" content="一元二次、三次、四次方程的求根公式整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。">
+<meta property="og:description" content="一元二次、三次、四次方程的求根公式 整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-03-27T09:31:41.000Z">
 <meta property="article:modified_time" content="2024-02-20T07:24:52.000Z">
@@ -273,40 +273,64 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="一元二次、三次、四次方程的求根公式"><a href="#一元二次、三次、四次方程的求根公式" class="headerlink" title="一元二次、三次、四次方程的求根公式"></a>一元二次、三次、四次方程的求根公式</h2><p>整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part 1，2015）的Chapter A-1。</p>
+        <h2
+id="一元二次三次四次方程的求根公式">一元二次、三次、四次方程的求根公式</h2>
+<p>整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part
+1，2015）的Chapter A-1。</p>
 <span id="more"></span>
-
-<h3 id="一元二次方程求根公式"><a href="#一元二次方程求根公式" class="headerlink" title="一元二次方程求根公式"></a>一元二次方程求根公式</h3><p>对于一元二次方程：</p>
-<p>$$ ax^2+bx+c &#x3D; 0 $$</p>
+<h3 id="一元二次方程求根公式">一元二次方程求根公式</h3>
+<p>对于一元二次方程：</p>
+<p><span class="math display">\[ ax^2+bx+c = 0 \]</span></p>
 <p>通过配方可以得到：</p>
-<p>$$ (x+b&#x2F;2a)^2 &#x3D; -c&#x2F;a+b^2&#x2F;4a^2 $$</p>
+<p><span class="math display">\[ (x+b/2a)^2 = -c/a+b^2/4a^2
+\]</span></p>
 <p>令判别式为：</p>
-<p>$$ \Delta &#x3D; b^2-4ac $$</p>
+<p><span class="math display">\[ \Delta = b^2-4ac \]</span></p>
 <p>可以得到求根公式为：</p>
-<p>$$ x_1 &#x3D; \frac{-b+\sqrt{\Delta}}{2a} $$<br>$$ x_2 &#x3D; \frac{-b-\sqrt{\Delta}}{2a} $$</p>
-<h3 id="一元三次方程求根公式"><a href="#一元三次方程求根公式" class="headerlink" title="一元三次方程求根公式"></a>一元三次方程求根公式</h3><p>对于一元三次方程：</p>
-<p>$$ ax^3+bx^2+cx+d &#x3D; 0 $$</p>
-<p>做变量代换$X &#x3D; x-\frac{b}{3a}$得到不包括二次项的形式：</p>
-<p>$$ x^3+qx+r&#x3D; 0 $$</p>
+<p><span class="math display">\[ x_1 = \frac{-b+\sqrt{\Delta}}{2a}
+\]</span> <span class="math display">\[ x_2 =
+\frac{-b-\sqrt{\Delta}}{2a} \]</span></p>
+<h3 id="一元三次方程求根公式">一元三次方程求根公式</h3>
+<p>对于一元三次方程：</p>
+<p><span class="math display">\[ ax^3+bx^2+cx+d = 0 \]</span></p>
+<p>做变量代换<span class="math inline">\(X =
+x-\frac{b}{3a}\)</span>得到不包括二次项的形式：</p>
+<p><span class="math display">\[ x^3+qx+r= 0 \]</span></p>
 <p>可以得到求根公式为：</p>
-<p>$$ x_1 &#x3D; g+h $$<br>$$ x_2 &#x3D; \omega g + \omega ^2 h$$<br>$$ x_3 &#x3D; \omega ^2 g + \omega h $$</p>
+<p><span class="math display">\[ x_1 = g+h \]</span> <span
+class="math display">\[ x_2 = \omega g + \omega ^2 h\]</span> <span
+class="math display">\[ x_3 = \omega ^2 g + \omega h \]</span></p>
 <p>其中：</p>
-<p>$$ g^3 &#x3D; \frac{-r+\sqrt{R}}{2} $$<br>$$ h &#x3D; -\frac{q}{3g} $$</p>
+<p><span class="math display">\[ g^3 = \frac{-r+\sqrt{R}}{2} \]</span>
+<span class="math display">\[ h = -\frac{q}{3g} \]</span></p>
 <p>其中：</p>
-<p>$$ R &#x3D; r^2+\frac{4}{27}q^3 $$<br>$$ \omega &#x3D; -\frac{1}{2}+i\frac{\sqrt{3}}{2} $$</p>
-<h3 id="一元四次方程求根公式"><a href="#一元四次方程求根公式" class="headerlink" title="一元四次方程求根公式"></a>一元四次方程求根公式</h3><p>对于一元四次方程：</p>
-<p>$$ ax^4+bx^3+cx^2+dx+e &#x3D; 0 $$</p>
-<p>做变量代换$X &#x3D; x-\frac{b}{4a}$得到不包括三次项的形式：</p>
-<p>$$ x^4+qx^2+rx+s &#x3D; 0 $$</p>
+<p><span class="math display">\[ R = r^2+\frac{4}{27}q^3 \]</span> <span
+class="math display">\[ \omega = -\frac{1}{2}+i\frac{\sqrt{3}}{2}
+\]</span></p>
+<h3 id="一元四次方程求根公式">一元四次方程求根公式</h3>
+<p>对于一元四次方程：</p>
+<p><span class="math display">\[ ax^4+bx^3+cx^2+dx+e = 0 \]</span></p>
+<p>做变量代换<span class="math inline">\(X =
+x-\frac{b}{4a}\)</span>得到不包括三次项的形式：</p>
+<p><span class="math display">\[ x^4+qx^2+rx+s = 0 \]</span></p>
 <p>左边可以化为一元二次方程的形式：</p>
-<p>$$ x^4+qx^2+rx+s &#x3D; (x^2+jx+l)(x^2-jx+m) $$</p>
+<p><span class="math display">\[ x^4+qx^2+rx+s = (x^2+jx+l)(x^2-jx+m)
+\]</span></p>
 <p>可以求得：</p>
-<p>$$ l+m-j^2 &#x3D; q $$<br>$$ j(m-l) &#x3D; r $$<br>$$ lm &#x3D; s $$</p>
+<p><span class="math display">\[ l+m-j^2 = q \]</span> <span
+class="math display">\[ j(m-l) = r \]</span> <span
+class="math display">\[ lm = s \]</span></p>
 <p>前两个方程可以得到：</p>
-<p>$$ 2m &#x3D; j^2 + q + r&#x2F;j $$<br>$$ 2l &#x3D; j^2 + q - r&#x2F;j $$</p>
-<p>代入第三个方程，可以得到$j^2$的三次方程：</p>
-<p>$$ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2 &#x3D; 0 $$</p>
-<p>通过一元三次方程的求根公式，可以得到$j^2$，然后得到$m$和$l$，再利用一元二次方程的求根公式得到最终的结果。</p>
+<p><span class="math display">\[ 2m = j^2 + q + r/j \]</span> <span
+class="math display">\[ 2l = j^2 + q - r/j \]</span></p>
+<p>代入第三个方程，可以得到<span
+class="math inline">\(j^2\)</span>的三次方程：</p>
+<p><span class="math display">\[ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2
+= 0 \]</span></p>
+<p>通过一元三次方程的求根公式，可以得到<span
+class="math inline">\(j^2\)</span>，然后得到<span
+class="math inline">\(m\)</span>和<span
+class="math inline">\(l\)</span>，再利用一元二次方程的求根公式得到最终的结果。</p>
 
     </div>
 
@@ -392,7 +416,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%BA%8C%E6%AC%A1%E3%80%81%E4%B8%89%E6%AC%A1%E3%80%81%E5%9B%9B%E6%AC%A1%E6%96%B9%E7%A8%8B%E7%9A%84%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">一元二次、三次、四次方程的求根公式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%BA%8C%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">一元二次方程求根公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%B8%89%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">一元三次方程求根公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E5%9B%9B%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">一元四次方程求根公式</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%BA%8C%E6%AC%A1%E4%B8%89%E6%AC%A1%E5%9B%9B%E6%AC%A1%E6%96%B9%E7%A8%8B%E7%9A%84%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">一元二次、三次、四次方程的求根公式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%BA%8C%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.1.</span> <span class="nav-text">一元二次方程求根公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E4%B8%89%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">一元三次方程求根公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%85%83%E5%9B%9B%E6%AC%A1%E6%96%B9%E7%A8%8B%E6%B1%82%E6%A0%B9%E5%85%AC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">一元四次方程求根公式</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

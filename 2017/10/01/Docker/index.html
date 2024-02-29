@@ -276,19 +276,19 @@
 <li>Docker 容器镜像删除</li>
 </ul>
 <span id="more"></span>
-
-<h2 id="1-停止所有的container，这样才能够删除其中的images："><a href="#1-停止所有的container，这样才能够删除其中的images：" class="headerlink" title="1.停止所有的container，这样才能够删除其中的images："></a>1.停止所有的container，这样才能够删除其中的images：</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-
+<h2
+id="停止所有的container这样才能够删除其中的images">1.停止所有的container，这样才能够删除其中的images：</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
 <p>如果想要删除所有container的话再加一个指令：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-
-<h2 id="2-查看当前有些什么images"><a href="#2-查看当前有些什么images" class="headerlink" title="2.查看当前有些什么images"></a>2.查看当前有些什么images</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
-
-<h2 id="3-删除images，通过image的id来指定删除谁"><a href="#3-删除images，通过image的id来指定删除谁" class="headerlink" title="3.删除images，通过image的id来指定删除谁"></a>3.删除images，通过image的id来指定删除谁</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
-
-<p>想要删除untagged images，也就是那些id为&lt;None&gt;的image的话可以用</p>
+<h2 id="查看当前有些什么images">2.查看当前有些什么images</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<h2
+id="删除images通过image的id来指定删除谁">3.删除images，通过image的id来指定删除谁</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
+<p>想要删除untagged
+images，也就是那些id为&lt;None&gt;的image的话可以用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images | grep &quot;^&lt;none&gt;&quot; | awk &quot;&#123;print $3&#125;&quot;)</span><br></pre></td></tr></table></figure>
-
 <p>要删除全部image的话</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
 
@@ -375,7 +375,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E7%9A%84container%EF%BC%8C%E8%BF%99%E6%A0%B7%E6%89%8D%E8%83%BD%E5%A4%9F%E5%88%A0%E9%99%A4%E5%85%B6%E4%B8%AD%E7%9A%84images%EF%BC%9A"><span class="nav-number">1.</span> <span class="nav-text">1.停止所有的container，这样才能够删除其中的images：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%9B%E4%BB%80%E4%B9%88images"><span class="nav-number">2.</span> <span class="nav-text">2.查看当前有些什么images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%88%A0%E9%99%A4images%EF%BC%8C%E9%80%9A%E8%BF%87image%E7%9A%84id%E6%9D%A5%E6%8C%87%E5%AE%9A%E5%88%A0%E9%99%A4%E8%B0%81"><span class="nav-number">3.</span> <span class="nav-text">3.删除images，通过image的id来指定删除谁</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%81%9C%E6%AD%A2%E6%89%80%E6%9C%89%E7%9A%84container%E8%BF%99%E6%A0%B7%E6%89%8D%E8%83%BD%E5%A4%9F%E5%88%A0%E9%99%A4%E5%85%B6%E4%B8%AD%E7%9A%84images"><span class="nav-number">1.</span> <span class="nav-text">1.停止所有的container，这样才能够删除其中的images：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E6%9C%89%E4%BA%9B%E4%BB%80%E4%B9%88images"><span class="nav-number">2.</span> <span class="nav-text">2.查看当前有些什么images</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4images%E9%80%9A%E8%BF%87image%E7%9A%84id%E6%9D%A5%E6%8C%87%E5%AE%9A%E5%88%A0%E9%99%A4%E8%B0%81"><span class="nav-number">3.</span> <span class="nav-text">3.删除images，通过image的id来指定删除谁</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -544,59 +544,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 

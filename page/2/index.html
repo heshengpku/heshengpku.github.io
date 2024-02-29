@@ -267,9 +267,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>链码（<code>Chaincode</code>）即<code>Fabric</code>中的智能合约，作为运行在<code>Fabric</code>区块链网络上的程序，链码在一般的运行模式下是运行在docker容器中的。<br>为了方便在开发中调试链码，可以使用开发模式。</p>
+          <p>链码（<code>Chaincode</code>）即<code>Fabric</code>中的智能合约，作为运行在<code>Fabric</code>区块链网络上的程序，链码在一般的运行模式下是运行在docker容器中的。
+为了方便在开发中调试链码，可以使用开发模式。</p>
 <ul>
-<li>需要已经安装：<code>docker</code>、<code>docker-compose</code>和<code>Fabric</code>的相关镜像，<br><code>Go</code>和<code>Fabric</code>的源码不是必需的，因为调试仍然是在<code>Fabric</code>镜像中进行。</li>
+<li>需要已经安装：<code>docker</code>、<code>docker-compose</code>和<code>Fabric</code>的相关镜像，
+<code>Go</code>和<code>Fabric</code>的源码不是必需的，因为调试仍然是在<code>Fabric</code>镜像中进行。</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
@@ -365,8 +367,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p><em>发布者: 币学院 发表于: 2017-7-4 16:40 原作者: 张海宁、陈家豪来自: 亨利笔记</em></p>
-<h4 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h4><p>本文将介绍如何使用 Docker 容器技术来建立起一个多节点<code>Fabric</code>集群，并且描述在集群上如何进行基本的操作，如<code>chaincode</code>的生命周期维护等。文中采用Fabric 1.0的端到端（e2e_cli）示例作为基础来说明原理。本文提供是手动配置的方法，后续将介绍利用容器平台（如 K8s 等）自动部署超级账本的方式。</p>
+          <p><em>发布者: 币学院 发表于: 2017-7-4 16:40 原作者: 张海宁、陈家豪来自:
+亨利笔记</em></p>
+<h4 id="概述">1. 概述</h4>
+<p>本文将介绍如何使用 Docker
+容器技术来建立起一个多节点<code>Fabric</code>集群，并且描述在集群上如何进行基本的操作，如<code>chaincode</code>的生命周期维护等。文中采用Fabric
+1.0的端到端（e2e_cli）示例作为基础来说明原理。本文提供是手动配置的方法，后续将介绍利用容器平台（如
+K8s 等）自动部署超级账本的方式。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/11/06/Fabric-Multiple-Nodes/#more" rel="contents">
@@ -461,7 +468,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>来源：<a target="_blank" rel="noopener" href="https://my.oschina.net/u/2349981/blog/865256">https://my.oschina.net/u/2349981/blog/865256</a><br>作者：dophin459</p>
+          <p>来源：https://my.oschina.net/u/2349981/blog/865256
+作者：dophin459</p>
 <p>虽然以太坊是一个公有链系统，但是我们可以通过设置一些参数来运行自己的私有链节点，在自己的私有链上进行开发和测试不需要同步公有链数据，也不需要花钱来买以太币，节省存储空间和成本，而且很灵活很方便。本文介绍使用<code>geth</code>客户端搭建私有链的操作步骤，同时会解释在这个过程中用到的各个命令及选项的含义和作用，最后会介绍<code>geth</code>的<code>Javascript Console</code>中的一些常用功能。</p>
           <!--noindex-->
             <div class="post-button">
@@ -558,7 +566,10 @@
 
       
           <p>由linux基金会主导的超级账本（<code>HyperLeger Fabric</code>)试图为新一代的事务应用创建一种开放的分布式账本标准，支持许可式区块链。</p>
-<p><code>Fabric</code>的开发环境建立在<code>VirtualBox</code>虚拟机上，部署环境可以自建网络，也可以直接部署在<code>BlueMix</code>上，部署方式可<code>docker</code>化，支持用<code>Go</code>和<code>JavaScript</code>开发智能合约。它采用<code>PBFT</code>分布式算法，网络编程方面用gRPC来做<code>P2P</code>通讯，使用 Protocol Buffer来序列化要传递的数据结构。在架构设计上，<code>Fabric</code>可能与比特币等区块链产品有所不同，但是上述基本组成部分还是不可或缺的。<br>在多核时代，<code>Go</code>语言备受喜爱，它可以让你用同步方式轻松实现高并发，特别是在分布式系统、网络编程等领域，应用非常广。所以，在区块链开发领域，也有很多使用<code>Go</code>语言的项目。</p>
+<p><code>Fabric</code>的开发环境建立在<code>VirtualBox</code>虚拟机上，部署环境可以自建网络，也可以直接部署在<code>BlueMix</code>上，部署方式可<code>docker</code>化，支持用<code>Go</code>和<code>JavaScript</code>开发智能合约。它采用<code>PBFT</code>分布式算法，网络编程方面用gRPC来做<code>P2P</code>通讯，使用
+Protocol
+Buffer来序列化要传递的数据结构。在架构设计上，<code>Fabric</code>可能与比特币等区块链产品有所不同，但是上述基本组成部分还是不可或缺的。
+在多核时代，<code>Go</code>语言备受喜爱，它可以让你用同步方式轻松实现高并发，特别是在分布式系统、网络编程等领域，应用非常广。所以，在区块链开发领域，也有很多使用<code>Go</code>语言的项目。</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2017/10/11/Hyperledger-Composer/#more" rel="contents">
@@ -750,14 +761,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="加-x2F-解压缩"><a href="#加-x2F-解压缩" class="headerlink" title="加&#x2F;解压缩"></a>加&#x2F;解压缩</h3><p>压缩</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf **.tar.gz **/</span><br></pre></td></tr></table></figure>
-
-<p>解压</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf **.tar.gz </span><br></pre></td></tr></table></figure>
-
-<p>文件传输</p>
-<p>&#96;&#96;&#96;<br>scp **.tar.gz <a href="mailto:&#x75;&#115;&#101;&#x72;&#110;&#97;&#109;&#101;&#x40;&#49;&#50;&#51;&#x2e;&#52;&#53;&#54;&#46;&#x37;&#56;&#46;&#x39;">&#x75;&#115;&#101;&#x72;&#110;&#97;&#109;&#101;&#x40;&#49;&#50;&#51;&#x2e;&#52;&#53;&#54;&#46;&#x37;&#56;&#46;&#x39;</a>:&#x2F;home&#x2F;…</p>
+          <h3 id="加解压缩">加/解压缩</h3>
+<p>压缩 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zcvf **.tar.gz **/</span><br></pre></td></tr></table></figure></p>
+<p>解压 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -xvf **.tar.gz </span><br></pre></td></tr></table></figure></p>
+<p>文件传输 ``` scp **.tar.gz username@123.456.78.9:/home/...</p>
 
       
     </div>
@@ -845,7 +852,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="Git初始化"><a href="#Git初始化" class="headerlink" title="Git初始化"></a>Git初始化</h2><p>Command line instructions<br>本地Git全局设置（Git global setup）</p>
+          <h2 id="git初始化">Git初始化</h2>
+<p>Command line instructions 本地Git全局设置（Git global setup）</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;yourname&quot;</span><br><span class="line">git config --global user.email &quot;your@email&quot;</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
@@ -1093,59 +1101,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 
