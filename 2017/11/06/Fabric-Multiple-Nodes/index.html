@@ -253,7 +253,21 @@
                 </span>
             </span>
 
-          
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>25 分钟</span>
+            </span>
 
         </div>
       </header>
@@ -284,7 +298,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git branch --all</span><br><span class="line">git fetch</span><br><span class="line">make clean</span><br><span class="line">make dist-clean</span><br><span class="line">make configtxgen</span><br><span class="line">make docker</span><br><span class="line">make peer-docker</span><br><span class="line">make orderer-docker</span><br><span class="line">make couchdb</span><br></pre></td></tr></table></figure>
 <p>PS: 如果<code>make docker</code>运行错误，重新输入<code>make docker</code>运行</p>
 <!-- 也可以用docker命令手动安装相关镜像，注意`fabric`相关镜像没有`latest`版本
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker pull hyperledger/fabric-orderer:x86_64-1.0.1</span><br><span class="line">docker pull hyperledger/fabric-peer:x86_64-1.0.1</span><br><span class="line"><span class="meta">#</span><span class="bash"> rename it to <span class="string">&#x27;latest&#x27;</span></span></span><br><span class="line">docker tag hyperledger/fabric-orderer:x86_64-1.0.1 hyperledger/fabric-orderer:latest</span><br><span class="line">docker tag hyperledger/fabric-peer:x86_64-1.0.1 hyperledger/fabric-peer:latest </span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker pull hyperledger/fabric-orderer:x86_64-1.0.1</span><br><span class="line">docker pull hyperledger/fabric-peer:x86_64-1.0.1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">rename it to <span class="string">&#x27;latest&#x27;</span></span></span><br><span class="line">docker tag hyperledger/fabric-orderer:x86_64-1.0.1 hyperledger/fabric-orderer:latest</span><br><span class="line">docker tag hyperledger/fabric-peer:x86_64-1.0.1 hyperledger/fabric-peer:latest </span><br></pre></td></tr></table></figure>
 <p>–&gt;</p>
 <p>也可以进入到<code>fabric/examples/e2e_cli</code>目录下，运行<code>./download-dockerimages.sh</code>来下载必要镜像。镜像下载完成后，就可以通过 <code>docker save</code> 命令把镜像打包成压缩文件，传送到各个VM。当VM接收到压缩文件后，可以通过 <code>docker load</code> 来解压和导入镜像。如果有私有的容器镜像仓库registry，如 Harbor 等，也可以把镜像推送到私有registry，再从各个机器中拉取。</p>
 <p>通过以下命令来保存所有 <code>tag</code> 含有 <code>fabric</code> 标识的镜像到名字为 <code>images</code> 的压缩文件中：</p>
@@ -413,7 +427,7 @@
 <p>说明4+1的<code>Fabric</code>多机部署成功了。我们现在是在<code>peer0.org1.example.com</code>的cli容器内，我们也可以切换到<code>peer0.org2.example.com</code>服务器，运行<code>docker ps</code>命令，可以看到本来是2个容器的，现在已经变成了3个容器</p>
 <h4 id="5-部署Hyperledger-Fabric-v1-0多节点集群（文档二）"><a href="#5-部署Hyperledger-Fabric-v1-0多节点集群（文档二）" class="headerlink" title="5. 部署Hyperledger Fabric v1.0多节点集群（文档二）"></a>5. 部署Hyperledger Fabric v1.0多节点集群（文档二）</h4><p>此文档和上一节的方法基本相同，细节之处可做参考选择，方便理解。</p>
 <p>以下各VM的工作目录为：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">GOPATH/src/github.com/hyperledger/fabric/examples/e2e_cli</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">$</span><span class="language-bash">GOPATH/src/github.com/hyperledger/fabric/examples/e2e_cli</span></span><br></pre></td></tr></table></figure>
 <p>可在任意VM上运行以下命令，生成构建 Fabric 网络所需的成员证书等必要材料：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash generateArtifacts.sh</span><br></pre></td></tr></table></figure>
 <p>该命令只需在某个VM上运行一次，其他VM上就不需要运行。</p>
@@ -614,11 +628,12 @@
     
 
       <footer class="post-footer">
+          
           <div class="post-tags">
-              <a href="/tags/Docker/" rel="tag"># Docker</a>
-              <a href="/tags/Blockchain/" rel="tag"># Blockchain</a>
-              <a href="/tags/Hyperledger/" rel="tag"># Hyperledger</a>
-              <a href="/tags/Fabric/" rel="tag"># Fabric</a>
+              <a href="/tags/Docker/" rel="tag"><i class="fa fa-tag"></i> Docker</a>
+              <a href="/tags/Blockchain/" rel="tag"><i class="fa fa-tag"></i> Blockchain</a>
+              <a href="/tags/Hyperledger/" rel="tag"><i class="fa fa-tag"></i> Hyperledger</a>
+              <a href="/tags/Fabric/" rel="tag"><i class="fa fa-tag"></i> Fabric</a>
           </div>
 
         
@@ -791,6 +806,18 @@
     <i class="fa fa-user"></i>
   </span>
   <span class="author" itemprop="copyrightHolder">He, Sheng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">54k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:18</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
   </div>
@@ -849,6 +876,59 @@
   
 
   
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
 
   
 
