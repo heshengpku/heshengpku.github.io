@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"heshengpku.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="由linux基金会主导的超级账本（HyperLeger Fabric)试图为新一代的事务应用创建一种开放的分布式账本标准，支持许可式区块链。 Fabric的开发环境建立在VirtualBox虚拟机上，部署环境可以自建网络，也可以直接部署在BlueMix上，部署方式可docker化，支持用Go和JavaScript开发智能合约。它采用PBFT分布式算法，网络编程方面用gRPC来做P2P通讯，使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hyperledger Composer安装">
+<meta property="og:url" content="https://heshengpku.github.io/2017/10/11/Hyperledger-Composer/index.html">
+<meta property="og:site_name" content="何晟">
+<meta property="og:description" content="由linux基金会主导的超级账本（HyperLeger Fabric)试图为新一代的事务应用创建一种开放的分布式账本标准，支持许可式区块链。 Fabric的开发环境建立在VirtualBox虚拟机上，部署环境可以自建网络，也可以直接部署在BlueMix上，部署方式可docker化，支持用Go和JavaScript开发智能合约。它采用PBFT分布式算法，网络编程方面用gRPC来做P2P通讯，使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-10-11T05:08:00.000Z">
+<meta property="article:modified_time" content="2024-02-20T07:24:52.000Z">
+<meta property="article:author" content="He, Sheng">
+<meta property="article:tag" content="Blockchain">
+<meta property="article:tag" content="Hyperledger">
+<meta property="article:tag" content="Fabric">
+<meta property="article:tag" content="Composer">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://heshengpku.github.io/2017/10/11/Hyperledger-Composer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Hyperledger Composer安装 | 何晟</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">何晟</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">HE, SEHNG</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://heshengpku.github.io/2017/10/11/Hyperledger-Composer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="He, Sheng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何晟">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hyperledger Composer安装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-10-11 13:08:00" itemprop="dateCreated datePublished" datetime="2017-10-11T13:08:00+08:00">2017-10-11</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-20 15:24:52" itemprop="dateModified" datetime="2024-02-20T15:24:52+08:00">2024-02-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Blockchain/" itemprop="url" rel="index"><span itemprop="name">Blockchain</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>由linux基金会主导的超级账本（<code>HyperLeger Fabric</code>)试图为新一代的事务应用创建一种开放的分布式账本标准，支持许可式区块链。</p>
+<p><code>Fabric</code>的开发环境建立在<code>VirtualBox</code>虚拟机上，部署环境可以自建网络，也可以直接部署在<code>BlueMix</code>上，部署方式可<code>docker</code>化，支持用<code>Go</code>和<code>JavaScript</code>开发智能合约。它采用<code>PBFT</code>分布式算法，网络编程方面用gRPC来做<code>P2P</code>通讯，使用
+Protocol
+Buffer来序列化要传递的数据结构。在架构设计上，<code>Fabric</code>可能与比特币等区块链产品有所不同，但是上述基本组成部分还是不可或缺的。
+在多核时代，<code>Go</code>语言备受喜爱，它可以让你用同步方式轻松实现高并发，特别是在分布式系统、网络编程等领域，应用非常广。所以，在区块链开发领域，也有很多使用<code>Go</code>语言的项目。</p>
+<span id="more"></span>
+<h2 id="hyperledger1"><a
+target="_blank" rel="noopener" href="https://www.hyperledger.org/">Hyperledger</a></h2>
+<p><a
+target="_blank" rel="noopener" href="https://github.com/hyperledger/hyperledger">GitHub仓库</a>中的 <a
+target="_blank" rel="noopener" href="https://github.com/hyperledger/fabric">Fabric源码</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/index.html">Hyperledger
+Composer</a></p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/tutorials/tutorials.html">Tutorials</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/introduction/introduction.html">Docs</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/support/support-index.html">Community</a></li>
+</ul>
+<h3 id="hyperledger-fabric-v1.0环境搭建">Hyperledger Fabric
+V1.0环境搭建</h3>
+<p>流程：WIN主机 -&gt; VBox -&gt; Ubuntu -&gt; Docker -&gt; Fabric
+Example</p>
+<p>准备：VirtualBox 5.1.8、Ubuntu 16.04 LTS、Git 2.12.2、Go1.8、Docker
+CE17、Pip2</p>
+<p>步骤：</p>
+<h4 id="安装-virtualbox">1. 安装 VirtualBox</h4>
+<p>官方下载安装包“<a
+target="_blank" rel="noopener" href="http://download.virtualbox.org/virtualbox/5.1.18/VirtualBox-5.1.18-114002-Win.exe">VirtualBox-5.1.18-114002-Win.exe</a>”，双击运行按默认方式安装即可。或者在Win7安装<a
+target="_blank" rel="noopener" href="https://www.docker.com/products/docker-toolbox">Docker
+ToolBox</a>自带有Oracle VM VirtualBox。
+启动VirtualBox，由于新建虚拟机占用空间较大，调整默认存储位置，如下设置：Vbox&gt;管理&gt;全局设定</p>
+<figure>
+<img
+src="https://sfault-image.b0.upaiyun.com/294/543/2945435109-58f0519cd37f3_articlex"
+alt="Vbox&gt;管理&gt;全局设定" />
+<figcaption aria-hidden="true">Vbox&gt;管理&gt;全局设定</figcaption>
+</figure>
+<h4 id="安装-ubuntu">2. 安装 Ubuntu</h4>
+<p>官方下载Ubuntu桌面版IOS镜像“<a
+target="_blank" rel="noopener" href="http://releases.ubuntu.com/16.04.2/ubuntu-16.04.2-desktop-amd64.iso">ubuntu-16.04.2-desktop-amd64.iso</a>”，进入VBox点击新建按钮，弹出窗口名称输入“hyperledger”，类型选择“Linux”版本选择“Ubuntu
+(64-bit)；继续下一步，内存大小输入4096MB，默认方式点击下一步，创建，下一步，下一步，虚拟硬盘输入30GB然后点击创建，虚拟机配置基本设置好了。接下来设置光盘启动安装系统，回到Vbox主界面选中刚新建的“hyperledger”项目后点击设置，界面如下：</p>
+<figure>
+<img
+src="https://sfault-image.b0.upaiyun.com/232/484/232484422-58f051ecde40f_articlex"
+alt="设置光盘启动安装系统" />
+<figcaption aria-hidden="true">设置光盘启动安装系统</figcaption>
+</figure>
+<p>选择磁盘弹出窗口选择刚下载好的ISO镜像，点击OK回到主界面点击启动，接下来就是Ubuntu系统安装过程了，安装过程按提示安装即可。最后进入Ubuntu系统安装增强工具（分辨率自动适应窗口大小），如下：</p>
+<figure>
+<img
+src="https://sfault-image.b0.upaiyun.com/119/447/1194474056-58f0521aaea82_articlex"
+alt="进入Ubuntu系统安装增强工具" />
+<figcaption aria-hidden="true">进入Ubuntu系统安装增强工具</figcaption>
+</figure>
+<p>Vbox增强工具安装好重启系统，接下来工作主要在是Terminal下操作，建议启用root用户来安装后续工具软件。（sudo
+passwd更改root密码，后续直接su就可切换至root用户了）</p>
+<h4 id="安装配套软件">3. 安装配套软件</h4>
+<p><code>Hyperledger</code>的<a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/installing/development-tools.html">开发工具需要</a>：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Operating Systems: Ubuntu Linux 14.04 / 16.04 LTS (both 64-bit), or Mac OS 10.12</span><br><span class="line">Docker Engine: Version 17.03 or higher</span><br><span class="line">Docker-Compose: Version 1.8 or higher</span><br><span class="line">Node: 6.x (note version 7 is not supported)</span><br><span class="line">npm: v3.x or v5.v</span><br><span class="line">git: 2.9.x or higher</span><br><span class="line">Python: 2.7.x</span><br><span class="line">A code editor of your choice, we recommend VSCode.</span><br></pre></td></tr></table></figure>
+但在Ubuntu上直接下载如下命令行脚本并运行（需要root权限）就可以了：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">curl -O https://hyperledger.github.io/composer/prereqs-ubuntu.sh</span><br><span class="line">chmod u+x prereqs-ubuntu.sh</span><br><span class="line">./prereqs-ubuntu.sh</span><br></pre></td></tr></table></figure>
+如果没有<code>curl</code>命令或者命令报错需先安装<code>curl</code>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get update</span><br><span class="line">apt-get install curl</span><br></pre></td></tr></table></figure>
+在安装完成后<strong>必须退出用户再重新登录</strong>，重启Terminal后<code>npm</code>会自动更新，如果更新不成功需按提示赋予权限后再次重启用户。这样不会再出现<code>npm</code>和<code>node</code>无法运行的情况。</p>
+<!-- 在我第一次安装时发现`Node`没有正确安装，手动安装如下：
+
+    apt-get install nodejs-legacy
+
+但版本不够新（只有v4.2.6），所以先升级`npm`到最新版本
+
+    apt-get install npm@latest -g
+
+安装用于安装`nodejs`的模块`n`
+
+    npm install -g n
+
+通过`n`模块安装指定版本的`nodejs`(2017年8月23日：`Hyperledger` 还不支持 `Node` v7)
+
+    n latest //安装官方最新版本
+    n stable //安装官方稳定版本
+    n lts    //安装官方最新LTS版本
+
+当用户账号中`node`版本不合要求时，用
+
+    which node
+
+查看`node`链接位置，再在root下修改链接到需要的版本
+
+    ln -s 版本位置 node位置
+
+-->
+<p>运行Hyperledger Composer和Hyperledger Fabric推荐至少4Gb的内存</p>
+<h4 id="安装hyperledger开发工具">4. 安装Hyperledger开发工具</h4>
+<p>一定要在non-privileged用户（eg non-root）下安装如下开发工具
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">npm install -g composer-cli</span><br><span class="line">npm install -g generator-hyperledger-composer</span><br><span class="line">npm install -g composer-rest-server</span><br><span class="line">npm install -g yo</span><br></pre></td></tr></table></figure>
+在安装中因为版本太旧弹出<code>npm WARN</code>可以不用理会</p>
+<p>如出现权限错误： <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm ERR!    path: ...</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+可以通过在root中用<code>chown -R</code>命令赋予用户相关路径的权限来解决：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chown -R UserName:UserName Path</span><br></pre></td></tr></table></figure> 如果只运行本地版Playground，运行 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g composer-playground</span><br></pre></td></tr></table></figure>
+运行Hyperledger Fabric前需清空本地版Playground <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker kill $(docker ps -q)</span><br><span class="line">docker rm $(docker ps -aq)</span><br><span class="line">docker rmi $(docker images dev-* -q)</span><br></pre></td></tr></table></figure>
+在文件夹（比如<code>~/fabric-tools</code>）安装zip文件 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir ~/fabric-tools &amp;&amp; cd ~/fabric-tools</span><br><span class="line"></span><br><span class="line">curl -O https://raw.githubusercontent.com/hyperledger/composer-tools/master/packages/fabric-dev-servers/fabric-dev-servers.zip</span><br><span class="line">unzip fabric-dev-servers.zip</span><br></pre></td></tr></table></figure>
+推荐并且默认运行<strong>Hyperledger Fabric
+v1.0</strong>版本，如果需要可以显式指定 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export FABRIC_VERSION=hlfv1</span><br></pre></td></tr></table></figure>
+所有脚本都在文件夹<code>~/fabric-tools</code>中。一个典型的Hyperledger
+Composer使用流程是 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd ~/fabric-tools</span><br><span class="line">./downloadFabric.sh</span><br><span class="line">./startFabric.sh</span><br><span class="line">./createComposerProfile.sh</span><br></pre></td></tr></table></figure>
+在用户下运行<code>./downloadFabric.sh</code>时可能出现<code>Docker permission denied</code>的错误，可以在<code>root</code>下运行
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">usermod -a -G docker UserName</span><br></pre></td></tr></table></figure> 或在用户进程下通过<code>sudo</code>命令解决
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo usermod -a -G docker $USER</span><br></pre></td></tr></table></figure> 在此之后需要完全退出本用户并重新登录</p>
+<p>在开发session结束后 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/fabric-tools</span><br><span class="line">./stopFabric.sh</span><br><span class="line">./teardownFabric.sh</span><br></pre></td></tr></table></figure> #### 5. 新建Hyperledger Composer
+Solution 在安装好Hyperledger Composer以后，就可以按<a
+target="_blank" rel="noopener" href="https://hyperledger.github.io/composer/tutorials/developer-guide.html">Developer
+Guide</a>商业网络定义（business network
+definition，BND）。BND依次定义了区块链方案的数据模型（data
+model）、商业和交易逻辑（business and therein transaction
+logic）、权限控制规则（access control rules）。</p>
+<p>在非root用户下clone一个sample网络： <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/composer-sample-networks.git</span><br><span class="line">cp -r ./composer-sample-networks/packages/basic-sample-network/  ./my-network</span><br></pre></td></tr></table></figure> 为了方便可以下载<a
+target="_blank" rel="noopener" href="https://code.visualstudio.com/">VSCode
+editor</a>。安装后打开<code>VSCode</code>选择<code>View &gt; Command Palette...</code>输入<code>extensions</code>，选择<code>Extensions:Install Extensions</code>选项。在<code>Search Extensions in Marketplace</code>输入<code>Composer</code>并安装<code>Hyperledger Composer extension</code>。</p>
+<p>根据实例，依次新建project（<code>my-network</code>），更新<code>package.json</code>文件，更新<code>README.md</code>(说明文档)，定义主模型<code>models/sample.cto</code>（可以包括多个文件），编写交易函数<code>lib/sample.js</code>，更新权限控制规则<code>permissions.acl</code>。</p>
+<p>生成商业网络档案（Business Network Archive） <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd my-network</span><br><span class="line">npm install</span><br></pre></td></tr></table></figure>
+<code>composer archive create</code>命令就在<code>dist</code>文件夹中创建了一个文件<code>my-network.bna</code></p>
+<p>编写Unit
+Tests(测试)，写入<code>test/sample.js</code>文件。然后编写文件<code>features/sample.feature</code>（测试定义文件）。再确认Unit测试通过：
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm test</span><br></pre></td></tr></table></figure> 导入Playground并测试。</p>
+<p>运行composer-playground的快速方法：</p>
+<ol type="1">
+<li>拉取composer-playground镜像 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull hyperledger/composer-playground</span><br></pre></td></tr></table></figure></li>
+<li>本地启动镜像 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name composer-playground -p 8080:8080 -d hyperledger/composer-playground</span><br></pre></td></tr></table></figure>
+然后就可以在浏览器上使用<code>Hyperledger Composer Playground</code>
+http://localhost:8080/</li>
+<li>结束并关闭容器 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -f composer-playground</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="部署到运行中hyperledger-fabric">6.
+部署到运行中<code>Hyperledger Fabric</code></h4>
+<!-- 在部署前确认`composer`正常，用`apt-get install composer`命令下载的`composer`版本较低，手动安装如下：
+
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php composer-setup.php --install-dir=usr/bin --filename=composer --version=1.5.1 --quiet
+
+如果出现错误Failed to decode zlib stream，安装`zlibc`
+
+    apt-get install zlibc
+
+错误理解，此composer非彼composer  -->
+<p>可以先试运行<code>composer</code>命令 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer</span><br></pre></td></tr></table></figure>
+确认为<code>Hyperledger Composer</code>。如果命令不存在，可能是环境变量问题
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH = $PATH:/安装了composer-cli等工具的路径</span><br></pre></td></tr></table></figure> 将BNA部署到Hyperledger Fabric v1.0上 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd dist</span><br><span class="line">composer network deploy -a my-network.bna -p hlfv1 -i PeerAdmin -s randomString</span><br></pre></td></tr></table></figure>
+确认网络已经部署 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer network ping -n my-network -p hlfv1 -i admin -s adminpw</span><br></pre></td></tr></table></figure> #### 7. 生成并测试REST API
+登录服务器，在<code>my-network</code>文件夹中输入 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer-rest-server</span><br></pre></td></tr></table></figure>
+按如下依次回答问题并设置</p>
+<p><img
+src="https://hyperledger.github.io/composer/assets/img/tutorials/developer/composer-rest-server.png"
+alt="REST API generated" />{:height="100%" width="100%"}</p>
+<p>如果运行成功，可以在输出中看到两行网络地址 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Web server listening at: http://localhost:3000</span><br><span class="line">Browse your REST API at http://localhost:3000/explorer</span><br></pre></td></tr></table></figure>
+打开浏览器并输入<code>http://localhost:3000/explorer</code>就能看到</p>
+<figure>
+<img
+src="https://hyperledger.github.io/composer/assets/img/tutorials/developer/lb_explorer.png"
+alt="LoopBack API Explorer" />
+<figcaption aria-hidden="true">LoopBack API Explorer</figcaption>
+</figure>
+<p>包括<code>Commodity</code>，<code>System</code>，<code>Trade</code>,<code>Trader</code></p>
+<h4 id="生成skeleton-web-application">8. 生成Skeleton Web
+Application</h4>
+<p>关闭<code>composer-rest-server</code>进程，运行 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yo hyperledger-composer</span><br></pre></td></tr></table></figure>
+可以看到</p>
+<figure>
+<img
+src="https://hyperledger.github.io/composer/assets/img/tutorials/developer/composer-yo-generator.png"
+alt="yo" />
+<figcaption aria-hidden="true">yo</figcaption>
+</figure>
+<p>等待几分钟到应用安装完成，进入新应用目录 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd my-app</span><br><span class="line">npm start</span><br></pre></td></tr></table></figure>
+可以看到<code>composer-rest-server</code>开始运行，Angular打包的网络应用在<code>http://localhost:4200</code>，点击Assets就可以看到存储在Hyperledger
+Fabric上的Commodity了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Blockchain/" rel="tag"><i class="fa fa-tag"></i> Blockchain</a>
+              <a href="/tags/Hyperledger/" rel="tag"><i class="fa fa-tag"></i> Hyperledger</a>
+              <a href="/tags/Fabric/" rel="tag"><i class="fa fa-tag"></i> Fabric</a>
+              <a href="/tags/Composer/" rel="tag"><i class="fa fa-tag"></i> Composer</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/01/Docker/" rel="prev" title="Docker命令整理">
+      <i class="fa fa-chevron-left"></i> Docker命令整理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2017/11/01/Ethereum/" rel="next" title="以太坊私有链搭建操作指南">
+      以太坊私有链搭建操作指南 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#hyperledger1"><span class="nav-number">1.</span> <span class="nav-text">Hyperledger</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hyperledger-fabric-v1.0%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.1.</span> <span class="nav-text">Hyperledger Fabric
+V1.0环境搭建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-virtualbox"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 安装 VirtualBox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-ubuntu"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 安装 Ubuntu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E5%A5%97%E8%BD%AF%E4%BB%B6"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. 安装配套软件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85hyperledger%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="nav-number">1.1.4.</span> <span class="nav-text">4. 安装Hyperledger开发工具</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2%E5%88%B0%E8%BF%90%E8%A1%8C%E4%B8%ADhyperledger-fabric"><span class="nav-number">1.1.5.</span> <span class="nav-text">6.
+部署到运行中Hyperledger Fabric</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%9F%E6%88%90skeleton-web-application"><span class="nav-number">1.1.6.</span> <span class="nav-text">8. 生成Skeleton Web
+Application</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="He, Sheng"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">He, Sheng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/heshengpku" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;heshengpku" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:heshengpku@gmail.com" title="E-Mail → mailto:heshengpku@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://scholar.google.com/citations?user=2BKQWbIAAAAJ" title="Google → https:&#x2F;&#x2F;scholar.google.com&#x2F;citations?user&#x3D;2BKQWbIAAAAJ" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/heshengpku/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;heshengpku&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://orcid.org/0000-0002-7142-8990" title="ORCiD → https:&#x2F;&#x2F;orcid.org&#x2F;0000-0002-7142-8990" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>ORCiD</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/sheng-he-14" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;sheng-he-14" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="languages">
+    <label class="lang-select-label">
+      <i class="fa fa-language"></i>
+      <span>简体中文</span>
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </label>
+    <select class="lang-select" data-canonical="">
+      
+        <option value="zh-CN" data-href="/2017/10/11/Hyperledger-Composer/" selected="">
+          简体中文
+        </option>
+      
+        <option value="en" data-href="/en/2017/10/11/Hyperledger-Composer/" selected="">
+          English
+        </option>
+      
+    </select>
+  </div>
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">He, Sheng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">54k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:18</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

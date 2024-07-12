@@ -1,0 +1,2842 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"heshengpku.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="2022年，通读了《陶哲轩实分析》一书。其从Peano公理出发，依次定义自然数、整数、有理数、实数和加减乘除、极限等运算，一气呵成、让人膜拜。 因为是关于数学分析的书，Tao只在第三章讲了集合论，而数理逻辑还在附录里。 但是我们常常听说“集合论是现代数学的基石”，那么理所当然是可以在定义数系之前，先做集合论的公理化。 因此我也想做一次尝试，在不做其他任何预设的情况下，完全从数学公理出发，进行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从大学数学到小学数学：从集合论证明算术基本定理">
+<meta property="og:url" content="https://heshengpku.github.io/2022/10/17/FundArith/index.html">
+<meta property="og:site_name" content="何晟">
+<meta property="og:description" content="2022年，通读了《陶哲轩实分析》一书。其从Peano公理出发，依次定义自然数、整数、有理数、实数和加减乘除、极限等运算，一气呵成、让人膜拜。 因为是关于数学分析的书，Tao只在第三章讲了集合论，而数理逻辑还在附录里。 但是我们常常听说“集合论是现代数学的基石”，那么理所当然是可以在定义数系之前，先做集合论的公理化。 因此我也想做一次尝试，在不做其他任何预设的情况下，完全从数学公理出发，进行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-17T06:35:10.000Z">
+<meta property="article:modified_time" content="2024-02-29T05:12:50.763Z">
+<meta property="article:author" content="He, Sheng">
+<meta property="article:tag" content="Elementary Math">
+<meta property="article:tag" content="Set Theory">
+<meta property="article:tag" content="Elementary Number Theory">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://heshengpku.github.io/2022/10/17/FundArith/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>从大学数学到小学数学：从集合论证明算术基本定理 | 何晟</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">何晟</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">HE, SEHNG</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://heshengpku.github.io/2022/10/17/FundArith/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="He, Sheng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何晟">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          从大学数学到小学数学：从集合论证明算术基本定理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-10-17 14:35:10" itemprop="dateCreated datePublished" datetime="2022-10-17T14:35:10+08:00">2022-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-29 13:12:50" itemprop="dateModified" datetime="2024-02-29T13:12:50+08:00">2024-02-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mathematics/" itemprop="url" rel="index"><span itemprop="name">Mathematics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1:01</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>2022年，通读了《陶哲轩实分析》一书。其从Peano公理出发，依次定义自然数、整数、有理数、实数和加减乘除、极限等运算，一气呵成、让人膜拜。</p>
+<p>因为是关于数学分析的书，Tao只在第三章讲了集合论，而数理逻辑还在附录里。</p>
+<p>但是我们常常听说“集合论是现代数学的基石”，那么理所当然是可以在定义数系之前，先做集合论的公理化。</p>
+<p>因此我也想做一次尝试，在不做其他任何预设的情况下，完全从数学公理出发，进行一次“严谨的”推导。</p>
+<p>当然有很多离散数学、集合论的课程就是这样做的。</p>
+<p>不过个人能力有限，打算只证明一个小学生都知道的简单定理——算术基本定理，就收工。</p>
+<span id="more"></span>
+<p>内容主要涉及到4个部分：</p>
+<ul>
+<li>数理逻辑，可参照Kenneth H. Rosen的《离散数学及其应用》</li>
+<li>集合论，可参照Herbert B. Enderton的《Elements of Set
+Theory》和维基百科关于集合论公理化的词条</li>
+<li>数系（只需要自然数和整数），可参照陶哲轩的《Analysis
+I》即《陶哲轩实分析》的前4章、Herbert B. Enderton的《Elements of Set
+Theory》</li>
+<li>数论，可参照陈景润的《初等数论》（<em>这里要吐槽一下哈尔滨工业大学出版社，这本书出版得很“粗糙”，分三册然后几十页的后记重复三次先不说，还有我等凡夫俗子肉眼可见的错误、很多还是明显的排版错误就有一大堆，所以这也是“逼迫”我自己推导一次的动力吧</em>）</li>
+</ul>
+<h2 id="一数理逻辑">一、数理逻辑</h2>
+<h3 id="命题逻辑">1）命题逻辑</h3>
+<h4
+id="定义命题是一个陈述句所表达的判断具有真值即这句话不是真的true就是假的false">定义：命题是一个陈述句所表达的判断，具有真值，即这句话不是真的（True）就是假的（False）。</h4>
+<p>例如：“雪是白色的”。</p>
+<p><strong>命题不等同于句子</strong>：例如，“雪是白色的”和“白色是雪的颜色”是不同的句子，但它们判断相同的事，所以是相同的命题。</p>
+<p><strong>命题不依赖于语言</strong>：例如，“雪是白的”和“Snow is
+white”是相同的判断。</p>
+<p>疑问句、祈使句、感叹句都不能表达命题。</p>
+<p>真值为“真”时，记作 T，为“假”时，记作 F。</p>
+<h4 id="逻辑运算符">逻辑运算符</h4>
+<ol type="1">
+<li><p>（否定）逻辑“非”：如果命题<span
+class="math inline">\(p\)</span>的真值为T，则<span
+class="math inline">\(\neg p\)</span>为F，如果命题<span
+class="math inline">\(p\)</span>的真值为F，则<span
+class="math inline">\(\neg p\)</span>为T。</p></li>
+<li><p>（合取）逻辑“与”：如果命题<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>的真值都为T，则<span
+class="math inline">\(p\wedge q\)</span>为T。反之，如果命题<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>中有一个真值为F，则<span
+class="math inline">\(p\wedge q\)</span>为F。</p></li>
+<li><p>（析取）逻辑“或”：如果命题<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>中有一个真值为T，则<span
+class="math inline">\(p\vee q\)</span>为T。反之，如果命题<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>的真值都为F，则为<span
+class="math inline">\(p\vee q\)</span>为F。</p></li>
+<li><p>（蕴涵）如果假定命题<span
+class="math inline">\(p\)</span>的真值为T，可以推导出命题<span
+class="math inline">\(q\)</span>也为T，则称命题<span
+class="math inline">\(p\)</span>蕴涵<span
+class="math inline">\(q\)</span>，记作<span
+class="math inline">\(p\implies q\)</span>。</p></li>
+</ol>
+<p>利用命题和否定的定义，就可以得到数学证明中常用的反证法。</p>
+<p><strong>反证法</strong>：给定一个命题<span
+class="math inline">\(p\)</span>和它的否定命题<span
+class="math inline">\(\neg
+p\)</span>，则两者中如果一个是假的，另一个就必然是真的。所以在证明某一个命题<span
+class="math inline">\(p\)</span>时，可以通过证明<span
+class="math inline">\(\neg p\)</span>为假，从而“反过来”证明<span
+class="math inline">\(p\)</span>为真。</p>
+<p>关于<span class="math inline">\(p\implies q\)</span>，可以定义：</p>
+<ul>
+<li><span class="math inline">\(p\)</span>为<span
+class="math inline">\(q\)</span>的充分条件</li>
+<li><span class="math inline">\(q\)</span>为<span
+class="math inline">\(p\)</span>的必要条件</li>
+<li><span class="math inline">\(p\implies q\)</span>称为原命题</li>
+<li><span class="math inline">\(q\implies p\)</span>称为逆命题</li>
+<li><span class="math inline">\(\neg p\implies \neg
+q\)</span>称为否命题</li>
+<li><span class="math inline">\(\neg q\implies \neg
+p\)</span>称为逆否命题</li>
+</ul>
+<p><strong>对于一个假命题<span
+class="math inline">\(p\)</span>，即可推导出真命题，也可推导出假命题，所以<span
+class="math inline">\(p\)</span>为假时，<span
+class="math inline">\(p\implies q\)</span>是恒为真的。</strong></p>
+<p>也就是说，如果以假命题为条件出发，推导得出的数字结论没有意义。</p>
+<p>这也是为什么，现代数学这么强调公理化，并且对公理之间的兼容性吹毛求疵的原因。</p>
+<p><strong>等价关系</strong>：如果<span class="math inline">\(p\implies
+q\)</span>且<span class="math inline">\(q\implies
+p\)</span>为真，则称命题<span class="math inline">\(p\)</span>与<span
+class="math inline">\(q\)</span>等价，记作<span
+class="math inline">\(p\iff q\)</span>，文字上常常写作“<span
+class="math inline">\(p\)</span>当且仅当<span
+class="math inline">\(q\)</span>”。</p>
+<p>命题逻辑里最“简单”的证明方法就是使用真值表。</p>
+<p>下面证明：如果<span class="math inline">\(p\)</span>与<span
+class="math inline">\(q\)</span>等价，那么<span
+class="math inline">\(p\)</span>为真且<span
+class="math inline">\(q\)</span>为真，或者<span
+class="math inline">\(p\)</span>为假且<span
+class="math inline">\(q\)</span>为假，即<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>一定同真或同假。</p>
+<p><code>证明</code>：根据定义，有<span class="math inline">\(p\iff
+q\)</span>即<span class="math inline">\((p\implies q) \wedge (q\implies
+p)\)</span>真值表： <span
+class="math display">\[\begin{array}{c|c|c|c|c}
+p&amp;q&amp;p\implies q&amp; q\implies p &amp; p\iff q \\\
+T&amp;T&amp;T&amp;T&amp;T \\\
+T&amp;F&amp;F&amp;T&amp;F \\\
+F&amp;T&amp;T&amp;F&amp;F \\\
+F&amp;F&amp;T&amp;T&amp;T
+\end{array}\]</span></p>
+<p>通过真值表可以看到，当<span class="math inline">\(p\iff
+q\)</span>为T时，必须<span class="math inline">\(p\implies
+q\)</span>和<span class="math inline">\(q\implies
+p\)</span>同时为真，这时<span class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>只能是同真或同假。反之，当<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>同真或同假时，<span
+class="math inline">\(p\iff q\)</span>也一定为真。<span
+class="math inline">\(\square\)</span></p>
+<p>下面证明：原命题与逆否命题等价。</p>
+<p><code>证明</code>：根据蕴涵的定义，原命题的真值表为： <span
+class="math display">\[\begin{array}{c|c|c}
+q&amp; p &amp; q\implies p \\\
+T&amp;T&amp;T \\\
+T&amp;F&amp;F \\\
+F&amp;T&amp;T \\\
+F&amp;F&amp;T
+\end{array}\]</span> 逆否命题的真值表为： <span
+class="math display">\[\begin{array}{c|c|c|c|c}
+p&amp;q&amp; \neg p &amp; \neg q &amp; \neg q\implies \neg p \\\
+T&amp;T&amp;F&amp;F&amp;T \\\
+T&amp;F&amp;F&amp;T&amp;F \\\
+F&amp;T&amp;T&amp;F&amp;T\\\
+F&amp;F&amp;T&amp;T&amp;T
+\end{array}\]</span> 可以看到不论<span
+class="math inline">\(p\)</span>和<span
+class="math inline">\(q\)</span>的真假，原命题与逆否命题都同真或同假，所以原命题与逆否命题等价。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="一阶逻辑">2）一阶逻辑</h3>
+<p>一阶逻辑，又称谓词逻辑，和命题逻辑的不同之处在于，一阶逻辑包含<strong>量词</strong>：</p>
+<ol type="1">
+<li>存在：<span class="math inline">\(\exists\)</span></li>
+<li>任意：<span class="math inline">\(\forall\)</span></li>
+</ol>
+<p>所以在一阶逻辑中，可以使用逻辑“变量”<span
+class="math inline">\(x\)</span>。例如，命题<span
+class="math inline">\(x+1=2\)</span>，只有在<span
+class="math inline">\(x=1\)</span>时为真。</p>
+<p>通过一阶逻辑，我们的数学表达能力大大提升了。</p>
+<p>后续的公理，除了文字表述，我也尽量给出逻辑符号的形式化表述。</p>
+<h3 id="相等公理">3）相等公理</h3>
+<p>等价只是描述了两个命题的关系，而对于一般的数学对象，需要引入相等关系。</p>
+<h4 id="自反公理对任意的对象x有xx">1.
+<font color=red>（自反公理）对任意的对象<span
+class="math inline">\(x\)</span>，有<span
+class="math inline">\(x=x\)</span>。</font></h4>
+<p><span class="math inline">\(\forall x : x=x\)</span></p>
+<h4 id="对称公理对任意的对象x和y如果xy那么yx">2.
+<font color=red>（对称公理）对任意的对象<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>，如果<span
+class="math inline">\(x=y\)</span>，那么<span
+class="math inline">\(y=x\)</span>。</font></h4>
+<p>$x, y : x=y y=x $</p>
+<h4 id="传递公理对任意的对象xy和z如果xy且yz那么xz">3.
+<font color=red>（传递公理）对任意的对象<span
+class="math inline">\(x\)</span>、<span
+class="math inline">\(y\)</span>和<span
+class="math inline">\(z\)</span>，如果<span
+class="math inline">\(x=y\)</span>且<span
+class="math inline">\(y=z\)</span>，那么<span
+class="math inline">\(x=z\)</span>。</font></h4>
+<p>$x, y, z : x=y y=z x=z $</p>
+<h4
+id="替换公理对任意的对象x和y如果xy那么对任意一个关于x的命题px有px和py等价">4.
+<font color=red>（替换公理）对任意的对象<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>，如果<span
+class="math inline">\(x=y\)</span>，那么对任意一个关于<span
+class="math inline">\(x\)</span>的命题<span
+class="math inline">\(P(x)\)</span>，有<span
+class="math inline">\(P(x)\)</span>和<span
+class="math inline">\(P(y)\)</span>等价。</font></h4>
+<p>$x, y : x=y (P(x) P(y)) $</p>
+<h2 id="二集合论">二、集合论</h2>
+<p>通常理解，集合是由一些数学对象组成的整体。</p>
+<p>构成集合<span class="math inline">\(A\)</span>的对象<span
+class="math inline">\(a\)</span>称作“元素”或“成员”，记作<span
+class="math inline">\(a \in A\)</span>。当元素<span
+class="math inline">\(a\)</span>不属于集合<span
+class="math inline">\(A\)</span>时，记作<span class="math inline">\(a
+\notin A\)</span>。</p>
+<h3 id="朴素集合论">1）朴素集合论</h3>
+<p>在朴素集合论中，可以使用一个非常简练的概括公理完成集合论的定义，但是其中却存在着悖论。</p>
+<p><strong>伪！（概括公理）</strong>：对任意一个关于<span
+class="math inline">\(x\)</span>的命题<span
+class="math inline">\(P(x)\)</span>，满足<span
+class="math inline">\(P(x)\)</span>为真的对象<span
+class="math inline">\(x\)</span>构成一个集合。</p>
+<p><span class="math inline">\(\exists A, \forall x: x \in A \iff
+P(x)\)</span></p>
+<p>这个集合可以记作 <span class="math inline">\(A = \lbrace x | P(x)
+\rbrace\)</span>。</p>
+<p><font color=blue><strong>罗素悖论</strong>：不存在一个集合是由“所有不包括自身的集合”所组成的。</font></p>
+<p><code>证明</code>：设命题<span
+class="math inline">\(P(x)\)</span>为“所有不包括自身的集合<span
+class="math inline">\(x\)</span>”，即<span class="math inline">\(x
+\notin x\)</span>，根据概括公理，满足这个命题的对象<span
+class="math inline">\(x\)</span>构成一个集合，设为集合<span
+class="math inline">\(A = \lbrace x | x \notin x \rbrace\)</span>。
+然后讨论命题<span class="math inline">\(A \in A\)</span>的真伪：
+如果<span class="math inline">\(A \in A\)</span>为真，那么<span
+class="math inline">\(A\)</span>是自身的元素，根据集合<span
+class="math inline">\(A\)</span>的定义，则满足命题<span
+class="math inline">\(P(x)\)</span>，即<span class="math inline">\(A
+\notin A\)</span>，矛盾； 如果<span class="math inline">\(A \notin
+A\)</span>为真，那么满足命题<span
+class="math inline">\(P(x)\)</span>，则根据集合<span
+class="math inline">\(A\)</span>的定义，<span
+class="math inline">\(A\)</span>是自身的元素，即<span
+class="math inline">\(A \in A\)</span>，矛盾。<span
+class="math inline">\(\square\)</span>
+所以数学需要更严格的公理化集合论，此处使用常见的ZFC集合论。</p>
+<h3 id="公理化集合论">2）公理化集合论</h3>
+<h4 id="外延公理如果两个集合有相同的元素那么它们相等">1.
+<font color=red>（外延公理）如果两个集合有相同的元素，那么它们相等。</font></h4>
+<p><span class="math inline">\(\forall A, \forall B : (\forall x : x \in
+A \iff x \in B) \implies A=B\)</span></p>
+<h4 id="空集公理存在一个没有元素的集合">2.
+<font color=red>（空集公理）存在一个没有元素的集合。</font></h4>
+<p><span class="math inline">\(\exists A, \forall x : x \notin
+A\)</span></p>
+<p>通过外延公理可以证明这个集合是唯一的，称这个集合为<strong>空集</strong>，记作
+<span class="math inline">\(\varnothing\)</span>。</p>
+<h4 id="配对公理对任意两个集合x和y存在一个集合有且只有x和y作为元素">3.
+<font color=red>（配对公理）对任意两个集合<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>，存在一个集合有且只有<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>作为元素。</font></h4>
+<p><span class="math inline">\(\forall x, \forall y, \exists A, \forall
+z : z \in A \iff z=x \vee z=y\)</span></p>
+<p>配对公理可以构造双元素集合，记作<span class="math inline">\(\lbrace
+x,y\rbrace\)</span>。</p>
+<p>当<span
+class="math inline">\(x=y\)</span>时，也可以构造单元素集合：即对任意集合<span
+class="math inline">\(x\)</span>，存在集合<span
+class="math inline">\(\lbrace x,x\rbrace\)</span>，记作<span
+class="math inline">\(\lbrace x\rbrace\)</span>。</p>
+<h4
+id="并集公理对任意集合a存在一个集合bx是b的元素当且仅当x是a的某个元素的元素">4.
+<font color=red>（并集公理）对任意集合<span
+class="math inline">\(A\)</span>，存在一个集合<span
+class="math inline">\(B\)</span>，<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(B\)</span>的元素当且仅当<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(A\)</span>的某个元素的元素。</font></h4>
+<p><span class="math inline">\(\forall A, \exists B, \forall x : x \in B
+\iff (\exists y : x \in y \wedge y \in A)\)</span></p>
+<p>通过外延公理可以证明这个集合是唯一的，称这个集合为<span
+class="math inline">\(A\)</span>的<strong>并集</strong>，记作 <span
+class="math inline">\(\bigcup A\)</span>。</p>
+<p>通过配对公理可以得到一个更容易理解的形式：对任意两个集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>，存在一个集合，其元素属于<span
+class="math inline">\(A\)</span>或者属于<span
+class="math inline">\(B\)</span>。</p>
+<p><span class="math inline">\(\forall A, \forall B, \exists C, \forall
+x : x \in C \iff x \in A \vee x \in B\)</span></p>
+<p><code>证明</code>：根据配对公理，对任意两个集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>，存在一个集合<span
+class="math inline">\(\lbrace A,B\rbrace\)</span>。对集合<span
+class="math inline">\(\lbrace
+A,B\rbrace\)</span>，根据并集公理，得到存在一个集合<span
+class="math inline">\(C\)</span>，满足<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(C\)</span>的元素当且仅当<span
+class="math inline">\(x\)</span>是<span class="math inline">\(\lbrace
+A,B\rbrace\)</span>的元素的元素，即<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(A\)</span>的元素或<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(B\)</span>的元素。<span
+class="math inline">\(\square\)</span></p>
+<p>通过外延公理可以证明这个集合是唯一的，称这个集合为<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>的<strong>并集</strong>，记作 <span
+class="math inline">\(A \cup B\)</span>。</p>
+<h4
+id="分类公理子集公理对任意集合a存在一个集合bx是b的元素当且仅当x是a的元素且命题px成立">5.
+<font color=red>（分类公理、子集公理）对任意集合<span
+class="math inline">\(A\)</span>，存在一个集合<span
+class="math inline">\(B\)</span>，<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(B\)</span>的元素当且仅当<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(A\)</span>的元素且命题<span
+class="math inline">\(P(x)\)</span>成立。</font></h4>
+<p><span class="math inline">\(\forall A, \exists B, \forall x: x \in B
+\iff x \in A \land P(x)\)</span></p>
+<p>这个集合<span class="math inline">\(B\)</span>称作<span
+class="math inline">\(A\)</span>的一个<strong>子集</strong>，记作 <span
+class="math inline">\(B \subseteq A\)</span>，即 <span
+class="math inline">\(B \subseteq A \iff (\forall x : x \in B \implies x
+\in A)\)</span>。</p>
+<p>当<span class="math inline">\(B \subseteq A\)</span>且<span
+class="math inline">\(A \subseteq B\)</span>时，即<span
+class="math inline">\((\forall x : x \in B \implies x \in A) \wedge
+(\forall x : x \in A \implies x \in B)\)</span>，所以<span
+class="math inline">\(\forall x : x \in B \iff x \in
+A\)</span>，根据外延公理，有<span
+class="math inline">\(B=A\)</span>。</p>
+<p>当<span class="math inline">\(B \subseteq A\)</span>且<span
+class="math inline">\(B \neq A\)</span>时，集合<span
+class="math inline">\(B\)</span>称作<span
+class="math inline">\(A\)</span>的一个<strong>真子集</strong>，记作
+<span class="math inline">\(B \subset A\)</span>。</p>
+<p>通常定义子集的方式为<span class="math inline">\(B=\lbrace x \in A |
+P(x)\rbrace\)</span>。</p>
+<p>使用分类公理，对任意非空集合<span
+class="math inline">\(A\)</span>，可以定义集合<span
+class="math inline">\(A\)</span>的<strong>交集</strong><span
+class="math inline">\(\bigcap A\)</span>，即<span
+class="math inline">\(\bigcap A\)</span>的元素都是<span
+class="math inline">\(A\)</span>的任意元素的元素。</p>
+<p><font color=green><strong>推论</strong>：对任意非空集合<span
+class="math inline">\(A\)</span>，它的交集存在。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\(A\)</span>不是空集，所以存在一个元素<span
+class="math inline">\(c \in A\)</span>，设命题<span
+class="math inline">\(P(x)\)</span>为<span class="math inline">\(\forall
+y \neq c (y\in A \implies x \in
+y)\)</span>，根据分类公理，存在一个集合<span
+class="math inline">\(B\)</span>，满足<span class="math inline">\(x \in
+B \iff x \in c \wedge \forall y \neq c(y \in A \implies x \in y) \iff
+\forall y (y\in A \implies  x \in y)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>对任意两个集合<span class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>，存在一个集合，其元素属于<span
+class="math inline">\(A\)</span>并且属于<span
+class="math inline">\(B\)</span>，称这个集合为<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>的<strong>交集</strong>，记作 <span
+class="math inline">\(A \cap B\)</span>。</p>
+<h4 id="幂集公理对任意集合a存在一个以a的全部子集为元素的集合">6.
+<font color=red>（幂集公理）对任意集合<span
+class="math inline">\(A\)</span>，存在一个以<span
+class="math inline">\(A\)</span>的全部子集为元素的集合。</font></h4>
+<p><span class="math inline">\(\forall A, \exists B, \forall x: x \in B
+\iff x \subseteq A\)</span></p>
+<p>通过外延公理可以证明这个集合是唯一的，称这个集合是<span
+class="math inline">\(A\)</span>的<strong>幂集</strong>，记作 <span
+class="math inline">\(\mathcal{P}(A)\)</span>。</p>
+<h4
+id="无穷公理存在一个集合mathbfn使得空集是mathbfn的元素并且如果x是mathbfn的元素那么x与它的单元素集合lbrace-xrbrace的并集也是mathbfn的元素">7.
+<font color=red>（无穷公理）存在一个集合<span
+class="math inline">\(\mathbf{N}\)</span>，使得空集是<span
+class="math inline">\(\mathbf{N}\)</span>的元素，并且如果<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(\mathbf{N}\)</span>的元素，那么<span
+class="math inline">\(x\)</span>与它的单元素集合<span
+class="math inline">\(\lbrace x\rbrace\)</span>的并集也是<span
+class="math inline">\(\mathbf{N}\)</span>的元素。</font></h4>
+<p><span class="math inline">\(\exists \mathbf{N}: \varnothing \in
+\mathbf{N} \land (\forall x: x \in \mathbf{N} \implies x \cup \lbrace
+x\rbrace \in \mathbf{N})\)</span></p>
+<p>这种集合也称作<strong>归纳集合</strong>，其中可以定义集合<span
+class="math inline">\(x\)</span>的<strong>后继</strong>为<span
+class="math inline">\(x \cup \lbrace x\rbrace\)</span>。</p>
+<p>这个公理的本质是：存在一个集合包含所有的自然数。</p>
+<h4
+id="替代公理对任意集合a存在一个集合by是b的元素当且仅当存在x是a的元素且命题pxy为真">8.
+<font color=red>（替代公理）对任意集合<span
+class="math inline">\(A\)</span>，存在一个集合<span
+class="math inline">\(B\)</span>，<span
+class="math inline">\(y\)</span>是<span
+class="math inline">\(B\)</span>的元素当且仅当存在<span
+class="math inline">\(x\)</span>是<span
+class="math inline">\(A\)</span>的元素且命题<span
+class="math inline">\(P(x,y)\)</span>为真。</font></h4>
+<p>其中<span
+class="math inline">\(P\)</span>是一个双变量谓词，对任何集合<span
+class="math inline">\(x\)</span>存在唯一的集合<span
+class="math inline">\(y\)</span>使<span
+class="math inline">\(P(x,y)\)</span>成立，定义<span
+class="math inline">\(F(x)=y\)</span>当且仅当<span
+class="math inline">\(P(x,y)\)</span>。</p>
+<p><span class="math inline">\(\forall A, \exists B, \forall y: y \in B
+\iff \exists x \in A : y = F(x)\)</span></p>
+<p>分类公理可以从替代公理和空集公理共同得出。</p>
+<h4 id="正则公理对任意非空集合a至少存在一个元素xx与a的交集为空集">9.
+<font color=red>（正则公理）对任意非空集合<span
+class="math inline">\(A\)</span>，至少存在一个元素<span
+class="math inline">\(x\)</span>，<span
+class="math inline">\(x\)</span>与<span
+class="math inline">\(A\)</span>的交集为空集</font></h4>
+<p><span class="math inline">\(\forall A: A \neq \varnothing \implies
+\exists x \in A : x \cap A = \varnothing\)</span></p>
+<p><font color=green>推论：不存在以自身为元素的集合。</font></p>
+<p><code>证明</code>：反证法，假设存在一个集合<span
+class="math inline">\(A\)</span>，使得<span
+class="math inline">\(A\)</span>是自身的一个元素，即<span
+class="math inline">\(A \in A\)</span>。根据配对公理，存在集合<span
+class="math inline">\(B = \lbrace A\rbrace\)</span>。由于<span
+class="math inline">\(B\)</span>中只有一个元素<span
+class="math inline">\(A\)</span>，根据正则公理，有<span
+class="math inline">\(A \cap \lbrace A\rbrace=
+\varnothing\)</span>。但根据假设有<span class="math inline">\(A \in
+A\)</span>且<span class="math inline">\(A \in \lbrace
+A\rbrace\)</span>，所以<span class="math inline">\(A \cap \lbrace
+A\rbrace= \lbrace A\rbrace \neq \varnothing\)</span>，矛盾。<span
+class="math inline">\(\square\)</span></p>
+<h4
+id="选择公理给定一个集合x其元素皆为互不相交的非空集合那么存在一个集合y包含x每一个元素的仅仅一个元素">10.
+<font color=red>（选择公理）给定一个集合<span
+class="math inline">\(x\)</span>，其元素皆为互不相交的非空集合，那么存在一个集合<span
+class="math inline">\(y\)</span>，包含<span
+class="math inline">\(x\)</span>每一个元素的仅仅一个元素。</font></h4>
+<p><span class="math inline">\(\forall X \left[ \varnothing \notin X
+\implies \exists f : X \rightarrow \bigcup X \quad \forall A \in X \, (
+f(A) \in A ) \right]\)</span></p>
+<h2 id="三自然数">三、自然数</h2>
+<h3 id="peano公理">1）Peano公理</h3>
+<p>对自然数最“自然”的定义，就是使用<strong>Peano公理</strong>：</p>
+<h4 id="是一个自然数">1. <font color=red><span
+class="math inline">\(0\)</span>是一个自然数。</font></h4>
+<h4 id="如果n是一个自然数那么n的后继也是一个自然数将n的后继记作n">2.
+<font color=red>如果<span
+class="math inline">\(n\)</span>是一个自然数，那么<span
+class="math inline">\(n\)</span>的后继也是一个自然数。</font>将<span
+class="math inline">\(n\)</span>的后继记作<span
+class="math inline">\(n++\)</span>。</h4>
+<h4 id="不是任何自然数的后继等价于对任意一个自然数n有n不等于0">3.
+<font color=red><span
+class="math inline">\(0\)</span>不是任何自然数的后继。</font>等价于，对任意一个自然数<span
+class="math inline">\(n\)</span>，有<span
+class="math inline">\(n++\)</span>不等于<span
+class="math inline">\(0\)</span>。</h4>
+<h4 id="对于不同的自然数它们的后继也不同等价于如果nm那么nm">4.
+<font color=red>对于不同的自然数，它们的后继也不同。</font>等价于，如果<span
+class="math inline">\(n++=m++\)</span>，那么<span
+class="math inline">\(n=m\)</span>。</h4>
+<h4
+id="数学归纳法令pn表示对自然数的任意一个命题如果p0为真且当pn为真时有pn也为真那么对任意自然数n都有pn为真">5.
+<font color=red>（数学归纳法）令<span
+class="math inline">\(P(n)\)</span>表示对自然数的任意一个命题，如果<span
+class="math inline">\(P(0)\)</span>为真且当<span
+class="math inline">\(P(n)\)</span>为真时有<span
+class="math inline">\(P(n++)\)</span>也为真，那么对任意自然数<span
+class="math inline">\(n\)</span>，都有<span
+class="math inline">\(P(n)\)</span>为真。</font></h4>
+<p>一般把全体自然数的集合记作<span
+class="math inline">\(\mathbf{N}\)</span>。</p>
+<p>通过集合论中的无穷公理和分类公理可以得到<span
+class="math inline">\(\mathbf{N}\)</span>的存在性，通过外延公理可以证明<span
+class="math inline">\(\mathbf{N}\)</span>的唯一性。</p>
+<h3 id="构造自然数">2）构造自然数</h3>
+<p>当然，更“纯粹”地，我们还可以直接从集合论公理中构造出自然数，试一试：</p>
+<ol type="1">
+<li>根据空集公理，存在空集<span
+class="math inline">\(\varnothing\)</span>，定义<span
+class="math inline">\(0=\varnothing\)</span>；（对应Peano公理的第一条）</li>
+<li>定义集合<span class="math inline">\(n\)</span>的后继为<span
+class="math inline">\(n \cup \lbrace n\rbrace\)</span>，即定义<span
+class="math inline">\(1=0++=0 \cup \lbrace 0\rbrace= \varnothing \cup
+\lbrace \varnothing\rbrace= \lbrace
+\varnothing\rbrace\)</span>，依次类推可以定义<span
+class="math inline">\(2=\lbrace \varnothing, \lbrace \varnothing\rbrace
+\rbrace\)</span>、<span class="math inline">\(3=\lbrace \varnothing,
+\lbrace \varnothing\rbrace, \lbrace \varnothing, \lbrace
+\varnothing\rbrace \rbrace
+\rbrace\)</span>等等；（根据自然数的定义，对应可以证明Peano公理的第二、三、四、五条）</li>
+</ol>
+<p>根据无穷公理，包括<span
+class="math inline">\(\varnothing\)</span>及其全部后继的集合是存在的，可以把这一类集合称为归纳集合（inductive
+set）。</p>
+<p>根据后继的定义，由<span class="math inline">\(n \in n \cup \lbrace
+n\rbrace\)</span>且<span class="math inline">\(n \subseteq n \cup
+\lbrace n\rbrace\)</span>，可以得到对任意自然数<span
+class="math inline">\(n \in n++\)</span>且<span class="math inline">\(n
+\subseteq n++\)</span>。</p>
+<p><font color=green><strong>推论</strong>：<span
+class="math inline">\(0\)</span>不是任何自然数的后继。</font></p>
+<p><code>证明</code>:反证法，假设<span
+class="math inline">\(0=n++\)</span>，即<span
+class="math inline">\(\varnothing = n \cup \lbrace
+n\rbrace\)</span>，因为存在元素<span class="math inline">\(n \in \lbrace
+n\rbrace\)</span>，根据并集公理<span class="math inline">\(n \in n \cup
+\lbrace n\rbrace\)</span>，即<span class="math inline">\(n \in
+\varnothing\)</span>，但是这与空集公理矛盾。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>自然数定义</strong>：把包括<span
+class="math inline">\(\varnothing\)</span>及其全部后继的“最小”集合称为自然数集。即对任意的归纳集合，自然数都是它们的元素，而自然数集就是全体自然数的集合。</p>
+<p><font color=blue><strong>定理1</strong>：自然数集的存在性。即存在一个集合，它的元素是任意归纳集合的元素。</font></p>
+<p><code>证明</code>：设<span
+class="math inline">\(A\)</span>是一个归纳集合，根据无穷公理，这个集合是存在的。根据分类公理，设命题<span
+class="math inline">\(P(x)\)</span>为“<span
+class="math inline">\(x\)</span>是除<span
+class="math inline">\(A\)</span>以外任意归纳集合的元素”，则存在一个集合<span
+class="math inline">\(B\)</span>，满足 <span class="math inline">\(x \in
+B \iff x \in A \wedge P(x) \iff x
+\text{是任意归纳集合的元素}\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>注意，这里不能直接从全体归纳集合的交集得到自然数集，因为“全体归纳集合”不是一个明确定义的集合。</p>
+<p><font color=blue><strong>定理2</strong>：自然数集<span
+class="math inline">\(\mathbf{N}\)</span>是归纳集合，并且<span
+class="math inline">\(\mathbf{N}\)</span>是任意归纳集合的子集。</font></p>
+<p><code>证明</code>：首先，根据归纳集合的定义，空集<span
+class="math inline">\(\varnothing\)</span>是任意归纳集合的元素，所以<span
+class="math inline">\(\varnothing \in
+\mathbf{N}\)</span>。然后，对于某个自然数<span class="math inline">\(n
+\in \mathbf{N}\)</span>，自然数<span
+class="math inline">\(n\)</span>是任意归纳集合的元素，则由归纳集合的定义，<span
+class="math inline">\(n++\)</span>也是任意归纳集合的元素，则<span
+class="math inline">\(n++ \in \mathbf{N}\)</span>，所以自然数集<span
+class="math inline">\(\mathbf{N}\)</span>也是归纳集合。根据子集的定义，自然数集<span
+class="math inline">\(\mathbf{N}\)</span>是任意归纳集合的子集。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理3（数学归纳法）</strong>：自然数集<span
+class="math inline">\(\mathbf{N}\)</span>的任意子集，如果它是归纳集合，那么它等于自然数集。</font></p>
+<p><code>证明</code>：设自然数集的子集<span class="math inline">\(T
+\subseteq
+\mathbf{N}\)</span>为归纳集合；根据定理2，自然数集是归纳集合的子集，即<span
+class="math inline">\(\mathbf{N} \subseteq T\)</span>，所以<span
+class="math inline">\(T = \mathbf{N}\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理4</strong>：任意一个非<span
+class="math inline">\(0\)</span>的自然数都是某个自然数的后继。</font></p>
+<p><code>证明</code>：设自然数集的子集<span
+class="math inline">\(T=\lbrace n \in \mathbf{N} | n = 0 \vee (\exists p
+\in \mathbf{N}: n = p++) \rbrace\)</span>。因此<span
+class="math inline">\(0 \in T\)</span>，并且如果<span
+class="math inline">\(m \in T\)</span>，根据子集的定义，则<span
+class="math inline">\(m \in \mathbf{N}\)</span>及<span
+class="math inline">\(m++ \in \mathbf{N}\)</span>，即对于<span
+class="math inline">\(m++\)</span>来说存在<span class="math inline">\(p
+= m \in \mathbf{N}\)</span>满足<span class="math inline">\(m++ =
+p++\)</span>，那么<span class="math inline">\(m++ \in
+T\)</span>。因此<span
+class="math inline">\(T\)</span>是归纳集合，根据定理3（数学归纳法），可得<span
+class="math inline">\(T = \mathbf{N}\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>为了证明Peano公理的第四条，需要先引入一个“传递集”（transitive
+set）的概念。</p>
+<p><strong>传递集</strong>：如果集合<span
+class="math inline">\(A\)</span>的元素的任意元素也是<span
+class="math inline">\(A\)</span>的一个元素，那么集合<span
+class="math inline">\(A\)</span>就被称为传递集，即<span
+class="math inline">\(\forall x, \forall a : x \in a \wedge a \in A
+\implies x \in A\)</span>。</p>
+<p>等价表述有：集合<span
+class="math inline">\(A\)</span>的并集是自身的子集<span
+class="math inline">\(\bigcup A \subseteq A\)</span>；集合<span
+class="math inline">\(A\)</span>的元素也是自身的子集<span
+class="math inline">\(a \in A \implies a \subseteq  A\)</span>。</p>
+<p><font color=blue><strong>定理5</strong>：对于传递集<span
+class="math inline">\(a\)</span>，有<span class="math inline">\(\bigcup
+(a++) = a\)</span>。</font></p>
+<p><code>证明</code>：根据后继的定义、集合并集的运算规则以及传递集的性质<span
+class="math inline">\(\bigcup A \subseteq A\)</span>，有<span
+class="math inline">\(\bigcup (a++) = \bigcup (a\cup \lbrace a\rbrace) =
+\bigcup a \cup \bigcup\lbrace a\rbrace= \bigcup a \cup a =
+a\)</span>。<span class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理6</strong>：任意自然数是一个传递集。</font></p>
+<p><code>证明</code>：设命题<span
+class="math inline">\(P(n)\)</span>为“自然数<span
+class="math inline">\(n\)</span>是一个传递集”，根据分类公理，存在一个集合<span
+class="math inline">\(T=\lbrace n \in \mathbf{N} |
+P(n)\rbrace\)</span>。下面，通过定理3（数学归纳法）来证明<span
+class="math inline">\(T=\mathbf{N}\)</span>。首先显然有<span
+class="math inline">\(\varnothing \in T\)</span>，然后假设<span
+class="math inline">\(k \in T\)</span>，根据定理5，有<span
+class="math inline">\(\bigcup (k++) = k \subseteq
+k++\)</span>，所以<span
+class="math inline">\(k++\)</span>是一个传递集，即<span
+class="math inline">\(k++ \in T\)</span>，因此集合<span
+class="math inline">\(T\)</span>是一个归纳集合，满足定理3。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：如果自然数<span
+class="math inline">\(n++=m++\)</span>，那么<span
+class="math inline">\(n=m\)</span>。</font></p>
+<p><code>证明</code>：如果<span class="math inline">\(n++=m++ \in
+\mathbf{N}\)</span>，则<span
+class="math inline">\(\bigcup(n++)=\bigcup(m++)\)</span>。根据定理6，可知<span
+class="math inline">\(n++\)</span>和<span
+class="math inline">\(m++\)</span>都是传递集，根据定理5，则有<span
+class="math inline">\(\bigcup(n++)=n\)</span>和<span
+class="math inline">\(\bigcup(m++)=m\)</span>，所以<span
+class="math inline">\(n=m\)</span>。</p>
+<p><font color=blue><strong>定理7</strong>：自然数集<span
+class="math inline">\(\mathbf{N}\)</span>是一个传递集。</font></p>
+<p><code>证明</code>：即需要证明<span class="math inline">\(\forall n
+\in \mathbf{N} : n
+\subseteq  \mathbf{N}\)</span>。根据分类公理，存在一个集合<span
+class="math inline">\(T=\lbrace n \in \mathbf{N} | n
+\subseteq  \mathbf{N}\rbrace\)</span>。显然<span
+class="math inline">\(\varnothing \in T\)</span>，然后假设<span
+class="math inline">\(k \in T\)</span>，则有<span
+class="math inline">\(k \subseteq \mathbf{N}\)</span>，同时<span
+class="math inline">\(\lbrace k\rbrace \subseteq
+\mathbf{N}\)</span>，因此<span class="math inline">\(k \cup \lbrace
+k\rbrace \subseteq \mathbf{N}\)</span>，即<span
+class="math inline">\(k++ \in T\)</span>。所以集合<span
+class="math inline">\(T\)</span>是一个归纳集合，根据定理3（数学归纳法）可知<span
+class="math inline">\(T=\mathbf{N}\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<h2 id="四运算">四、运算</h2>
+<p>上面通过纯粹集合论的构造，已经证明了自然数集的存在以及唯一性了，同时一般的Peano公理五条都成立。为了将自然数扩充到整数，需要引入加法、乘法、减法等运算，而严格的定义“运算”需要使用集合论的笛卡尔积，所以这里先回到集合论。</p>
+<h3 id="关系有序对笛卡尔积函数">1）关系（有序对、笛卡尔积、函数）</h3>
+<p><strong>定义（有序对）</strong>：<span
+class="math inline">\(&lt;x,y&gt;\)</span>定义为<span
+class="math inline">\(\lbrace \lbrace x \rbrace,\lbrace x,y\rbrace
+\rbrace\)</span>。</p>
+<p><font color=green><strong>推论</strong>：<span
+class="math inline">\(&lt;u,v&gt;=&lt;x,y&gt;\)</span>当且仅当<span
+class="math inline">\(u=x\)</span>且<span
+class="math inline">\(v=y\)</span>。</font></p>
+<p><code>证明</code>：首先，当<span
+class="math inline">\(u=x\)</span>且<span
+class="math inline">\(v=y\)</span>，根据有序对的定义和相等公理，显然有<span
+class="math inline">\(&lt;u,v&gt;=&lt;x,y&gt;\)</span>。</p>
+<p>然后证明另一个方向，假设<span
+class="math inline">\(&lt;u,v&gt;=&lt;x,y&gt;\)</span>，即<span
+class="math inline">\(\lbrace \lbrace u \rbrace,\lbrace u,v\rbrace
+\rbrace = \lbrace \lbrace x \rbrace,\lbrace x,y\rbrace
+\rbrace\)</span>。</p>
+<p>根据外延公理，有<span class="math inline">\(\lbrace u \rbrace \in
+\lbrace \lbrace x \rbrace,\lbrace x,y\rbrace \rbrace\)</span>且<span
+class="math inline">\(\lbrace u,v \rbrace \in \lbrace \lbrace x
+\rbrace,\lbrace x,y\rbrace \rbrace\)</span>。</p>
+<p>对<span class="math inline">\(\lbrace u \rbrace \in \lbrace \lbrace x
+\rbrace,\lbrace x,y\rbrace \rbrace\)</span>，有（a）<span
+class="math inline">\(\lbrace u \rbrace = \lbrace x
+\rbrace\)</span>或者（b）<span class="math inline">\(\lbrace u \rbrace =
+\lbrace x,y \rbrace\)</span>；</p>
+<p>对<span class="math inline">\(\lbrace u,v \rbrace \in \lbrace \lbrace
+x \rbrace,\lbrace x,y\rbrace \rbrace\)</span>，有（c）<span
+class="math inline">\(\lbrace u,v \rbrace = \lbrace x
+\rbrace\)</span>或者（d）<span class="math inline">\(\lbrace u,v \rbrace
+= \lbrace x,y \rbrace\)</span>。</p>
+<p>对（a）（b）（c）（d）分情况讨论:</p>
+<p>首先，假设（b）成立，则<span
+class="math inline">\(u=x=y\)</span>，所以（c）和（d）是等价的，并且有<span
+class="math inline">\(u=v=x=y\)</span>。这种情况下，推论成立。</p>
+<p>同理，假设（c）成立，这种情况跟（b）是对称的，推论也成立。</p>
+<p>然后，假设（b）和（c）都不成立，即（a）和（d）同时成立时，根据（a）有<span
+class="math inline">\(u=x\)</span>，根据（d）有<span
+class="math inline">\(u=y\)</span>或者<span
+class="math inline">\(v=y\)</span>，当<span
+class="math inline">\(u=y\)</span>时（b）就成立，与假设矛盾，所以只能<span
+class="math inline">\(v=y\)</span>，即推论成立。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（笛卡尔积）</strong>：对两个集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>，将它们的元素<span
+class="math inline">\(x \in A\)</span>和<span class="math inline">\(y
+\in B\)</span>所组成的全体有序对<span
+class="math inline">\(&lt;x,y&gt;\)</span>称作集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>的笛卡尔积（Cartesian
+product），记作<span class="math inline">\(A \times B\)</span>：<span
+class="math display">\[A \times B = \lbrace &lt;x,y&gt;|x \in A \wedge y
+\in B \rbrace\]</span></p>
+<p>注意，这里有一个问题，我们还没有证明笛卡尔积的存在性，即没有从集合论公理出发，证明存在一个更大的集合包含了集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>的笛卡尔积。</p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>都是集合<span
+class="math inline">\(C\)</span>的元素，那么有序对<span
+class="math inline">\(&lt;x,y&gt;\)</span>属于<span
+class="math inline">\(C\)</span>的幂集的幂集，即<span
+class="math inline">\(\forall x \in C, y \in C: &lt;x,y&gt; \in
+\mathcal{P}(\mathcal{P}(C))\)</span>。</font></p>
+<p><code>证明</code>：根据子集的定义，<span class="math inline">\(x \in
+C\)</span>和<span class="math inline">\(y \in C\)</span>，有子集<span
+class="math inline">\(\lbrace x \rbrace \subseteq C\)</span>和<span
+class="math inline">\(\lbrace x,y \rbrace \subseteq
+C\)</span>。根据幂集公理，则有<span class="math inline">\(\lbrace x
+\rbrace \in \mathcal{P}(C)\)</span>和<span class="math inline">\(\lbrace
+x,y \rbrace \in \mathcal{P}(C)\)</span>，所以<span
+class="math inline">\(\lbrace \lbrace x \rbrace, \lbrace x,y \rbrace
+\rbrace \subseteq \mathcal{P}(C)\)</span>。再由幂集公理，有<span
+class="math inline">\(\lbrace \lbrace x \rbrace, \lbrace x,y \rbrace
+\rbrace \in
+\mathcal{P}(\mathcal{P}(C))\)</span>，根据有序对的定义，即<span
+class="math inline">\(&lt;x,y&gt; \in
+\mathcal{P}(\mathcal{P}(C))\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：对任意的集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>，存在一个集合，它的元素恰是任意<span
+class="math inline">\(x \in A\)</span>和<span class="math inline">\(y
+\in B\)</span>的有序对<span
+class="math inline">\(&lt;x,y&gt;\)</span>。</font></p>
+<p><code>证明</code>：根据子集公理，构造一个集合<span
+class="math inline">\(\lbrace w \in \mathcal{P}(\mathcal{P}(A \cup B))|w
+= &lt;x,y&gt; \iff x \in A \wedge y \in B
+\rbrace\)</span>。首先，显然这个集合只包含有序对。同时，根据引理，有序对<span
+class="math inline">\(&lt;x,y&gt;\)</span>都是这个集合的元素。通过这个推论，即完成了笛卡尔积的定义。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（关系）</strong>：关系是有序对组成的集合，即集合<span
+class="math inline">\(A\)</span>和<span
+class="math inline">\(B\)</span>的关系是笛卡尔积<span
+class="math inline">\(A \times B\)</span>的子集，记作<span
+class="math inline">\(R\)</span>。有时，也把<span
+class="math inline">\(&lt;x,y&gt; \in R\)</span>，记作<span
+class="math inline">\(xRy\)</span>。</p>
+<p><strong>定义（定义域和值域）</strong>：关系<span
+class="math inline">\(R\)</span>的定义域，记作<span
+class="math inline">\(dom(R)\)</span>，为<span class="math inline">\(x
+\in dom(R) \iff \exists y:&lt;x,y&gt; \in R\)</span>；关系<span
+class="math inline">\(R\)</span>的值域，记作<span
+class="math inline">\(ran(R)\)</span>，为<span class="math inline">\(y
+\in ran(R) \iff \exists x:&lt;x,y&gt; \in R\)</span>；关系<span
+class="math inline">\(R\)</span>的域，记作<span
+class="math inline">\(fld(R)\)</span>，为<span
+class="math inline">\(dom(R) \cup ran(R)\)</span>。</p>
+<p><strong>定义（等价关系）</strong>：如果集合<span
+class="math inline">\(A\)</span>上的二元关系<span
+class="math inline">\(R\)</span>满足以下条件：</p>
+<ol type="1">
+<li>（自反性）<span class="math inline">\(\forall x \in A:
+xRx\)</span></li>
+<li>（对称性）<span class="math inline">\(\forall x,y \in A: xRy
+\implies yRx\)</span></li>
+<li>（传递性）<span class="math inline">\(\forall x,y,z \in A: (xRy
+\wedge yRz) \implies xRz\)</span></li>
+</ol>
+<p>则称<span class="math inline">\(R\)</span>是一个定义在<span
+class="math inline">\(A\)</span>上的等价关系。习惯上把等价关系记作符号<span
+class="math inline">\(\sim\)</span>。</p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(R\)</span>是满足对称性和传递性的关系，那么<span
+class="math inline">\(R\)</span>是域<span
+class="math inline">\(fld(R)\)</span>上的等价关系。</font></p>
+<p><code>证明</code>：首先，任意关系<span
+class="math inline">\(R\)</span>都是<span
+class="math inline">\(fld(R)\)</span>上的二元关系，因为<span
+class="math inline">\(R \subseteq dom(R)\times ran(R) \subseteq
+fld(R)\times fld(R)\)</span>。只需要证明<span
+class="math inline">\(R\)</span>在<span
+class="math inline">\(fld(R)\)</span>上满足自反性，根据对称性和传递性，对定义域上的某个元素有
+<span class="math display">\[x \in dom(R) \implies xRy \implies xRy
+\wedge yRx \implies xRx \]</span> 对值域同理。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（等价类）</strong>：如果<span
+class="math inline">\(R\)</span>是一个等价关系且<span
+class="math inline">\(x\in fld(R)\)</span>，那么称集合<span
+class="math inline">\([x]_R = \lbrace t \in fld(R) | xRt
+\rbrace\)</span>为<span
+class="math inline">\(x\)</span>的等价类。如果关系<span
+class="math inline">\(R\)</span>的涵义能够从上下文得到，可以简记为<span
+class="math inline">\([x]\)</span>。</p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(R\)</span>是集合<span
+class="math inline">\(A\)</span>上的等价关系，那么<span
+class="math inline">\([x]_R=[y]_R\)</span>当且仅当<span
+class="math inline">\(xRy\)</span>。</font></p>
+<p><code>证明</code>：首先假设<span
+class="math inline">\([x]_R=[y]_R\)</span>，来证明<span
+class="math inline">\(xRy\)</span>。根据自反性，<span
+class="math inline">\(y \in [y]_R\)</span>，因为<span
+class="math inline">\([x]_R=[y]_R\)</span>，所以<span
+class="math inline">\(y \in [x]_R\)</span>，根据等价类的定义，则有<span
+class="math inline">\(xRy\)</span>。然后假设<span
+class="math inline">\(xRy\)</span>，来证明<span
+class="math inline">\([x]_R=[y]_R\)</span>。根据传递性，对任意的<span
+class="math inline">\(t \in [y]_R \implies yRt \implies xRt \implies t
+\in [x]_R\)</span>，所以<span class="math inline">\([y]_R \subseteq
+[x]_R\)</span>；对称地，同理可得<span class="math inline">\([x]_R
+\subseteq [y]_R\)</span>，所以<span
+class="math inline">\([x]_R=[y]_R\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（划分）</strong>：定义集合<span
+class="math inline">\(A\)</span>的划分<span
+class="math inline">\(\Pi\)</span>是一个<span
+class="math inline">\(A\)</span>的非空子集的集合，使得这些子集是互不相交的且无遗漏的，即：</p>
+<ol type="1">
+<li><span class="math inline">\(\Pi\)</span>中的任意两个不同元素（<span
+class="math inline">\(A\)</span>的非空子集）没有共同元素（交集为空）；</li>
+<li>集合<span class="math inline">\(A\)</span>的任意元素都是<span
+class="math inline">\(\Pi\)</span>中某个元素的元素。</li>
+</ol>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(R\)</span>是集合<span
+class="math inline">\(A\)</span>上的等价关系，那么所有等价类组成的集合<span
+class="math inline">\(\lbrace [x]_R | x \in A
+\rbrace\)</span>是集合<span
+class="math inline">\(A\)</span>的一个划分。</font></p>
+<p><code>证明</code>：因为存在<span class="math inline">\(x \in
+[x]_R\)</span>，所以任意等价类<span
+class="math inline">\([x]_R\)</span>是非空集合。因为<span
+class="math inline">\(R\)</span>是集合<span
+class="math inline">\(A\)</span>上的等价关系，根据等价类的定义，所以任意<span
+class="math inline">\([x]_R\)</span>是集合<span
+class="math inline">\(A\)</span>的子集。只需要证明不同的等价类没有共同元素：假设<span
+class="math inline">\([x]_R\)</span>和<span
+class="math inline">\([y]_R\)</span>有一个共同元素<span
+class="math inline">\(t\)</span>，那么有<span
+class="math inline">\(xRt\)</span>且<span
+class="math inline">\(yRt\)</span>，因此<span
+class="math inline">\(xRy\)</span>，根据上面的引理有<span
+class="math inline">\([x]_R=[y]_R\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（函数）</strong>：函数是一种关系<span
+class="math inline">\(F\)</span>，满足对定义域<span
+class="math inline">\(dom(R)\)</span>中的任意元素<span
+class="math inline">\(x\)</span>，有且仅有一个<span
+class="math inline">\(y\)</span>，使得<span
+class="math inline">\(xFy\)</span>。</p>
+<p>对于一个函数<span class="math inline">\(F\)</span>和一个元素<span
+class="math inline">\(x\)</span>（从几何的角度，即“点”），这个唯一满足<span
+class="math inline">\(xFy\)</span>的<span
+class="math inline">\(y\)</span>称为<span
+class="math inline">\(F\)</span>在<span
+class="math inline">\(x\)</span>处的值，记作<span
+class="math inline">\(F(x)\)</span>。</p>
+<p>数学中有很多表述函数的方式，例如说<span
+class="math inline">\(F\)</span>是从<span
+class="math inline">\(A\)</span>到<span
+class="math inline">\(B\)</span>的函数，或者说<span
+class="math inline">\(F\)</span>把<span
+class="math inline">\(A\)</span>映射到<span
+class="math inline">\(B\)</span>（记作<span class="math inline">\(F:A
+\rightarrow B\)</span>），都等价于说<span
+class="math inline">\(F\)</span>是一个函数，<span
+class="math inline">\(dom(F) = A\)</span>并且<span
+class="math inline">\(ran(F) \subseteq B\)</span>。</p>
+<p>特别地，当<span class="math inline">\(ran(F) = B\)</span>时，称<span
+class="math inline">\(F\)</span>为满射。</p>
+<p>当对任意的<span class="math inline">\(y \in
+ran(F)\)</span>，有且仅有一个<span
+class="math inline">\(x\)</span>满足<span
+class="math inline">\(xFy\)</span>时，称<span
+class="math inline">\(F\)</span>为单射。</p>
+<p>当<span
+class="math inline">\(F\)</span>即是单射也是满射时，称为双射或一一映射。</p>
+<p>对于一个集合<span class="math inline">\(S\)</span>，例如自然数集<span
+class="math inline">\(\mathbf{N}\)</span>，一般把函数<span
+class="math inline">\(F:S \rightarrow
+S\)</span>称为一元运算，例如绝对值、三角函数等；把函数<span
+class="math inline">\(F:S \times S \rightarrow
+S\)</span>称为二元运算，例如算术中的加减乘除。</p>
+<p>对于二元运算，例如加法<span
+class="math inline">\(+\)</span>，一般把函数<span
+class="math inline">\(+(&lt;x,y&gt;)\)</span>写作<span
+class="math inline">\(+(x,y)\)</span>或者<span
+class="math inline">\(x+y\)</span>。</p>
+<h3 id="加法">2）加法</h3>
+<p>为了定义自然数集上的运算（加法和乘法），需要引入序列和递归定义的概念：</p>
+<p><strong>定义（序列）</strong>：对集合<span
+class="math inline">\(A\)</span>，如果存在一个从<span
+class="math inline">\(\lbrace 1,2,\dots,n \rbrace\)</span>到<span
+class="math inline">\(A\)</span>的函数，其中<span
+class="math inline">\(\forall i \in \lbrace 1,2,\dots,n \rbrace:
+f(i)=a_i \in A\)</span>，则把<span
+class="math inline">\(n\)</span>元有序对（或称<span
+class="math inline">\(n\)</span>元组）<span
+class="math inline">\((a_1,a_2,\dots,a_n)\)</span>称为有限序列，简记为<span
+class="math inline">\((a_n)\)</span>。把从自然数集<span
+class="math inline">\(\mathbf{N}\)</span>到<span
+class="math inline">\(A\)</span>的函数所形成的序列<span
+class="math inline">\((a_0,a_1,a_2,...,a_n,...)\)</span>，称为无限序列。</p>
+<p><font color=blue><strong>引理（递归定义）</strong>：如果对集合<span
+class="math inline">\(A\)</span>，<span class="math inline">\(a \in
+A\)</span>且存在函数<span class="math inline">\(F: A \rightarrow
+A\)</span>，那么存在唯一的函数<span class="math inline">\(h: \mathbf{N}
+\rightarrow A\)</span>使得<span
+class="math inline">\(h(0)=a\)</span>且对任意的自然数<span
+class="math inline">\(n\)</span>有<span
+class="math inline">\(h(n++)=F(h(n))\)</span>。即如果使用记号<span
+class="math inline">\(a_n=h(n)\)</span>，则（无限）序列<span
+class="math inline">\((a_0,a_1,a_2,...,a_n,...)\)</span>存在且唯一。</font></p>
+<p><code>证明</code>：<em>这个证明比较繁琐，参见Herbert B.
+Enderton的《Elements of Set Theory》第74-75页。</em></p>
+<p>把一个函数<span
+class="math inline">\(v\)</span>称为“可接受的”（acceptable），当且仅当<span
+class="math inline">\(dom(v) \subseteq \mathbf{N} \wedge ran(v)
+\subseteq A\)</span>，并且满足以下条件：</p>
+<ol type="1">
+<li>如果<span class="math inline">\(0 \in dom(v)\)</span>，那么<span
+class="math inline">\(v(0)=a\)</span>；</li>
+<li>如果<span class="math inline">\(\forall n \in \mathbf{N}:n++ \in
+dom(v)\)</span>，那么<span class="math inline">\(n \in
+dom(v)\)</span>且<span
+class="math inline">\(v(n++)=F(v(n))\)</span>。</li>
+</ol>
+<p>设<span
+class="math inline">\(B\)</span>是所有可接受的函数组成的集合，并且设<span
+class="math inline">\(h=\bigcup B\)</span>，因此<span
+class="math inline">\(&lt;n,y&gt; \in h\)</span>当且仅当<span
+class="math inline">\(&lt;n,y&gt;\)</span>是某个可接受的<span
+class="math inline">\(v\)</span>的元素，即<span
+class="math inline">\(v(n)=y\)</span>。</p>
+<p>那么我们可以证明<span
+class="math inline">\(h\)</span>满足引理的要求，即（1）<span
+class="math inline">\(h\)</span>是一个函数；（2）<span
+class="math inline">\(h\)</span>是可接受的；（3）<span
+class="math inline">\(dom(h) = \mathbf{N}\)</span>；（4）<span
+class="math inline">\(h\)</span>是唯一的。</p>
+<p>（1）根据函数的定义，要证明<span
+class="math inline">\(h\)</span>是一个函数，即证明两个可接受的函数如果有定义则值是相同的。</p>
+<p>设<span
+class="math inline">\(S\)</span>为自然数的集合，且在这个自然数上<span
+class="math inline">\(h(n)\)</span>有不多于一个的候选者： <span
+class="math display">\[S = \lbrace n \in \mathbf{N} | 对最多一个y,
+&lt;n,y&gt; \in h \rbrace\]</span></p>
+<p>验证<span
+class="math inline">\(S\)</span>是归纳集合。首先，如果有<span
+class="math inline">\(&lt;0,y_1&gt; \in h\)</span>和<span
+class="math inline">\(&lt;0,y_2&gt; \in
+h\)</span>，那么存在可接受的函数<span
+class="math inline">\(v_1\)</span>和<span
+class="math inline">\(v_2\)</span>使得<span
+class="math inline">\(v_1(0)=y_1\)</span>且<span
+class="math inline">\(v_1(0)=y_2\)</span>。根据条件1，<span
+class="math inline">\(y_1 = a = y_2\)</span>，因此<span
+class="math inline">\(0 \in S\)</span>。</p>
+<p>然后，假设<span class="math inline">\(k \in S\)</span>，证明<span
+class="math inline">\(k++ \in S\)</span>。如果有<span
+class="math inline">\(&lt;k++,y_1&gt; \in h\)</span>和<span
+class="math inline">\(&lt;k++,y_2&gt; \in
+h\)</span>，同理存在可接受的函数<span
+class="math inline">\(v_1\)</span>和<span
+class="math inline">\(v_2\)</span>使得<span
+class="math inline">\(v_1(k++)=y_1\)</span>且<span
+class="math inline">\(v_1(k++)=y_2\)</span>。根据条件2，<span
+class="math inline">\(y_1=v_1(k++)=F(v_1(k))\)</span>且<span
+class="math inline">\(y_2=v_2(k++)=F(v_2(k))\)</span>。根据归纳假设<span
+class="math inline">\(k \in S\)</span>，即<span
+class="math inline">\(v_1(k)=v_2(k)\)</span>，所以<span
+class="math inline">\(y_1=F(v_1(k))=F(v_2(k))=y_2\)</span>，即<span
+class="math inline">\(k++ \in S\)</span>。</p>
+<p>所以<span class="math inline">\(S\)</span>是归纳集合，即<span
+class="math inline">\(S=\mathbf{N}\)</span>，因此<span
+class="math inline">\(h\)</span>是一个函数。</p>
+<p>（2）要证明<span
+class="math inline">\(h\)</span>是可接受的。已经证明了<span
+class="math inline">\(h\)</span>是一个函数，并且显然有<span
+class="math inline">\(dom(h) \subseteq \mathbf{N} \wedge ran(h)
+\subseteq A\)</span>。</p>
+<p>首先，证明可接受的条件1。如果<span class="math inline">\(0 \in
+dom(h)\)</span>，那么一定存在某个可接受的<span
+class="math inline">\(v\)</span>使得<span
+class="math inline">\(v(0)=h(0)\)</span>。因为<span
+class="math inline">\(v(0)=a\)</span>，所以<span
+class="math inline">\(h(0)=a\)</span>。</p>
+<p>然后，证明可接受的条件2。假设<span class="math inline">\(n++ \in
+dom(h)\)</span>，那么一定存在某个可接受的<span
+class="math inline">\(v\)</span>使得<span
+class="math inline">\(v(n++)=h(n++)\)</span>。因为<span
+class="math inline">\(v\)</span>是可接受的，所以<span
+class="math inline">\(n \in dom(v)\)</span>且<span
+class="math inline">\(v(n)=h(n)\)</span>，那么<span
+class="math inline">\(h(n++)=v(n++)=F(v(n))=F(h(n))\)</span>。</p>
+<p>因此<span class="math inline">\(h\)</span>是可接受的。</p>
+<p>（3）要证明<span class="math inline">\(dom(h) =
+\mathbf{N}\)</span>，即证明<span
+class="math inline">\(dom(h)\)</span>是归纳集合。</p>
+<p>因为函数<span class="math inline">\(\lbrace &lt;0,a&gt;
+\rbrace\)</span>是可接受的，因此<span class="math inline">\(0 \in
+dom(h)\)</span>。</p>
+<p>假设<span class="math inline">\(k \in dom(h)\)</span>，要证明<span
+class="math inline">\(k++ \in dom(h)\)</span>。运用反证法，假设<span
+class="math inline">\(k++ \notin dom(h)\)</span>，那么<span
+class="math inline">\(v=h \cup \lbrace &lt;k++, F(h(k))&gt;
+\rbrace\)</span>是一个函数，且<span class="math inline">\(dom(v)
+\subseteq \mathbf{N} \wedge ran(v) \subseteq A\)</span>，下面证明<span
+class="math inline">\(v\)</span>是可接受的。</p>
+<p>因为<span
+class="math inline">\(v(0)=h(0)=a\)</span>，满足条件1。对于条件2，<span
+class="math inline">\(n++ \in dom(v)\)</span>可以分两种情况。如果<span
+class="math inline">\(n++ \neq k++\)</span>，那么<span
+class="math inline">\(n++ \in dom(h)\)</span>且<span
+class="math inline">\(v(n++)=h(n++)=F(h(n))=F(v(n))\)</span>。另一方面，如果<span
+class="math inline">\(n++ = k++\)</span>，即<span
+class="math inline">\(n = k\)</span>，根据归纳假设<span
+class="math inline">\(k \in dom(h)\)</span>，因此<span
+class="math inline">\(v(k++)=F(h(k))=F(v(k))\)</span>。即满足条件2，所以<span
+class="math inline">\(v\)</span>是可接受的。</p>
+<p>因为<span class="math inline">\(v \subseteq
+h\)</span>，那么实际上<span class="math inline">\(k++ \in
+dom(h)\)</span>。所以<span
+class="math inline">\(dom(h)\)</span>是归纳集合，因此<span
+class="math inline">\(dom(h) = \mathbf{N}\)</span>。</p>
+<p>（4）最后要证明<span class="math inline">\(h\)</span>是唯一的。</p>
+<p>假设<span class="math inline">\(h_1\)</span>和<span
+class="math inline">\(h_2\)</span>都满足定理的结论，设集合<span
+class="math inline">\(S = \lbrace n \in \mathbf{N} | h_1(n) = h_2(n)
+\rbrace\)</span>，要证明<span
+class="math inline">\(S\)</span>是归纳集合。</p>
+<p>首先，根据条件1，<span class="math inline">\(h_1(0) = a =
+h_2(0)\)</span>，所以<span class="math inline">\(0 \in S\)</span>。</p>
+<p>然后，假设<span class="math inline">\(k \in S\)</span>，要证明<span
+class="math inline">\(k++ \in S\)</span>。因为已经证明<span
+class="math inline">\(dom(h_1) = \mathbf{N}\)</span>和<span
+class="math inline">\(dom(h_2) = \mathbf{N}\)</span>，根据条件2，<span
+class="math inline">\(h_1(k++)=F(h_1(k))=F(h_2(k))=h_2(k++)\)</span>。</p>
+<p>因此<span class="math inline">\(S\)</span>是归纳集合，<span
+class="math inline">\(S = \mathbf{N}\)</span>即<span
+class="math inline">\(h_1 = h_2\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（加法）</strong>：定义二元运算“<span
+class="math inline">\(+\)</span>”，满足对任意自然数<span
+class="math inline">\(m\)</span>，有<span
+class="math inline">\(0+m=m\)</span>；并且对任意自然数<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>，有<span
+class="math inline">\((n++)+m=(n+m)++\)</span>。</p>
+<p>固定<span class="math inline">\(m\)</span>的值，那么运算<span
+class="math inline">\(+\)</span>其实是对<span class="math inline">\(n
+\in \mathbf{N}\)</span>定义的函数<span
+class="math inline">\(h\)</span>，满足<span
+class="math inline">\(h(0)=m\)</span>且<span
+class="math inline">\(h(n++)=h(n)++\)</span>。通过递归定义的引理，可以看到加法是良定义的。</p>
+<p><font color=green><strong>推论</strong>：加法运算是封闭的，即<span
+class="math inline">\(+: \mathbf{N} \times \mathbf{N} \rightarrow
+\mathbf{N}\)</span>。</font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(m\)</span>，对<span
+class="math inline">\(n\)</span>使用数学归纳法。首先<span
+class="math inline">\(n=0\)</span>时，<span
+class="math inline">\(0+m=m\)</span>是自然数；然后假设<span
+class="math inline">\(n+m\)</span>是自然数，那么<span
+class="math inline">\((n++)+m=(n+m)++\)</span>是<span
+class="math inline">\(n+m\)</span>的后继，当然也是自然数。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：对任意自然数<span
+class="math inline">\(m\)</span>，<span
+class="math inline">\(m+0=m\)</span>。</font></p>
+<p><code>证明</code>：数学归纳法。首先当<span
+class="math inline">\(m=0\)</span>时，根据加法的定义，<span
+class="math inline">\(0+0=0\)</span>；然后假设对自然数<span
+class="math inline">\(m\)</span>，满足<span
+class="math inline">\(m+0=m\)</span>，需证明<span
+class="math inline">\((m++)+0=m++\)</span>。根据加法的定义，<span
+class="math inline">\((m++)+0=(m+0)++\)</span>，根据归纳假设<span
+class="math inline">\(m+0=m\)</span>，所以<span
+class="math inline">\((m++)+0=m++\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：对任意自然数<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>，满足<span
+class="math inline">\(n+(m++)=(n+m)++\)</span>。</font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(m\)</span>，对<span
+class="math inline">\(n\)</span>使用数学归纳法。首先当<span
+class="math inline">\(n=0\)</span>时，根据引理，左边<span
+class="math inline">\(0+(m++)=m++\)</span>且右边<span
+class="math inline">\((0+m)++=m++\)</span>，所以<span
+class="math inline">\(0+(m++)=(0+m)++\)</span>；然后假设对自然数<span
+class="math inline">\(n\)</span>，满足<span
+class="math inline">\(n+(m++)=(n+m)++\)</span>，需证明<span
+class="math inline">\((n++)+(m++)=((n++)+m)++\)</span>。左边根据加法的定义<span
+class="math inline">\((n++)+(m++)=(n+(m++))++\)</span>，根据归纳假设<span
+class="math inline">\((n+(m++))++=((n+m)++)++\)</span>，而右边根据加法的定义<span
+class="math inline">\(((n++)+m)++=((n+m)++)++\)</span>，所以<span
+class="math inline">\((n++)+(m++)=((n++)+m)++\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：对任意自然数<span
+class="math inline">\(n\)</span>，<span
+class="math inline">\(n++=n+1\)</span></font></p>
+<p><code>证明</code>：根据定义<span
+class="math inline">\(1=0++\)</span>，所以<span
+class="math inline">\(n+1=(n+0)++=n++\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>所以自然数的后继（增量运算），可以通过加法来表示。</p>
+<p><font color=blue><strong>加法交换律</strong>：<span
+class="math inline">\(a+b=b+a\)</span></font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(b\)</span>，对<span
+class="math inline">\(a\)</span>使用数学归纳法。首先当<span
+class="math inline">\(a=0\)</span>时，根据加法的定义和引理，<span
+class="math inline">\(0+b=b\)</span>且<span
+class="math inline">\(b+0=b\)</span>，所以<span
+class="math inline">\(0+b=b+0\)</span>；然后假设对自然数<span
+class="math inline">\(a\)</span>，满足<span
+class="math inline">\(a+b=b+a\)</span>，需证明<span
+class="math inline">\((a++)+b = b+(a++)\)</span>。根据加法的定义<span
+class="math inline">\((a++)+b = (a+b)++\)</span>，根据引理<span
+class="math inline">\(b+(a++)=(b+a)++\)</span>，根据归纳假设<span
+class="math inline">\(a+b=b+a\)</span>，所以<span
+class="math inline">\((a+b)++=(b+a)++\)</span>，即<span
+class="math inline">\((a++)+b = b+(a++)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>加法结合律</strong>：<span
+class="math inline">\((a+b)+c=a+(b+c)\)</span></font></p>
+<p><code>证明</code>：固定<span class="math inline">\(a\)</span>和<span
+class="math inline">\(c\)</span>，对<span
+class="math inline">\(b\)</span>使用数学归纳法。首先当<span
+class="math inline">\(b=0\)</span>时，根据引理<span
+class="math inline">\((a+0)+c=a+c\)</span>，根据加法的定义<span
+class="math inline">\(a+(0+c)=a+c\)</span>，所以<span
+class="math inline">\((a+0)+c=a+(0+c)\)</span>；然后假设对自然数<span
+class="math inline">\(b\)</span>，满足<span
+class="math inline">\((a+b)+c=a+(b+c)\)</span>，需证明<span
+class="math inline">\((a+(b++))+c=a+((b++)+c)\)</span>。左边<span
+class="math inline">\((a+(b++))+c=((a+b)++)+c=((a+b)+c)++\)</span>，右边<span
+class="math inline">\(a+((b++)+c)=a+((b+c)++)=(a+(b+c))++\)</span>，根据归纳假设<span
+class="math inline">\((a+b)+c=a+(b+c)\)</span>，所以<span
+class="math inline">\(((a+b)+c)++=(a+(b+c))++\)</span>，即<span
+class="math inline">\((a+(b++))+c=a+((b++)+c)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>根据加法结合律，在连续的加法中，可以省略括号而不会产生歧义。</p>
+<p><font color=blue><strong>加法消去律</strong>：对自然数<span
+class="math inline">\(a,b,c\)</span>，如果<span
+class="math inline">\(a+b=a+c\)</span>，那么<span
+class="math inline">\(b=c\)</span>。</font></p>
+<p><code>证明</code>：固定<span class="math inline">\(b\)</span>和<span
+class="math inline">\(c\)</span>，对<span
+class="math inline">\(a\)</span>使用数学归纳法。首先当<span
+class="math inline">\(b=0\)</span>时，<span
+class="math inline">\(0+b=0+c\)</span>，根据加法的定义有<span
+class="math inline">\(b=c\)</span>；然后假设<span
+class="math inline">\(a+b=a+c \implies b=c\)</span>，需证明<span
+class="math inline">\((a++)+b=(a++)+c \implies
+b=c\)</span>。根据加法的定义<span
+class="math inline">\((a++)+b=(a+b)++\)</span>且<span
+class="math inline">\((a++)+c=(a+c)++\)</span>，即<span
+class="math inline">\((a+b)++=(a+c)++\)</span>，根据Peano公理第四条，有<span
+class="math inline">\(a+b=a+c\)</span>，根据归纳假设，即<span
+class="math inline">\(b=c\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="乘法">3）乘法</h3>
+<p><strong>定义（乘法）</strong>：定义二元运算“<span
+class="math inline">\(\times\)</span>”，满足对任意自然数<span
+class="math inline">\(m\)</span>，有<span class="math inline">\(0 \times
+m=0\)</span>；并且对任意自然数<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>，满足<span
+class="math inline">\((n++)\times m=n \times m+m\)</span>。</p>
+<p>与加法类似，乘法也是递归定义的。</p>
+<p><font color=green><strong>推论</strong>：乘法运算是封闭的，即<span
+class="math inline">\(\times: \mathbf{N} \times \mathbf{N} \rightarrow
+\mathbf{N}\)</span>。</font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(m\)</span>，对<span
+class="math inline">\(n\)</span>使用数学归纳法。首先<span
+class="math inline">\(n=0\)</span>时，<span
+class="math inline">\(0\times m=0\)</span>是自然数；然后假设<span
+class="math inline">\(n\times m\)</span>是自然数，那么<span
+class="math inline">\((n++)\times m=(n\times
+m)+m\)</span>是两个自然数相加，根据加法的定义，也是自然数。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：对任意自然数<span
+class="math inline">\(m\)</span>，<span class="math inline">\(m \times
+0=0\)</span>。</font></p>
+<p><code>证明</code>：数学归纳法。首先当<span
+class="math inline">\(m=0\)</span>时，根据乘法的定义，<span
+class="math inline">\(0 \times 0=0\)</span>；然后假设对自然数<span
+class="math inline">\(m\)</span>，满足<span class="math inline">\(m
+\times 0=0\)</span>，需证明<span class="math inline">\((m++) \times
+0=0\)</span>。根据乘法的定义，<span class="math inline">\((m++)\times
+0=m \times 0+0\)</span>，根据归纳假设<span class="math inline">\(m
+\times 0=0\)</span>，所以<span class="math inline">\((m++)\times
+0=0+0=0\)</span>。<span class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：对任意自然数<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>，满足<span class="math inline">\(n
+\times (m++)=n \times m+n\)</span>。</font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(m\)</span>，对<span
+class="math inline">\(n\)</span>使用数学归纳法。首先当<span
+class="math inline">\(n=0\)</span>时，根据引理，左边<span
+class="math inline">\(0 \times (m++)=0\)</span>且右边<span
+class="math inline">\((0 \times m)+0=0+0=0\)</span>，所以<span
+class="math inline">\(0 \times (m++)=0 \times
+m+0\)</span>；然后假设对自然数<span
+class="math inline">\(n\)</span>，满足<span class="math inline">\(n
+\times (m++)=n \times m+n\)</span>，需证明<span
+class="math inline">\((n++) \times (m++)=(n++) \times
+m+(n++)\)</span>。左边根据乘法、加法的定义和归纳假设<span
+class="math inline">\((n++) \times (m++)=n \times (m++)+(m++)=(n \times
+(m++)+m)++=(n \times m
++n+m)++\)</span>，而右边根据乘法的定义和加法的引理<span
+class="math inline">\((n++) \times m+(n++)=(n \times m +m)+(n++)=(n
+\times m+m+n)++\)</span>，根据加法交换律<span
+class="math inline">\(n+m=m+n\)</span>，所以<span
+class="math inline">\((n++) \times (m++)=(n++) \times
+m+(n++)\)</span>。<span class="math inline">\(\square\)</span></p>
+<p>按照代数的惯例，在不造成歧义时，可以省略乘号<span
+class="math inline">\(\times\)</span>，即将<span class="math inline">\(n
+\times m\)</span>简写为<span class="math inline">\(mn\)</span>。</p>
+<p><font color=blue><strong>乘法交换律</strong>：<span
+class="math inline">\(ab=ba\)</span></font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(b\)</span>，对<span
+class="math inline">\(a\)</span>使用数学归纳法。首先当<span
+class="math inline">\(a=0\)</span>时，根据乘法的定义和引理，<span
+class="math inline">\(0\times b=0\)</span>且<span
+class="math inline">\(b\times 0=0\)</span>，所以<span
+class="math inline">\(0\times b=b\times
+0\)</span>；然后假设对自然数<span
+class="math inline">\(a\)</span>，满足<span
+class="math inline">\(ab=ba\)</span>，需证明<span
+class="math inline">\((a++)b = b(a++)\)</span>。根据乘法的定义<span
+class="math inline">\((a++)b = ab+b\)</span>，根据引理<span
+class="math inline">\(b(a++)=ba+b\)</span>，根据归纳假设<span
+class="math inline">\(ab=ba\)</span>，所以<span
+class="math inline">\((a++)b = b(a++)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：对任意自然数<span
+class="math inline">\(n\)</span>，<span class="math inline">\(n\times
+1=1\times n=n\)</span>。</font></p>
+<p><code>证明</code>：利用乘法交换律，只需证明<span
+class="math inline">\(n\times 1=n\)</span>。根据定义和引理，<span
+class="math inline">\(n\times 1=n\times (0++)=n\times 0 +
+n=0+n=n\)</span>。<span class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>乘法分配律</strong>：<span
+class="math inline">\(a(b+c)=ab+ac\)</span></font></p>
+<p><code>证明</code>：固定<span class="math inline">\(a\)</span>和<span
+class="math inline">\(c\)</span>，对<span
+class="math inline">\(b\)</span>使用数学归纳法。首先当<span
+class="math inline">\(b=0\)</span>时，<span
+class="math inline">\(a(0+c)=ac\)</span>而<span class="math inline">\(a
+\times 0+ac = 0+ac = ac\)</span>，所以<span
+class="math inline">\(a(0+c)=a \times
+0+ac\)</span>；然后假设对自然数<span
+class="math inline">\(b\)</span>，满足<span
+class="math inline">\(a(b+c)=ab+ac\)</span>，需证明<span
+class="math inline">\(a((b++)+c)=a(b++)+ac\)</span>。左边根据加法的定义、乘法的引理和归纳假设<span
+class="math inline">\(a((b++)+c)=a((b+c)++)=a(b+c)+a=ab+ac+a\)</span>，右边乘法的引理和加法交换律<span
+class="math inline">\(a(b++)+ac=ab+a+ac=ab+ac+a\)</span>，所以<span
+class="math inline">\(a((b++)+c)=a(b++)+ac\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p>同样地，可以证明<span class="math inline">\((a+b)c=ac+bc\)</span></p>
+<p><font color=blue><strong>乘法结合律</strong>：<span
+class="math inline">\((ab)c=a(bc)\)</span></font></p>
+<p><code>证明</code>：固定<span class="math inline">\(a\)</span>和<span
+class="math inline">\(c\)</span>，对<span
+class="math inline">\(b\)</span>使用数学归纳法。首先当<span
+class="math inline">\(b=0\)</span>时，根据引理<span
+class="math inline">\((a \times 0)c=0 \times
+c=0\)</span>，根据乘法的定义<span class="math inline">\(a(0\times c)=a
+\times 0=0\)</span>，所以<span class="math inline">\((a\times
+0)c=a(0\times c)\)</span>；然后假设对自然数<span
+class="math inline">\(b\)</span>，满足<span
+class="math inline">\((ab)c=a(bc)\)</span>，需证明<span
+class="math inline">\((a(b++))c=a((b++)c)\)</span>。左边根据乘法的引理和乘法分配律<span
+class="math inline">\((a(b++))c=(ab+a)c=(ab)c+ac\)</span>，右边<span
+class="math inline">\(a((b++)c)=a(bc+c)=a(bc)+ac\)</span>，根据归纳假设<span
+class="math inline">\((ab)c=a(bc)\)</span>，所以<span
+class="math inline">\((ab)c+ac=a(bc)+ac\)</span>，即<span
+class="math inline">\((a(b++))c=a((b++)c)\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>乘法消去率</strong>：对自然数<span
+class="math inline">\(a,b,c\)</span>，如果<span
+class="math inline">\(ac=bc\)</span>且<span class="math inline">\(c \neq
+0\)</span>，那么<span class="math inline">\(a=b\)</span>。</font></p>
+<p><code>证明</code>：因为<span class="math inline">\(c \neq
+0\)</span>，所以存在唯一的自然数<span
+class="math inline">\(d\)</span>满足<span
+class="math inline">\(d++=c\)</span>，则命题等价为如果<span
+class="math inline">\(a(d++)=b(d++)\)</span>，那么<span
+class="math inline">\(a=b\)</span>。固定<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，对<span
+class="math inline">\(d\)</span>使用数学归纳法。首先当<span
+class="math inline">\(d=0\)</span>时，<span
+class="math inline">\(a(0++)=a\times 0+a=a\)</span>且<span
+class="math inline">\(b(0++)=b\)</span>，所以<span
+class="math inline">\(a=b\)</span>；然后假设<span
+class="math inline">\(a(d++)=b(d++)\)</span>，需证明<span
+class="math inline">\(a((d++)++)=b((d++)++) \implies
+a=b\)</span>。根据乘法的定义和引理<span
+class="math inline">\(a((d++)++)=a(d++)+a\)</span>且<span
+class="math inline">\(b((d++)++)=b(d++)+b\)</span>，通过归纳假设<span
+class="math inline">\(a(d++)=b(d++)\)</span>，根据加法消去律得到<span
+class="math inline">\(a=b\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（指数运算）</strong>：定义二元运算“<span
+class="math inline">\(\exp\)</span>”，满足对任意自然数<span
+class="math inline">\(m\)</span>，有<span
+class="math inline">\(\exp(m,0)=1\)</span>，记作<span
+class="math inline">\(m^0=1\)</span>；并且对任意自然数<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>，满足<span
+class="math inline">\(\exp(m,n++)=\exp(m,n) \times m\)</span>，记作<span
+class="math inline">\(m^{n++}=m^n \times m\)</span>。</p>
+<h3 id="序关系">4）序关系</h3>
+<p><strong>定义（正的）</strong>：一个自然数是正的，当且仅当它不等于0，即正自然数，简称正数。</p>
+<p><font color=green><strong>推论</strong>：对正数<span
+class="math inline">\(a\)</span>和自然数<span
+class="math inline">\(b\)</span>，<span
+class="math inline">\(a+b\)</span>是正的</font></p>
+<p><code>证明</code>：固定<span
+class="math inline">\(a\)</span>，对<span
+class="math inline">\(b\)</span>使用数学归纳法。首先当<span
+class="math inline">\(b=0\)</span>时，<span
+class="math inline">\(a+0=a\)</span>是正的；然后假设<span
+class="math inline">\(a+b\)</span>是正的，需证明<span
+class="math inline">\(a+(b++)\)</span>是正的。因为<span
+class="math inline">\(a+(b++)=(a+b)++\)</span>，根据Peano公理第三条，<span
+class="math inline">\((a+b)++ \neq 0\)</span>，所以<span
+class="math inline">\(a+(b++)\)</span>是正的。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（序）</strong>：对任意自然数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，如果存在一个自然数<span
+class="math inline">\(c\)</span>，满足<span
+class="math inline">\(a=b+c\)</span>，则称<span
+class="math inline">\(a\)</span>大于等于<span
+class="math inline">\(b\)</span>，记作<span class="math inline">\(a \geq
+b\)</span>或<span class="math inline">\(b \leq a\)</span>；当<span
+class="math inline">\(a \geq b\)</span>且<span class="math inline">\(a
+\neq b\)</span>时，称<span
+class="math inline">\(a\)</span>（严格）大于<span
+class="math inline">\(b\)</span>，记作<span class="math inline">\(a &gt;
+b\)</span>或<span class="math inline">\(b &lt; a\)</span>。</p>
+<p><strong>自然数的序的性质</strong>：设<span
+class="math inline">\(a,b,c\)</span>是自然数，那么：</p>
+<ol type="1">
+<li>（序是自反的）<span class="math inline">\(a \geq a\)</span>；</li>
+<li>（序是传递的）如果<span class="math inline">\(a \geq
+b\)</span>且<span class="math inline">\(b \geq c\)</span>，那么<span
+class="math inline">\(a \geq c\)</span>；</li>
+<li>（序是反对称的）如果<span class="math inline">\(a \geq
+b\)</span>且<span class="math inline">\(b \geq a\)</span>，那么<span
+class="math inline">\(a = b\)</span>；</li>
+<li>（加法保序）<span class="math inline">\(a \geq
+b\)</span>当且仅当<span class="math inline">\(a+c \geq
+b+c\)</span>；</li>
+<li>（乘法保序）如果<span class="math inline">\(a &lt; b\)</span>且<span
+class="math inline">\(c\)</span>是正的，那么<span
+class="math inline">\(ac &lt; bc\)</span></li>
+<li><span class="math inline">\(a &lt; b\)</span>当且仅当<span
+class="math inline">\(a++ \leq b\)</span>；</li>
+<li><span class="math inline">\(a &lt; b\)</span>当且仅当存在正数<span
+class="math inline">\(c\)</span>，<span
+class="math inline">\(b=a+c\)</span>。</li>
+</ol>
+<p><code>证明</code>：</p>
+<ol type="1">
+<li>因为<span class="math inline">\(a=a+0\)</span>，所以<span
+class="math inline">\(a \geq a\)</span>；</li>
+<li>如果<span class="math inline">\(a \geq b\)</span>且<span
+class="math inline">\(b \geq c\)</span>，则存在自然数<span
+class="math inline">\(d\)</span>和<span
+class="math inline">\(e\)</span>，满足<span
+class="math inline">\(a=b+d\)</span>和<span
+class="math inline">\(b=c+e\)</span>，代入并根据加法结合律有<span
+class="math inline">\(a=(c+e)+d=c+(e+d)\)</span>且<span
+class="math inline">\((e+d)\)</span>是自然数，所以<span
+class="math inline">\(a \geq c\)</span>；</li>
+<li>如果<span class="math inline">\(a \geq b\)</span>且<span
+class="math inline">\(b \geq a\)</span>，则存在自然数<span
+class="math inline">\(d\)</span>和<span
+class="math inline">\(e\)</span>，满足<span
+class="math inline">\(a=b+d\)</span>和<span
+class="math inline">\(b=a+e\)</span>，代入有<span
+class="math inline">\(a=a+e+d\)</span>，根据加法消去律有<span
+class="math inline">\(0=e+d\)</span>，根据正数与自然数相加是正的，所以<span
+class="math inline">\(e\)</span>和<span
+class="math inline">\(d\)</span>都不是正数，即<span
+class="math inline">\(e=d=0\)</span>，所以<span
+class="math inline">\(a=b\)</span>；</li>
+<li><span class="math inline">\(a \geq b \iff \exists d \in \mathbf{N}:
+a = b+d \iff a+c = b+d+c = b+c+d \iff a+c \geq b+c\)</span>；</li>
+<li>对<span class="math inline">\(a &lt; b\)</span>，存在正自然数<span
+class="math inline">\(d\)</span>，满足<span
+class="math inline">\(a=b+d\)</span>，所以<span
+class="math inline">\(ac=bc+dc\)</span>。只需要证明正数<span
+class="math inline">\(d\)</span>和正数<span
+class="math inline">\(c\)</span>的乘积<span
+class="math inline">\(dc\)</span>仍是正的。因为存在<span
+class="math inline">\(e++=c\)</span>，所以<span
+class="math inline">\(dc=d(e++)=de+d\)</span>，其中<span
+class="math inline">\(de\)</span>是自然数、<span
+class="math inline">\(d\)</span>是一个正数，所以<span
+class="math inline">\(dc\)</span>是正的；</li>
+<li><span class="math inline">\(a &lt; b\)</span>当且仅当存在正数<span
+class="math inline">\(c\)</span>满足<span
+class="math inline">\(b=a+c\)</span>，即存在自然数<span
+class="math inline">\(d\)</span>满足<span
+class="math inline">\(d++=c\)</span>，所以等价于<span
+class="math inline">\(b=a+(d++)=(a++)+d\)</span>，即<span
+class="math inline">\(a++ \leq b\)</span>；</li>
+<li><span class="math inline">\(a &lt; b \iff \exists c \in \mathbf{N}:
+b=a+c \wedge b \neq a\)</span>。如果<span
+class="math inline">\(c=0\)</span>，那么<span
+class="math inline">\(b=a\)</span>，矛盾，所以<span
+class="math inline">\(b \neq a\)</span>时<span
+class="math inline">\(c\)</span>是正数。反之，如果<span
+class="math inline">\(b=a\)</span>，那么<span
+class="math inline">\(b=b+0=a+c\)</span>，根据加法消去律，有<span
+class="math inline">\(0=c\)</span>，所以<span
+class="math inline">\(c\)</span>是正数时<span class="math inline">\(b
+\neq a\)</span>。<span class="math inline">\(\square\)</span></li>
+</ol>
+<p><strong>自然数的序的三歧性</strong>：对自然数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，下列三个命题中有且仅有一个是真的：</p>
+<ol type="1">
+<li><span class="math inline">\(a &lt; b\)</span>；</li>
+<li><span class="math inline">\(a = b\)</span>；</li>
+<li><span class="math inline">\(a &gt; b\)</span>。</li>
+</ol>
+<p><code>证明</code>：首先证明三个命题中最多有一个成立。如果<span
+class="math inline">\(a &lt; b\)</span>，根据定义有<span
+class="math inline">\(a \neq b\)</span>；如果<span
+class="math inline">\(a &gt; b\)</span>，根据定义有<span
+class="math inline">\(a \neq b\)</span>；如果<span
+class="math inline">\(a &lt; b\)</span>且<span class="math inline">\(a
+&gt; b\)</span>，根据自然数的序的性质第3条有<span
+class="math inline">\(a =
+b\)</span>，矛盾。然后，再证明至少有一个命题成立。</p>
+<p>固定<span class="math inline">\(b\)</span>，对整个命题对<span
+class="math inline">\(a\)</span>使用数学归纳法。当<span
+class="math inline">\(a=0\)</span>时，因为<span
+class="math inline">\(b=0+b\)</span>，所以<span
+class="math inline">\(0\leq b\)</span>对任意自然数<span
+class="math inline">\(b\)</span>成立，因此有<span
+class="math inline">\(0&lt;b\)</span>或<span
+class="math inline">\(0=b\)</span>，满足整体命题成立。假设整体命题对<span
+class="math inline">\(a\)</span>成立，需要证明对<span
+class="math inline">\(a++\)</span>也成立。从<span
+class="math inline">\(a &lt; b\)</span>，<span class="math inline">\(a =
+b\)</span>和<span class="math inline">\(a &gt; b\)</span>出发： 1.
+如果<span class="math inline">\(a &gt; b\)</span>，即存在正数<span
+class="math inline">\(c\)</span>满足<span
+class="math inline">\(a=b+c\)</span>，所以<span
+class="math inline">\(a++=(b+c)++=b+(c++)\)</span>，由<span
+class="math inline">\(c++\)</span>一定是正的，有<span
+class="math inline">\(a++ &gt; b\)</span>； 2. 如果<span
+class="math inline">\(a = b\)</span>，由<span
+class="math inline">\(a++=a+1=b+1\)</span>，可得<span
+class="math inline">\(a++ &gt; b\)</span>； 3. 如果<span
+class="math inline">\(a &lt;
+b\)</span>，由自然数的序的性质第6条，有<span class="math inline">\(a++
+\leq b\)</span>，所以<span
+class="math inline">\(a++&lt;b\)</span>或<span
+class="math inline">\(a++=b\)</span>。 即整体命题的归纳假设成立。<span
+class="math inline">\(\square\)</span></p>
+<h2 id="五整数">五、整数</h2>
+<p>严格来说，对限定在自然数上的初等数论可以不需要构造出整数，即只使用自然数及其加法、乘法的定义对证明算术基本定理就足够了。但是，为了在证明上方便地使用减法，并且在Tao的《陶哲轩实分析》一书中，通过形式减法构造整数、通过形式除法构造有理数、最后通过形式极限构造实数等数系是全书的一大精髓，所以这里保留整数的内容，但再不对每个结论做出详细证明。</p>
+<h3 id="形式化整数">1）形式化整数</h3>
+<p><strong>定义（整数）</strong>：一个整数是一个形如<span
+class="math inline">\(a\ominus b\)</span>的表达式，其中<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>自然数。<span
+class="math inline">\(\ominus\)</span>代表形式减法，使得两个整数是相等的<span
+class="math inline">\(a\ominus b=c\ominus d\)</span>当且仅当<span
+class="math inline">\(a+d=c+b\)</span>。用<span
+class="math inline">\(\mathbf{Z}\)</span>代表全体整数的集合。</p>
+<p><font color=blue><strong>定理</strong>：对有序对<span
+class="math inline">\(&lt;a,b&gt;\in \mathbf{N} \times
+\mathbf{N}\)</span>，形式减法<span
+class="math inline">\(\ominus\)</span>是一个等价关系，所以形式减法构成一个划分，即整数是由形式减法<span
+class="math inline">\(\ominus\)</span>的全体等价类（<span
+class="math inline">\(\mathbf{N} \times
+\mathbf{N}\)</span>的非空子集）构成的一个集合。</font></p>
+<p><code>证明</code>：根据形式减法的定义，显然满足自反性。证明对称性，假设<span
+class="math inline">\(a\ominus b=c\ominus d\)</span>，即<span
+class="math inline">\(a+d=c+b\)</span>，根据相等的对称公理有<span
+class="math inline">\(c+b=a+d\)</span>，所以<span
+class="math inline">\(c\ominus d=a\ominus
+b\)</span>。证明传递性，假设<span class="math inline">\(a\ominus
+b=c\ominus d\)</span>且<span class="math inline">\(c\ominus d=e\ominus
+f\)</span>，即<span class="math inline">\(a+d=c+b\)</span>且<span
+class="math inline">\(c+f=e+d\)</span>，两边对应相加即<span
+class="math inline">\(a+d+c+f=c+b+e+d\)</span>，根据加法交换律、结合律和消去律，有<span
+class="math inline">\(a+f=b+e=e+b\)</span>，所以<span
+class="math inline">\(a\ominus b=e\ominus f\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（整数的加法）</strong>：两个整数的和<span
+class="math inline">\((a\ominus b)+(c\ominus
+d)\)</span>，定义为整数<span class="math inline">\((a + c)\ominus(b +
+d)\)</span>。</p>
+<p><strong>定义（整数的乘法）</strong>：两个整数的积<span
+class="math inline">\((a\ominus b)\times (c\ominus
+d)\)</span>，定义为整数<span class="math inline">\((ac + bd)\ominus(ad +
+bc)\)</span>。</p>
+<p><font color=green><strong>推论</strong>：整数<span
+class="math inline">\(a\ominus 0\)</span>与自然数<span
+class="math inline">\(a\)</span>等价（同构）。</font></p>
+<h3 id="整数的运算法则">2）整数的运算法则</h3>
+<p><strong>定义（整数的负运算）</strong>：如果<span
+class="math inline">\(a\ominus
+b\)</span>是一个整数，定义它的负数为整数<span
+class="math inline">\(b\ominus a\)</span>，记作<span
+class="math inline">\(-(a\ominus b)\)</span>。特别地，如果<span
+class="math inline">\(n=n\ominus 0\)</span>是正自然数，那么它的负数<span
+class="math inline">\(-n=0\ominus n\)</span>，称为负整数。</p>
+<p><strong>整数的三歧性</strong>：对整数<span
+class="math inline">\(x\)</span>，下列三个命题中有且仅有一个是真的：</p>
+<ol type="1">
+<li><span class="math inline">\(x = 0\)</span>；</li>
+<li><span class="math inline">\(x\)</span>等于一个正自然数<span
+class="math inline">\(n\)</span>；</li>
+<li><span class="math inline">\(x\)</span>是一个正自然数的负数<span
+class="math inline">\(-n\)</span>。</li>
+</ol>
+<p><strong>整数的运算法则</strong>：设<span
+class="math inline">\(x,y,z\)</span>是整数，那么：</p>
+<ol type="1">
+<li><span class="math inline">\(x+y=y+x\)</span></li>
+<li><span class="math inline">\((x+y)+z=x+(y+z)\)</span></li>
+<li><span class="math inline">\(x+0=0+x=x\)</span></li>
+<li><span class="math inline">\(x+(-x)=(-x)+x=0\)</span></li>
+<li><span class="math inline">\(xy=yx\)</span></li>
+<li><span class="math inline">\((xy)z=x(yz)\)</span></li>
+<li><span class="math inline">\(x1=1x=x\)</span></li>
+<li><span class="math inline">\(x(y+z)=xy+xz\)</span></li>
+<li><span class="math inline">\((y+z)x=yx+zx\)</span></li>
+</ol>
+<p>在抽象代数中，上面9条恒等式判定了全体整数构成了一个交换环。</p>
+<p><strong>定义（减法运算）</strong>：两个整数<span
+class="math inline">\(x\)</span>和<span
+class="math inline">\(y\)</span>的减法运算定义为<span
+class="math inline">\(x-y=x+(-y)\)</span>。</p>
+<p>根据整数的加法和负运算，可知减法运算是良定义的。</p>
+<p><font color=green><strong>推论</strong>：<span
+class="math inline">\(a-b=a+(-b)=(a\ominus 0)+(0\ominus b)=a\ominus
+b\)</span>，所以整数的减法运算与前面定义的形式减法是等价的。</font></p>
+<p><font color=blue><strong>引理</strong>：对整数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，如果<span
+class="math inline">\(ab=0\)</span>，那么<span class="math inline">\(a=0
+\vee b=0\)</span>。</font></p>
+<p><strong>定义（序）</strong>：对任意整数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，如果存在一个自然数<span
+class="math inline">\(c\)</span>，满足<span
+class="math inline">\(a=b+c\)</span>，则称<span
+class="math inline">\(a\)</span>大于等于<span
+class="math inline">\(b\)</span>，记作<span class="math inline">\(a \geq
+b\)</span>或<span class="math inline">\(b \leq a\)</span>；当<span
+class="math inline">\(a \geq b\)</span>且<span class="math inline">\(a
+\neq b\)</span>时，称<span
+class="math inline">\(a\)</span>（严格）大于<span
+class="math inline">\(b\)</span>，记作<span class="math inline">\(a &gt;
+b\)</span>或<span class="math inline">\(b &lt; a\)</span>。</p>
+<p><strong>整数的序的性质</strong>：设<span
+class="math inline">\(a,b,c\)</span>是整数，那么：</p>
+<ol type="1">
+<li><span class="math inline">\(a &gt;
+b\)</span>当且仅当存在正自然数<span
+class="math inline">\(c\)</span>，<span
+class="math inline">\(a=b+c\)</span>，即当且仅当<span
+class="math inline">\(a-b\)</span>是正自然数；</li>
+<li>（加法保序）<span class="math inline">\(a \geq
+b\)</span>当且仅当<span class="math inline">\(a+c \geq
+b+c\)</span>；</li>
+<li>（正数乘法保序）如果<span class="math inline">\(a &gt;
+b\)</span>且<span class="math inline">\(c\)</span>是正的，那么<span
+class="math inline">\(ac &gt; bc\)</span>；</li>
+<li>（负运算反序）如果<span class="math inline">\(a &gt;
+b\)</span>，那么<span class="math inline">\(-a &lt; -b\)</span>；</li>
+<li>（序的传递性）如果<span class="math inline">\(a &gt;
+b\)</span>且<span class="math inline">\(b &gt; c\)</span>，那么<span
+class="math inline">\(a &gt; c\)</span>；</li>
+<li>（序的三歧性）命题中<span class="math inline">\(a &gt;
+b\)</span>，<span class="math inline">\(a = b\)</span>，<span
+class="math inline">\(a &lt; b\)</span>有且仅有一个成立。</li>
+</ol>
+<h2 id="六初等数论">六、初等数论</h2>
+<p><font color=blue><strong>定理</strong>：对自然数<span
+class="math inline">\(n\)</span>和正自然数<span
+class="math inline">\(q\)</span>，存在自然数<span
+class="math inline">\(m\)</span>和<span
+class="math inline">\(r\)</span>，使得<span class="math inline">\(0 \leq
+r &lt; q\)</span>且<span
+class="math inline">\(n=mq+r\)</span>。</font></p>
+<p><code>证明</code>：固定正数<span
+class="math inline">\(q\)</span>，对自然数<span
+class="math inline">\(n\)</span>使用数学归纳法。首先当<span
+class="math inline">\(n=0\)</span>时，存在<span
+class="math inline">\(m=r=0\)</span>且<span class="math inline">\(0 \leq
+r &lt; q\)</span>使得<span class="math inline">\(0=0\times q +
+0\)</span>。假设命题在<span
+class="math inline">\(n\)</span>时成立，则对<span
+class="math inline">\(n++\)</span>有<span
+class="math inline">\(n++=(mq+r)++=mq+(r++)\)</span>，因为<span
+class="math inline">\(r &lt; q\)</span>，所以<span
+class="math inline">\(r++ \leq q\)</span>，如果<span
+class="math inline">\(r++ &lt; q\)</span>，则命题成立；如果<span
+class="math inline">\(r++ = q\)</span>，那么<span
+class="math inline">\(n++=mq+q=(m+1)q\)</span>，命题也成立。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：对整数<span
+class="math inline">\(n\)</span>和正自然数<span
+class="math inline">\(q\)</span>，存在整数<span
+class="math inline">\(m\)</span>和自然数<span
+class="math inline">\(r\)</span>，使得<span class="math inline">\(0 \leq
+r &lt; q\)</span>且<span
+class="math inline">\(n=mq+r\)</span>。</font></p>
+<p><code>证明</code>：当整数<span class="math inline">\(n \geq
+0\)</span>时，即<span
+class="math inline">\(n\)</span>是自然数，上面的定理已经证明了。当整数<span
+class="math inline">\(n &lt; 0\)</span>时，可知它的负数<span
+class="math inline">\(-n\)</span>为自然数，满足上面的定理，则<span
+class="math inline">\(-n=mq+r\)</span>，即<span
+class="math inline">\(n=-(mq+r)=(-m)q+(-r)\)</span>。当<span
+class="math inline">\(r=0\)</span>时，得证；当<span
+class="math inline">\(r\neq 0\)</span>时，因为<span
+class="math inline">\(0 &lt; r &lt; q\)</span>，可得<span
+class="math inline">\(0 &lt; (q-r) &lt; q\)</span>，所以有<span
+class="math inline">\(n=(-m-1)q+(q-r)\)</span>，得证。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="整除">1）整除</h3>
+<p><strong>定义（整除、因数）</strong>：对整数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，如果存在整数<span
+class="math inline">\(c\)</span>，使得<span
+class="math inline">\(a=bc\)</span>，那么称<span
+class="math inline">\(a\)</span>被<span
+class="math inline">\(b\)</span>整除、<span
+class="math inline">\(b\)</span>整除<span
+class="math inline">\(a\)</span>、<span
+class="math inline">\(b\)</span>是<span
+class="math inline">\(a\)</span>的因数、<span
+class="math inline">\(a\)</span>是<span
+class="math inline">\(b\)</span>的倍数，记作<span
+class="math inline">\(b\mid a\)</span>。当<span
+class="math inline">\(b\)</span>不整除<span
+class="math inline">\(a\)</span>时，记作<span
+class="math inline">\(b\nmid a\)</span>。</p>
+<p><font color=blue><strong>引理（整除的性质）</strong>：<span
+class="math inline">\(b\mid a \iff (-b)\mid a \iff b\mid (-a) \iff
+(-b)\mid (-a)\)</span></font></p>
+<p><code>证明</code>：由<span
+class="math inline">\(a=bc=(-b)(-c)\)</span>以及<span
+class="math inline">\(-a=-(bc)=(-b)c=b(-c)\)</span>，即证。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(b\mid a\)</span>且<span
+class="math inline">\(c\mid b\)</span>，那么<span
+class="math inline">\(c\mid a\)</span>。</font></p>
+<p><code>证明</code>：根据整除的定义，存在整数<span
+class="math inline">\(d\)</span>和<span
+class="math inline">\(e\)</span>，使得<span
+class="math inline">\(a=bd\)</span>且<span
+class="math inline">\(b=ce\)</span>，即<span
+class="math inline">\(a=(ce)d=c(ed)\)</span>，所以<span
+class="math inline">\(c\mid a\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（绝对值）</strong>：整数<span
+class="math inline">\(a\)</span>的绝对值<span
+class="math inline">\(|a|\)</span>，定义为当<span
+class="math inline">\(a &gt; 0\)</span>时，<span
+class="math inline">\(|a|=a\)</span>；当<span class="math inline">\(a =
+0\)</span>时，<span class="math inline">\(|a|=0\)</span>；当<span
+class="math inline">\(a &lt; 0\)</span>时，<span
+class="math inline">\(|a|=-a\)</span>。</p>
+<p><font color=green><strong>推论</strong>：如果<span
+class="math inline">\(|a| &lt; |b| \wedge |b| \mid
+|a|\)</span>，那么<span class="math inline">\(a=0\)</span>。</font></p>
+<p><code>证明</code>：根据绝对值的定义，易知整数的绝对值为自然数。由<span
+class="math inline">\(|b| \mid |a|\)</span>，可知存在整数<span
+class="math inline">\(c\)</span>，使得<span
+class="math inline">\(|a|=|b|c\)</span>，易知<span
+class="math inline">\(c\geq 0\)</span>。但是当<span
+class="math inline">\(c &gt; 0\)</span>即<span class="math inline">\(c
+\geq 1\)</span>时，<span class="math inline">\(|a| &lt; |b| \leq
+|b|c\)</span>，与<span
+class="math inline">\(|a|=|b|c\)</span>矛盾。因此只能有<span
+class="math inline">\(c = 0\)</span>，此时<span
+class="math inline">\(|a|=|b|\times 0 =
+0\)</span>，根据绝对值的定义，即<span class="math inline">\(a =
+0\)</span>。<span class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：如果对自然数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>，<span class="math inline">\(b\mid a
+\wedge a\neq 0\)</span>，那么<span class="math inline">\(0 &lt; b \leq
+a\)</span>。即一个正整数的因数小于等于其自身。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\(b\)</span>是自然数，所以<span
+class="math inline">\(b \geq 0\)</span>。如果<span
+class="math inline">\(b = 0\)</span>，由整除的定义，有<span
+class="math inline">\(a=0\)</span>，矛盾，所以<span
+class="math inline">\(b &gt; 0\)</span>。假设<span
+class="math inline">\(b &gt; a\)</span>，根据上一个推论，可得<span
+class="math inline">\(a=0\)</span>，矛盾，所以<span
+class="math inline">\(0 &lt; b \leq a\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=green><strong>推论</strong>：对整数<span
+class="math inline">\(n\)</span>和正自然数<span
+class="math inline">\(q\)</span>，使得<span class="math inline">\(0 \leq
+r &lt; q\)</span>且<span
+class="math inline">\(n=mq+r\)</span>的整数<span
+class="math inline">\(m\)</span>和自然数<span
+class="math inline">\(r\)</span>是唯一的。</font></p>
+<p><code>证明</code>：假设还存在一组整数<span
+class="math inline">\(m&#39;\)</span>和自然数<span
+class="math inline">\(r&#39;\)</span>也满足<span
+class="math inline">\(n=m&#39;q+r&#39;\)</span>。则有<span
+class="math inline">\(mq+r=m&#39;q+r&#39;\)</span>，即<span
+class="math inline">\((m-m&#39;)q=r&#39;-r\)</span>，所以<span
+class="math inline">\(q \mid
+(r&#39;-r)\)</span>。根据引理和绝对值的定义有<span
+class="math inline">\(q \mid |r&#39;-r|\)</span>，根据<span
+class="math inline">\(0 \leq r,r&#39; &lt; q\)</span>，易知<span
+class="math inline">\(|r&#39;-r| &lt; q\)</span>，又因为<span
+class="math inline">\(q\)</span>是正自然数有<span
+class="math inline">\(q=|q|\)</span>，所以根据上面的推论有<span
+class="math inline">\(r&#39;-r = 0\)</span>，即<span
+class="math inline">\(r&#39;=r\)</span>。所以<span
+class="math inline">\((m-m&#39;)q=r&#39;-r=0\)</span>，因为<span
+class="math inline">\(q\)</span>是正自然数，所以只能是<span
+class="math inline">\(m-m&#39; = 0\)</span>，即<span
+class="math inline">\(m=m&#39;\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="质数">2）质数</h3>
+<p><strong>定义（质数）</strong>：如果<span
+class="math inline">\(a\)</span>是一个大于<span
+class="math inline">\(1\)</span>的整数（当然也是自然数），除了1和此数自身外，无法被其他自然数整除（其他自然数都不是<span
+class="math inline">\(a\)</span>的因数），则称<span
+class="math inline">\(a\)</span>为质数，又称素数。</p>
+<p><strong>定义（合数）</strong>：如果<span
+class="math inline">\(a\)</span>是一个大于<span
+class="math inline">\(1\)</span>的整数，且<span
+class="math inline">\(a\)</span>不是质数，则称<span
+class="math inline">\(a\)</span>为合数。因此，合数<span
+class="math inline">\(a\)</span>存在除了<span
+class="math inline">\(1\)</span>和<span
+class="math inline">\(a\)</span>外的其他因数。</p>
+<p><font color=green><strong>推论</strong>：对自然数<span
+class="math inline">\(a\)</span>，下面三个命题有且仅有一个成立：（1）<span
+class="math inline">\(a=1\)</span>；（2）<span
+class="math inline">\(a\)</span>是质数；（3）<span
+class="math inline">\(a\)</span>是合数。</font></p>
+<p><strong>定义（质因数）</strong>：如果<span
+class="math inline">\(a\)</span>的因数<span
+class="math inline">\(b\)</span>是质数，那么称<span
+class="math inline">\(b\)</span>是<span
+class="math inline">\(a\)</span>的质因数。</p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(a\)</span>是一个大于<span
+class="math inline">\(1\)</span>的整数，那么<span
+class="math inline">\(a\)</span>的大于<span
+class="math inline">\(1\)</span>的最小因数一定是质数。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\(a\)</span>是一个大于<span
+class="math inline">\(1\)</span>的整数，所以<span
+class="math inline">\(a\)</span>要么是质数、要么是合数。如果<span
+class="math inline">\(a\)</span>是质数，则<span
+class="math inline">\(a\)</span>只有因数<span
+class="math inline">\(1\)</span>和自身<span
+class="math inline">\(a\)</span>，所以大于<span
+class="math inline">\(1\)</span>的最小因数就是<span
+class="math inline">\(a\)</span>，是质数；如果<span
+class="math inline">\(a\)</span>是合数，假设大于<span
+class="math inline">\(1\)</span>的最小因数<span
+class="math inline">\(b\)</span>不是质数而是合数，那么根据合数的定义，<span
+class="math inline">\(b\)</span>存在不等于<span
+class="math inline">\(1\)</span>和其自身的因数<span
+class="math inline">\(c\)</span>，又因为自然数的因数小于等于其自身，同时<span
+class="math inline">\(b\)</span>的因数<span
+class="math inline">\(c\)</span>也是<span
+class="math inline">\(a\)</span>的因数，即<span
+class="math inline">\(a\)</span>存在比<span
+class="math inline">\(b\)</span>更小的大于<span
+class="math inline">\(1\)</span>的因数，与假设矛盾，所以<span
+class="math inline">\(b\)</span>是质数。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理</strong>：有无限多个质数。</font></p>
+<p><code>证明</code>：（欧几里得证明）假设有限个质数的集合<span
+class="math inline">\(\lbrace p_1, \dots, p_r
+\rbrace\)</span>，考虑<span class="math inline">\(n=p_1 p_2 \dots p_r +
+1\)</span>，其中<span class="math inline">\(p_1 p_2 \dots
+p_r\)</span>是从<span class="math inline">\(p_1\)</span>到<span
+class="math inline">\(p_r\)</span>的连乘积（遍历集合）。取<span
+class="math inline">\(n\)</span>的质因数<span
+class="math inline">\(p\)</span>，可以证明<span
+class="math inline">\(p\)</span>不属于集合<span
+class="math inline">\(\lbrace p_1, \dots, p_r
+\rbrace\)</span>，否则<span class="math inline">\(p\)</span>是<span
+class="math inline">\(p_1 p_2 \dots p_r\)</span>的因数，那么也是<span
+class="math inline">\(n-p_1 p_2 \dots p_r =
+1\)</span>的因数，矛盾。从而任何有限集合<span
+class="math inline">\(\lbrace p_1, \dots, p_r
+\rbrace\)</span>不可能包括所有的素数。<span
+class="math inline">\(\square\)</span></p>
+<p>这个定理，也是《数学天书中的证明》中的第一个证明，该书中还给出了其他五种证明方法，有兴趣的可以看一看。</p>
+<p><strong>定义（公因数、最大公因数）</strong>：如果正整数<span
+class="math inline">\(c\)</span>即是<span
+class="math inline">\(a\)</span>的因数又是<span
+class="math inline">\(b\)</span>的因数，那么称<span
+class="math inline">\(c\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公因数，又称公约数。<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公因数中最大的数，称为最大公因数，记作<span
+class="math inline">\(gcd(a,b)\)</span>，简记为<span
+class="math inline">\((a,b)\)</span>。</p>
+<p>对多个整数的最大公因数记为<span
+class="math inline">\((a_1,a_2,\dots,a_n)\)</span>或<span
+class="math inline">\(gcd(a_1,a_2,\dots,a_n)\)</span>。</p>
+<p><font color=blue><strong>引理（欧几里得算法、辗转相除法）</strong>：如果<span
+class="math inline">\(a=bq+r\)</span>，那么<span
+class="math inline">\((a,b)=(b,r)\)</span>。</font></p>
+<p><code>证明</code>：设<span class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的最大公因数为<span
+class="math inline">\(c\)</span>，则存在整数<span
+class="math inline">\(a&#39;\)</span>和<span
+class="math inline">\(b&#39;\)</span>满足<span
+class="math inline">\(a=ca&#39;\)</span>和<span
+class="math inline">\(b=cb&#39;\)</span>，代入<span
+class="math inline">\(a=bq+r\)</span>有<span
+class="math inline">\(ca&#39;=cb&#39;q+r\)</span>，即<span
+class="math inline">\(r=ca&#39;-cb&#39;q=c(a&#39;-b&#39;q)\)</span>，所以<span
+class="math inline">\(c\)</span>是<span
+class="math inline">\(r\)</span>的因数，也是<span
+class="math inline">\(b\)</span>和<span
+class="math inline">\(r\)</span>的公因数。假设<span
+class="math inline">\(c\)</span>不是<span
+class="math inline">\(b\)</span>和<span
+class="math inline">\(r\)</span>的最大公因数，那么还存在正整数<span
+class="math inline">\(c&#39;&gt;c\)</span>是<span
+class="math inline">\(b\)</span>和<span
+class="math inline">\(r\)</span>的最大公因数，由<span
+class="math inline">\(a=bq+r\)</span>可知<span
+class="math inline">\(c&#39;\)</span>也是<span
+class="math inline">\(a\)</span>的因数，同时也是<span
+class="math inline">\(b\)</span>的因数，这与<span
+class="math inline">\(c\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的最大公因数矛盾。<span
+class="math inline">\(\square\)</span></p>
+<p><strong>定义（互质）</strong>：如果<span
+class="math inline">\((a,b)=1\)</span>，那么称整数<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>互质。</p>
+<p><strong>定义（公倍数、最小公倍数）</strong>：如果正整数<span
+class="math inline">\(c\)</span>即是<span
+class="math inline">\(a\)</span>的倍数又是<span
+class="math inline">\(b\)</span>的倍数，那么称<span
+class="math inline">\(c\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数。<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数中最小的数，称为最小公倍数，记作<span
+class="math inline">\(lcm(a,b)\)</span>，简记为<span
+class="math inline">\(\lbrace a,b\rbrace\)</span>。</p>
+<p><font color=green><strong>推论</strong>：最小公倍数是公倍数的因数。</font></p>
+<p><code>证明</code>：设<span class="math inline">\(m = \lbrace
+a,b\rbrace\)</span>和公倍数<span class="math inline">\(m&#39; \geq
+m\)</span>，存在整数<span class="math inline">\(q\)</span>和<span
+class="math inline">\(r\)</span>满足<span
+class="math inline">\(m&#39;=qm+r\)</span>且<span
+class="math inline">\(0\leq r &lt; m\)</span>。假设<span
+class="math inline">\(r\neq 0\)</span>，因为<span
+class="math inline">\(a\)</span>即是<span
+class="math inline">\(m\)</span>的因数又是<span
+class="math inline">\(m&#39;\)</span>的因数，所以<span
+class="math inline">\(a\)</span>也是<span
+class="math inline">\(r=m&#39;-qm\)</span>的因数，同理<span
+class="math inline">\(b\)</span>也是<span
+class="math inline">\(r\)</span>的因数，即<span
+class="math inline">\(r\)</span>也是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数且<span class="math inline">\(r
+&lt; m\)</span>，与<span
+class="math inline">\(m\)</span>是最小公倍数矛盾。所以<span
+class="math inline">\(r = 0\)</span>，<span
+class="math inline">\(m&#39;=qm\)</span>即<span
+class="math inline">\(m\)</span>是任意公倍数<span
+class="math inline">\(m&#39;\)</span>的因数。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的最大公因数是<span
+class="math inline">\(d\)</span>、最小公倍数是<span
+class="math inline">\(m\)</span>，那么有<span
+class="math inline">\(ab=dm\)</span>。</font></p>
+<p><code>证明</code>：因为<span class="math inline">\(ab\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数，所以最小公倍数<span
+class="math inline">\(m \mid ab\)</span>，即存在整数<span
+class="math inline">\(q\)</span>，使得<span class="math inline">\(ab =
+qm\)</span>。下面证明<span
+class="math inline">\(q\)</span>即最大公因数是<span
+class="math inline">\(d\)</span>。首先对最小公倍数<span
+class="math inline">\(m\)</span>，存在整数<span
+class="math inline">\(a&#39;\)</span>和<span
+class="math inline">\(b&#39;\)</span>，使得<span class="math inline">\(m
+= aa&#39;\)</span>且<span class="math inline">\(m =
+bb&#39;\)</span>，所以<span class="math inline">\(ab = qm = qaa&#39; =
+qbb&#39;\)</span>，即<span class="math inline">\(a =
+qb&#39;\)</span>且<span class="math inline">\(b =
+qa&#39;\)</span>，所以<span class="math inline">\(q\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公因数。然后对<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的任意公因数<span
+class="math inline">\(c\)</span>，有<span
+class="math inline">\(a=cc&#39;\)</span>及<span
+class="math inline">\(b=cc&#39;&#39;\)</span>，设整数<span
+class="math inline">\(t=cc&#39;c&#39;&#39;=ac&#39;&#39;=bc&#39;\)</span>，所以<span
+class="math inline">\(t\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数。根据最小公倍数是公倍数的因数，即存在<span
+class="math inline">\(t&#39; \geq 1\)</span>使得<span
+class="math inline">\(t=mt&#39;\)</span>，由<span
+class="math inline">\(ab = qm\)</span>得<span
+class="math inline">\(abt&#39; = qmt&#39; = qt\)</span>且<span
+class="math inline">\(abt&#39; = cc&#39;cc&#39;&#39;t&#39; =
+ctt&#39;\)</span>，即<span
+class="math inline">\(ct&#39;=q\)</span>，所以对任意公因数<span
+class="math inline">\(c\)</span>都有<span class="math inline">\(c \leq
+q\)</span>，即<span class="math inline">\(q\)</span>是最大公因数。<span
+class="math inline">\(\square\)</span></p>
+<h3 id="算术基本定理">3）算术基本定理</h3>
+<p><font color=blue><strong>定理（强归纳法）</strong>：令<span
+class="math inline">\(P(n)\)</span>表示对自然数的任意一个命题，如果<span
+class="math inline">\(P(0)\)</span>为真且当<span
+class="math inline">\(\forall n \leq m: P(n)\)</span>为真时有<span
+class="math inline">\(P(m++)\)</span>也为真，那么对任意自然数<span
+class="math inline">\(n\)</span>，都有<span
+class="math inline">\(P(n)\)</span>为真。</font></p>
+<p><code>证明</code>：当<span class="math inline">\(\forall n \leq m:
+P(n)\)</span>为真时，显然有<span
+class="math inline">\(P(m)\)</span>为真，根据数学归纳法有强归纳法成立。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理（超限归纳法）</strong>：令<span
+class="math inline">\(P(n)\)</span>表示对自然数的任意一个命题，如果当<span
+class="math inline">\(\forall n &lt; m: P(n)\)</span>为真时有<span
+class="math inline">\(P(m)\)</span>也为真，那么对任意自然数<span
+class="math inline">\(n\)</span>，都有<span
+class="math inline">\(P(n)\)</span>为真。</font></p>
+<p><code>证明</code>：当<span
+class="math inline">\(m=0\)</span>时，自然数<span
+class="math inline">\(n&lt;0\)</span>是一个恒假命题，所以<span
+class="math inline">\(\forall n &lt; 0: P(n) \implies
+P(0)\)</span>恒为真。因此超限归纳法与强归纳法在命题上是等价的。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：每一个大于<span
+class="math inline">\(1\)</span>的整数<span
+class="math inline">\(a\)</span>都可以分解成质因数的连乘积。</font></p>
+<p><code>证明</code>：超限归纳法，假设<span
+class="math inline">\(\forall a &lt; n\)</span>时，大于<span
+class="math inline">\(1\)</span>的整数<span
+class="math inline">\(a\)</span>都可以分解成质因数的连乘积，考虑<span
+class="math inline">\(a=n\)</span>。如果<span
+class="math inline">\(n\)</span>是质数<span
+class="math inline">\(p\)</span>，则<span
+class="math inline">\(n=p\)</span>就满足了分解成质因数的连乘积形式。如果<span
+class="math inline">\(n\)</span>是合数，则<span
+class="math inline">\(n\)</span>存在大于<span
+class="math inline">\(1\)</span>的最小质因数<span
+class="math inline">\(p_1\)</span>，即存在整数<span
+class="math inline">\(b\)</span>使得<span class="math inline">\(n= p_1
+b\)</span>，显然有<span class="math inline">\(b &lt;
+n\)</span>，所以根据归纳假设，<span
+class="math inline">\(b\)</span>可以分解成质因数的连乘积<span
+class="math inline">\(b = p_2 \dots p_r\)</span>，而<span
+class="math inline">\(p_1\)</span>是质数，所以<span
+class="math inline">\(n=p_1 p_2 \dots
+p_r\)</span>也可以分解成质因数的连乘积。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：对质数<span
+class="math inline">\(p\)</span>，<span class="math inline">\(p \nmid a
+\iff (p,a)=1\)</span>。</font></p>
+<p><code>证明</code>：如果<span class="math inline">\(p \nmid
+a\)</span>，即<span class="math inline">\(p\)</span>不是<span
+class="math inline">\(a\)</span>因数，因为质数<span
+class="math inline">\(p\)</span>只有两个因数<span
+class="math inline">\(1\)</span>和自身<span
+class="math inline">\(p\)</span>，所以<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(p\)</span>只有一个公因数<span
+class="math inline">\(1\)</span>，即<span
+class="math inline">\((p,a)=1\)</span>；如果<span
+class="math inline">\((p,a)=1\)</span>，那么运用反证法，可知质数<span
+class="math inline">\(p\)</span>不是<span
+class="math inline">\(a\)</span>的因数，所以<span
+class="math inline">\(p \nmid a\)</span>。</p>
+<p>也可以证明等价的逆否命题：<span class="math inline">\(p \mid a \iff
+(p,a)\neq 1\)</span>。如果<span class="math inline">\(p \mid
+a\)</span>，那么<span class="math inline">\(p\)</span>是<span
+class="math inline">\(a\)</span>的因数且显然<span
+class="math inline">\(p\)</span>是<span
+class="math inline">\(p\)</span>的因数，所以<span
+class="math inline">\(p\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(p\)</span>的公因数，即<span
+class="math inline">\((p,a)\neq 1\)</span>；如果<span
+class="math inline">\((p,a)\neq 1\)</span>，设<span
+class="math inline">\((p,a) = q\)</span>，则<span
+class="math inline">\(q\)</span>是<span
+class="math inline">\(p\)</span>的因数，根据质数的定义，<span
+class="math inline">\(p\)</span>的因数除了<span
+class="math inline">\(1\)</span>就是<span
+class="math inline">\(p\)</span>，所以<span
+class="math inline">\(q=p\)</span>，即<span
+class="math inline">\(p\)</span>也是<span
+class="math inline">\(a\)</span>的因数，所以<span
+class="math inline">\(p \mid a\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\((a,b)=1\)</span>且<span class="math inline">\(a
+\mid bc\)</span>，那么<span class="math inline">\(a \mid
+c\)</span>。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\((a,b)=1\)</span>，根据<span
+class="math inline">\(ab=(a,b)\lbrace a,b
+\rbrace\)</span>，可得最小公倍数<span class="math inline">\(\lbrace a,b
+\rbrace = ab\)</span>。同时，根据<span class="math inline">\(a \mid
+bc\)</span>且<span class="math inline">\(b \mid bc\)</span>，所以<span
+class="math inline">\(bc\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公倍数。由最小公倍数是公倍数的因数，即存在整数<span
+class="math inline">\(d\)</span>，使得<span
+class="math inline">\(bc=abd\)</span>，利用乘法消去律，即<span
+class="math inline">\(c=ad\)</span>，所以<span class="math inline">\(a
+\mid c\)</span>。<span class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：当<span
+class="math inline">\(a \mid b_1 \dots b_n\)</span>且<span
+class="math inline">\(a\)</span>与任意<span
+class="math inline">\(b_1,\dots,b_{n-1}\)</span>互质，那么<span
+class="math inline">\(a \mid b_n\)</span>。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\((a,b_1)=1\)</span>且<span class="math inline">\(a
+\mid b_1(b_2\dots b_n)\)</span>，所以<span class="math inline">\(a \mid
+b_2\dots b_n\)</span>。对<span
+class="math inline">\(b_2,\dots,b_{n-1}\)</span>依次运用引理，因为<span
+class="math inline">\(n\)</span>是有限的，最终可以得到<span
+class="math inline">\(a \mid b_n\)</span>。</p>
+<p>现在大家肯定觉得这样证明不够严谨，因为我们没有定义什么叫“依次”。所以可以把引理改写为：当<span
+class="math inline">\(a \mid b_1 \dots b_n q\)</span>且<span
+class="math inline">\(a\)</span>与任意<span
+class="math inline">\(b_1,\dots,b_n\)</span>互质，那么<span
+class="math inline">\(a \mid q\)</span>。对<span
+class="math inline">\(n\)</span>使用数学归纳法，首先当<span
+class="math inline">\(n=0\)</span>时，即<span class="math inline">\(b_1
+\dots b_n q = q\)</span>，直接得证<span class="math inline">\(a \mid
+q\)</span>；假设当<span
+class="math inline">\(n\)</span>时命题成立，考虑<span
+class="math inline">\(n+1\)</span>，即<span class="math inline">\(a \mid
+b_1 \dots b_n b_{n+1} q\)</span>，根据归纳假设，可知<span
+class="math inline">\(a \mid b_{n+1} q\)</span>，因为<span
+class="math inline">\(a\)</span>与<span
+class="math inline">\(b_{n+1}\)</span>互质，根据上面的引理，可得<span
+class="math inline">\(a \mid q\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\((a,b)=1\)</span>且<span class="math inline">\(c
+\mid a\)</span>，那么<span
+class="math inline">\((b,c)=1\)</span>。</font></p>
+<p><code>证明</code>：反证法，假设<span class="math inline">\((b,c)=m
+\neq 1\)</span>。那么<span class="math inline">\(m\)</span>是<span
+class="math inline">\(c\)</span>的因数，因为<span
+class="math inline">\(c \mid a\)</span>，所以<span
+class="math inline">\(m\)</span>也是<span
+class="math inline">\(a\)</span>的因数，即<span class="math inline">\(m
+&gt; 1\)</span>是<span class="math inline">\(a\)</span>和<span
+class="math inline">\(b\)</span>的公因数，这与<span
+class="math inline">\((a,b)=1\)</span>矛盾。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果<span
+class="math inline">\((a,b)=1\)</span>，那么<span
+class="math inline">\((a,bc)=(a,c)\)</span>。</font></p>
+<p><code>证明</code>：设<span
+class="math inline">\((a,bc)=d\)</span>，因为<span
+class="math inline">\((a,b)=1\)</span>且<span class="math inline">\(d
+\mid a\)</span>，则<span
+class="math inline">\((d,b)=1\)</span>，同时<span
+class="math inline">\(d \mid bc\)</span>，则<span
+class="math inline">\(d \mid c\)</span>，所以<span
+class="math inline">\(d\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(c\)</span>的公因数。设<span
+class="math inline">\((a,c)=t\)</span>，因为<span
+class="math inline">\(t \mid c\)</span>，则<span class="math inline">\(t
+\mid bc\)</span>，所以<span class="math inline">\(t\)</span>是<span
+class="math inline">\(a\)</span>和<span
+class="math inline">\(bc\)</span>的公因数。根据最大公因数的定义，有<span
+class="math inline">\(d \leq t\)</span>且<span class="math inline">\(t
+\leq d\)</span>，所以<span class="math inline">\(d=t\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：<span
+class="math inline">\(a\)</span>与任意<span
+class="math inline">\(b_1,\dots,b_n\)</span>互质，则<span
+class="math inline">\(a\)</span>与<span class="math inline">\(b_1,
+\dots, b_n\)</span>的连乘积互质。</font></p>
+<p><code>证明</code>：因为<span
+class="math inline">\((a,b_1)=1\)</span>，所以<span
+class="math inline">\((a,b_1 b_2\dots b_n)=(a,b_2\dots
+b_n)\)</span>。对<span
+class="math inline">\(b_2,\dots,b_{n-1}\)</span>依次运用引理，因为<span
+class="math inline">\(n\)</span>是有限的，最终可以得到<span
+class="math inline">\((a,b_1 \dots b_n)=(a,b_n)=1\)</span>。</p>
+<p>同样地，更严谨地可以对<span
+class="math inline">\(n\)</span>使用超限归纳法证明<span
+class="math inline">\(\forall n:(a,b_n)=1 \implies (a, b_1 b_2\dots
+b_n)=1\)</span>。假设当<span
+class="math inline">\(n&lt;m\)</span>时命题成立，考虑<span
+class="math inline">\(n=m\)</span>，根据归纳假设<span
+class="math inline">\((a,b_1 \dots
+b_{m-1})=1\)</span>，根据上一条引理，可知<span
+class="math inline">\((a,b_1 \dots b_{m-1}b_m)=(a,b_m)=1\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果质数<span
+class="math inline">\(p\)</span>整除<span class="math inline">\(a_1,
+\dots, a_n\)</span>的连乘积，那么存在一个<span
+class="math inline">\(a_r\)</span>能被<span
+class="math inline">\(p\)</span>整除（<span class="math inline">\(1 \leq
+r \leq n\)</span>）。</font></p>
+<p><code>证明</code>：反证法，假设不存在<span
+class="math inline">\(a_r\)</span>能被<span
+class="math inline">\(p\)</span>整除，所以任意<span
+class="math inline">\(a_r\)</span>与<span
+class="math inline">\(p\)</span>互质。根据上面的引理，可知<span
+class="math inline">\(p\)</span>与<span class="math inline">\(a_1,
+\dots, a_n\)</span>的连乘积互质，这与质数<span
+class="math inline">\(p\)</span>整除<span class="math inline">\(a_1,
+\dots, a_n\)</span>的连乘积矛盾。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>引理</strong>：如果质数<span
+class="math inline">\(p\)</span>整除质数<span
+class="math inline">\(p,\dots,p_n\)</span>的连乘积，那么存在一个<span
+class="math inline">\(p_r=p\)</span>（<span class="math inline">\(1 \leq
+r \leq n\)</span>）。</font></p>
+<p><code>证明</code>：根据上面的引可知存在一个<span
+class="math inline">\(p_r\)</span>能被<span
+class="math inline">\(p\)</span>整除，因为<span
+class="math inline">\(p_r\)</span>和<span
+class="math inline">\(p\)</span>都是质数，根据质数的定义，只能有<span
+class="math inline">\(p_r=p\)</span>。<span
+class="math inline">\(\square\)</span></p>
+<p><font color=blue><strong>定理（算术基本定理）</strong>：不计质因数的次序，则只有唯一的方式将大于<span
+class="math inline">\(1\)</span>的整数分解为质因数的连乘积。</font></p>
+<p><code>证明</code>：将整数分解为质因数的连乘积<span
+class="math inline">\(a=p_1 \dots p_n\)</span>。假设存在另一种将<span
+class="math inline">\(a\)</span>分解为不同质因数的连乘积，设为<span
+class="math inline">\(a=q_1 \dots q_m\)</span>，即 <span
+class="math display">\[p_1 \dots p_n=q_1 \dots q_m\]</span> 所以<span
+class="math inline">\(p_1 \mid q_1 \dots
+q_m\)</span>，根据上一条引理，存在一个<span
+class="math inline">\(q_r=p_1\)</span>，因为不考虑分解的次序，不失一般性，可以设这个<span
+class="math inline">\(q_r\)</span>就是<span
+class="math inline">\(q_1\)</span>，则有<span class="math inline">\(p_2
+\dots p_n=q_2 \dots q_m\)</span>。这样依次运用引理，且<span
+class="math inline">\(n\)</span>和<span
+class="math inline">\(m\)</span>是有限的，最后肯定得到<span
+class="math inline">\(p_n=q_m\)</span>且<span
+class="math inline">\(n=m\)</span>。</p>
+<p>更严谨地，可以使用集合论的语言。定义质数集为<span
+class="math inline">\(\mathbf{P}\)</span>，因为可以把整数<span
+class="math inline">\(n\)</span>分解为质因数的连乘积，这些质因数的集合设为<span
+class="math inline">\(A = \lbrace p \in \mathbf{P} | p \mid a \rbrace =
+\lbrace p_1,\dots,p_r
+\rbrace\)</span>，注意到某个质因数可能在分解的连乘积中出现多次，同时考虑到这个集合是有限的，所以可以将质因数从小到大排列，即<span
+class="math inline">\(p_1 &lt; \dots &lt;
+p_r\)</span>，运用指数运算可以将分解式表示为：<span
+class="math inline">\(a=p_1 ^{\alpha_1} \dots p_r
+^{\alpha_r}\)</span>，其中<span
+class="math inline">\(\alpha_1,\dots,\alpha_r\)</span>是正自然数。</p>
+<p>为了方便，先证明一个引理：质数<span
+class="math inline">\(p\)</span>的<span
+class="math inline">\(\alpha\)</span>次方（<span
+class="math inline">\(\alpha \geq 1\)</span>）整除<span
+class="math inline">\(a\)</span>，当且仅当分解的连乘积<span
+class="math inline">\(a=p_1 ^{\alpha_1} \dots p_n
+^{\alpha_n}\)</span>中，存在一个<span
+class="math inline">\(p_r=p\)</span>且<span class="math inline">\(\alpha
+\leq \alpha_r\)</span>（<span class="math inline">\(1 \leq r \leq
+n\)</span>）。首先，当存在<span
+class="math inline">\(p_r=p\)</span>且<span class="math inline">\(\alpha
+\leq \alpha_r\)</span>时，显然有<span class="math inline">\(p^{\alpha}
+\mid a\)</span>。然后，根据<span class="math inline">\(p^{\alpha} \mid
+a\)</span>且<span class="math inline">\(p \mid
+p^{\alpha}\)</span>（<span class="math inline">\(\alpha \geq
+1\)</span>），有<span class="math inline">\(p \mid
+a\)</span>，所以根据上面的引理存在一个<span class="math inline">\(p_r =
+p\)</span>。假设<span class="math inline">\(\alpha &gt;
+\alpha_r\)</span>，则根据整除的定义，存在一个整数<span
+class="math inline">\(b\)</span>使得<span
+class="math inline">\(a=bp^{\alpha}=bp_r ^{\alpha} = p_1 ^{\alpha_1}
+\dots p_n ^{\alpha_n}\)</span>，利用乘法消去律，左右消去<span
+class="math inline">\(p_r^{\alpha_r}\)</span>，有<span
+class="math inline">\(bp_r ^{\alpha - \alpha_r} = p_1 ^{\alpha_1} \dots
+p_{r-1} ^{\alpha_{r-1}} p_{r+1} ^{\alpha_{r+1}} \dots p_n
+^{\alpha_n}\)</span>且<span class="math inline">\(\alpha - \alpha_r \geq
+1\)</span>，即<span class="math inline">\(p_r ^{\alpha - \alpha_r} \mid
+p_1 ^{\alpha_1} \dots p_{r-1} ^{\alpha_{r-1}} p_{r+1} ^{\alpha_{r+1}}
+\dots p_n ^{\alpha_n}\)</span>，所以仍然存在一个<span
+class="math inline">\(p_i=p\)</span>（<span class="math inline">\(1 \leq
+i \leq n\)</span>且<span class="math inline">\(i \neq
+r\)</span>），这与分解的连乘积中的质因数两两不等矛盾，所以<span
+class="math inline">\(\alpha \leq \alpha_r\)</span>。</p>
+<p>构造集合<span class="math inline">\(B = \lbrace &lt;p, \alpha&gt; \in
+\mathbf{P}\times \mathbf{N} | \forall p \in \mathbf{P},\forall \alpha
+\in \mathbf{N} \wedge \alpha \geq 1: p^{\alpha} \mid a \wedge
+p^{\alpha+1} \nmid a \rbrace\)</span>，即集合<span
+class="math inline">\(B\)</span>的元素是由满足质因数<span
+class="math inline">\(p\)</span>的<span
+class="math inline">\(\alpha\)</span>次方整除<span
+class="math inline">\(a\)</span>但<span
+class="math inline">\(p\)</span>的<span
+class="math inline">\(\alpha+1\)</span>次方不整除<span
+class="math inline">\(a\)</span>的有序对<span
+class="math inline">\(&lt;p, \alpha&gt;\)</span>组成的。</p>
+<p>现在要证明质因数的连乘积分解式<span class="math inline">\(a=p_1
+^{\alpha_1} \dots p_r ^{\alpha_r}\)</span>右边的指数项，与集合<span
+class="math inline">\(B\)</span>中的元素是一一对应的。</p>
+<p>首先对任意一个质因数<span class="math inline">\(p_i \in
+A\)</span>，根据连乘积分解式，显然满足<span class="math inline">\(p_i
+^{\alpha_i} \mid a\)</span>。如果假设<span class="math inline">\(p_i
+^{\alpha_i+1} \mid a\)</span>，利用引理可知存在矛盾，所以分解式<span
+class="math inline">\(a=p_1 ^{\alpha_1} \dots p_r
+^{\alpha_r}\)</span>右边的任意一个指数项<span class="math inline">\(p_i
+^{\alpha_i}\)</span>所对应的有序对<span class="math inline">\(&lt;p_i,
+\alpha_i&gt;\)</span>都是集合<span
+class="math inline">\(B\)</span>的元素。</p>
+<p>然后，要证明集合<span class="math inline">\(B\)</span>的任意元素<span
+class="math inline">\(&lt;p, \alpha&gt;\)</span>所对应的所有指数项<span
+class="math inline">\(p ^{\alpha}\)</span>的积等于<span
+class="math inline">\(a\)</span>，即集合<span
+class="math inline">\(B\)</span>中不存在多余的元素<span
+class="math inline">\(&lt;q, \beta&gt;\)</span>其对应的指数项<span
+class="math inline">\(q ^{\beta}\)</span>不在连乘积的分解式<span
+class="math inline">\(a=p_1 ^{\alpha_1} \dots p_r
+^{\alpha_r}\)</span>中。</p>
+<p>我们假设集合<span
+class="math inline">\(B\)</span>存在这样多余的元素<span
+class="math inline">\(&lt;q, \beta&gt;\)</span>。根据集合<span
+class="math inline">\(B\)</span>的定义<span
+class="math inline">\(q^{\beta} \mid a\)</span>，根据引理即存在一个<span
+class="math inline">\(p_i = q\)</span>且<span
+class="math inline">\(\beta \leq \alpha_i\)</span>。又根据集合<span
+class="math inline">\(B\)</span>的定义，有<span
+class="math inline">\(q^{\beta+1} \nmid a\)</span>即<span
+class="math inline">\(p_i^{\beta+1} \nmid
+a\)</span>，所以根据引理的逆否命题，有<span
+class="math inline">\(\beta+1 &gt; \alpha_i\)</span>，即<span
+class="math inline">\(\beta \geq \alpha_i\)</span>，因此<span
+class="math inline">\(\beta = \alpha_i\)</span>。</p>
+<p>因此，质因数的连乘积分解式<span class="math inline">\(a=p_1
+^{\alpha_1} \dots p_r ^{\alpha_r}\)</span>右边的指数项，与集合<span
+class="math inline">\(B\)</span>中的元素是一一对应的。根据分类公理，可知集合<span
+class="math inline">\(B\)</span>是唯一的，所以不计质因数的次序，将大于<span
+class="math inline">\(1\)</span>的整数分解为质因数的连乘积的方式就是唯一。<span
+class="math inline">\(\square\)</span></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Elementary-Math/" rel="tag"><i class="fa fa-tag"></i> Elementary Math</a>
+              <a href="/tags/Set-Theory/" rel="tag"><i class="fa fa-tag"></i> Set Theory</a>
+              <a href="/tags/Elementary-Number-Theory/" rel="tag"><i class="fa fa-tag"></i> Elementary Number Theory</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/03/22/TimeTour/" rel="prev" title="时间探秘">
+      <i class="fa fa-chevron-left"></i> 时间探秘
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/04/RationalPointOnEllipticCurves/" rel="next" title="Introduction of Rational Points on Elliptic Curves">
+      Introduction of Rational Points on Elliptic Curves <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E6%95%B0%E7%90%86%E9%80%BB%E8%BE%91"><span class="nav-number">1.</span> <span class="nav-text">一、数理逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E9%A2%98%E9%80%BB%E8%BE%91"><span class="nav-number">1.1.</span> <span class="nav-text">1）命题逻辑</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E5%91%BD%E9%A2%98%E6%98%AF%E4%B8%80%E4%B8%AA%E9%99%88%E8%BF%B0%E5%8F%A5%E6%89%80%E8%A1%A8%E8%BE%BE%E7%9A%84%E5%88%A4%E6%96%AD%E5%85%B7%E6%9C%89%E7%9C%9F%E5%80%BC%E5%8D%B3%E8%BF%99%E5%8F%A5%E8%AF%9D%E4%B8%8D%E6%98%AF%E7%9C%9F%E7%9A%84true%E5%B0%B1%E6%98%AF%E5%81%87%E7%9A%84false"><span class="nav-number">1.1.1.</span> <span class="nav-text">定义：命题是一个陈述句所表达的判断，具有真值，即这句话不是真的（True）就是假的（False）。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">1.1.2.</span> <span class="nav-text">逻辑运算符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E9%98%B6%E9%80%BB%E8%BE%91"><span class="nav-number">1.2.</span> <span class="nav-text">2）一阶逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%B8%E7%AD%89%E5%85%AC%E7%90%86"><span class="nav-number">1.3.</span> <span class="nav-text">3）相等公理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%87%AA%E5%8F%8D%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E7%9A%84%E5%AF%B9%E8%B1%A1x%E6%9C%89xx"><span class="nav-number">1.3.1.</span> <span class="nav-text">1.
+（自反公理）对任意的对象\(x\)，有\(x&#x3D;x\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E7%A7%B0%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E7%9A%84%E5%AF%B9%E8%B1%A1x%E5%92%8Cy%E5%A6%82%E6%9E%9Cxy%E9%82%A3%E4%B9%88yx"><span class="nav-number">1.3.2.</span> <span class="nav-text">2.
+（对称公理）对任意的对象\(x\)和\(y\)，如果\(x&#x3D;y\)，那么\(y&#x3D;x\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BC%A0%E9%80%92%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E7%9A%84%E5%AF%B9%E8%B1%A1xy%E5%92%8Cz%E5%A6%82%E6%9E%9Cxy%E4%B8%94yz%E9%82%A3%E4%B9%88xz"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.
+（传递公理）对任意的对象\(x\)、\(y\)和\(z\)，如果\(x&#x3D;y\)且\(y&#x3D;z\)，那么\(x&#x3D;z\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%BF%E6%8D%A2%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E7%9A%84%E5%AF%B9%E8%B1%A1x%E5%92%8Cy%E5%A6%82%E6%9E%9Cxy%E9%82%A3%E4%B9%88%E5%AF%B9%E4%BB%BB%E6%84%8F%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8Ex%E7%9A%84%E5%91%BD%E9%A2%98px%E6%9C%89px%E5%92%8Cpy%E7%AD%89%E4%BB%B7"><span class="nav-number">1.3.4.</span> <span class="nav-text">4.
+（替换公理）对任意的对象\(x\)和\(y\)，如果\(x&#x3D;y\)，那么对任意一个关于\(x\)的命题\(P(x)\)，有\(P(x)\)和\(P(y)\)等价。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E9%9B%86%E5%90%88%E8%AE%BA"><span class="nav-number">2.</span> <span class="nav-text">二、集合论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%B4%E7%B4%A0%E9%9B%86%E5%90%88%E8%AE%BA"><span class="nav-number">2.1.</span> <span class="nav-text">1）朴素集合论</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AC%E7%90%86%E5%8C%96%E9%9B%86%E5%90%88%E8%AE%BA"><span class="nav-number">2.2.</span> <span class="nav-text">2）公理化集合论</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%96%E5%BB%B6%E5%85%AC%E7%90%86%E5%A6%82%E6%9E%9C%E4%B8%A4%E4%B8%AA%E9%9B%86%E5%90%88%E6%9C%89%E7%9B%B8%E5%90%8C%E7%9A%84%E5%85%83%E7%B4%A0%E9%82%A3%E4%B9%88%E5%AE%83%E4%BB%AC%E7%9B%B8%E7%AD%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.
+（外延公理）如果两个集合有相同的元素，那么它们相等。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A9%BA%E9%9B%86%E5%85%AC%E7%90%86%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E6%B2%A1%E6%9C%89%E5%85%83%E7%B4%A0%E7%9A%84%E9%9B%86%E5%90%88"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.
+（空集公理）存在一个没有元素的集合。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E5%AF%B9%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E4%B8%A4%E4%B8%AA%E9%9B%86%E5%90%88x%E5%92%8Cy%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88%E6%9C%89%E4%B8%94%E5%8F%AA%E6%9C%89x%E5%92%8Cy%E4%BD%9C%E4%B8%BA%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.3.</span> <span class="nav-text">3.
+（配对公理）对任意两个集合\(x\)和\(y\)，存在一个集合有且只有\(x\)和\(y\)作为元素。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%B6%E9%9B%86%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E9%9B%86%E5%90%88a%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88bx%E6%98%AFb%E7%9A%84%E5%85%83%E7%B4%A0%E5%BD%93%E4%B8%94%E4%BB%85%E5%BD%93x%E6%98%AFa%E7%9A%84%E6%9F%90%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.4.</span> <span class="nav-text">4.
+（并集公理）对任意集合\(A\)，存在一个集合\(B\)，\(x\)是\(B\)的元素当且仅当\(x\)是\(A\)的某个元素的元素。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E5%85%AC%E7%90%86%E5%AD%90%E9%9B%86%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E9%9B%86%E5%90%88a%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88bx%E6%98%AFb%E7%9A%84%E5%85%83%E7%B4%A0%E5%BD%93%E4%B8%94%E4%BB%85%E5%BD%93x%E6%98%AFa%E7%9A%84%E5%85%83%E7%B4%A0%E4%B8%94%E5%91%BD%E9%A2%98px%E6%88%90%E7%AB%8B"><span class="nav-number">2.2.5.</span> <span class="nav-text">5.
+（分类公理、子集公理）对任意集合\(A\)，存在一个集合\(B\)，\(x\)是\(B\)的元素当且仅当\(x\)是\(A\)的元素且命题\(P(x)\)成立。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B9%82%E9%9B%86%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E9%9B%86%E5%90%88a%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E4%BB%A5a%E7%9A%84%E5%85%A8%E9%83%A8%E5%AD%90%E9%9B%86%E4%B8%BA%E5%85%83%E7%B4%A0%E7%9A%84%E9%9B%86%E5%90%88"><span class="nav-number">2.2.6.</span> <span class="nav-text">6.
+（幂集公理）对任意集合\(A\)，存在一个以\(A\)的全部子集为元素的集合。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%97%A0%E7%A9%B7%E5%85%AC%E7%90%86%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88mathbfn%E4%BD%BF%E5%BE%97%E7%A9%BA%E9%9B%86%E6%98%AFmathbfn%E7%9A%84%E5%85%83%E7%B4%A0%E5%B9%B6%E4%B8%94%E5%A6%82%E6%9E%9Cx%E6%98%AFmathbfn%E7%9A%84%E5%85%83%E7%B4%A0%E9%82%A3%E4%B9%88x%E4%B8%8E%E5%AE%83%E7%9A%84%E5%8D%95%E5%85%83%E7%B4%A0%E9%9B%86%E5%90%88lbrace-xrbrace%E7%9A%84%E5%B9%B6%E9%9B%86%E4%B9%9F%E6%98%AFmathbfn%E7%9A%84%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.7.</span> <span class="nav-text">7.
+（无穷公理）存在一个集合\(\mathbf{N}\)，使得空集是\(\mathbf{N}\)的元素，并且如果\(x\)是\(\mathbf{N}\)的元素，那么\(x\)与它的单元素集合\(\lbrace x\rbrace\)的并集也是\(\mathbf{N}\)的元素。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9B%BF%E4%BB%A3%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E9%9B%86%E5%90%88a%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88by%E6%98%AFb%E7%9A%84%E5%85%83%E7%B4%A0%E5%BD%93%E4%B8%94%E4%BB%85%E5%BD%93%E5%AD%98%E5%9C%A8x%E6%98%AFa%E7%9A%84%E5%85%83%E7%B4%A0%E4%B8%94%E5%91%BD%E9%A2%98pxy%E4%B8%BA%E7%9C%9F"><span class="nav-number">2.2.8.</span> <span class="nav-text">8.
+（替代公理）对任意集合\(A\)，存在一个集合\(B\)，\(y\)是\(B\)的元素当且仅当存在\(x\)是\(A\)的元素且命题\(P(x,y)\)为真。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E5%85%AC%E7%90%86%E5%AF%B9%E4%BB%BB%E6%84%8F%E9%9D%9E%E7%A9%BA%E9%9B%86%E5%90%88a%E8%87%B3%E5%B0%91%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0xx%E4%B8%8Ea%E7%9A%84%E4%BA%A4%E9%9B%86%E4%B8%BA%E7%A9%BA%E9%9B%86"><span class="nav-number">2.2.9.</span> <span class="nav-text">9.
+（正则公理）对任意非空集合\(A\)，至少存在一个元素\(x\)，\(x\)与\(A\)的交集为空集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E5%85%AC%E7%90%86%E7%BB%99%E5%AE%9A%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88x%E5%85%B6%E5%85%83%E7%B4%A0%E7%9A%86%E4%B8%BA%E4%BA%92%E4%B8%8D%E7%9B%B8%E4%BA%A4%E7%9A%84%E9%9D%9E%E7%A9%BA%E9%9B%86%E5%90%88%E9%82%A3%E4%B9%88%E5%AD%98%E5%9C%A8%E4%B8%80%E4%B8%AA%E9%9B%86%E5%90%88y%E5%8C%85%E5%90%ABx%E6%AF%8F%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E7%9A%84%E4%BB%85%E4%BB%85%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0"><span class="nav-number">2.2.10.</span> <span class="nav-text">10.
+（选择公理）给定一个集合\(x\)，其元素皆为互不相交的非空集合，那么存在一个集合\(y\)，包含\(x\)每一个元素的仅仅一个元素。</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E8%87%AA%E7%84%B6%E6%95%B0"><span class="nav-number">3.</span> <span class="nav-text">三、自然数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#peano%E5%85%AC%E7%90%86"><span class="nav-number">3.1.</span> <span class="nav-text">1）Peano公理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%98%AF%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%95%B0"><span class="nav-number">3.1.1.</span> <span class="nav-text">1. \(0\)是一个自然数。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A6%82%E6%9E%9Cn%E6%98%AF%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%95%B0%E9%82%A3%E4%B9%88n%E7%9A%84%E5%90%8E%E7%BB%A7%E4%B9%9F%E6%98%AF%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%95%B0%E5%B0%86n%E7%9A%84%E5%90%8E%E7%BB%A7%E8%AE%B0%E4%BD%9Cn"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.
+如果\(n\)是一个自然数，那么\(n\)的后继也是一个自然数。将\(n\)的后继记作\(n++\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E6%98%AF%E4%BB%BB%E4%BD%95%E8%87%AA%E7%84%B6%E6%95%B0%E7%9A%84%E5%90%8E%E7%BB%A7%E7%AD%89%E4%BB%B7%E4%BA%8E%E5%AF%B9%E4%BB%BB%E6%84%8F%E4%B8%80%E4%B8%AA%E8%87%AA%E7%84%B6%E6%95%B0n%E6%9C%89n%E4%B8%8D%E7%AD%89%E4%BA%8E0"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.
+\(0\)不是任何自然数的后继。等价于，对任意一个自然数\(n\)，有\(n++\)不等于\(0\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AF%B9%E4%BA%8E%E4%B8%8D%E5%90%8C%E7%9A%84%E8%87%AA%E7%84%B6%E6%95%B0%E5%AE%83%E4%BB%AC%E7%9A%84%E5%90%8E%E7%BB%A7%E4%B9%9F%E4%B8%8D%E5%90%8C%E7%AD%89%E4%BB%B7%E4%BA%8E%E5%A6%82%E6%9E%9Cnm%E9%82%A3%E4%B9%88nm"><span class="nav-number">3.1.4.</span> <span class="nav-text">4.
+对于不同的自然数，它们的后继也不同。等价于，如果\(n++&#x3D;m++\)，那么\(n&#x3D;m\)。</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E5%AD%A6%E5%BD%92%E7%BA%B3%E6%B3%95%E4%BB%A4pn%E8%A1%A8%E7%A4%BA%E5%AF%B9%E8%87%AA%E7%84%B6%E6%95%B0%E7%9A%84%E4%BB%BB%E6%84%8F%E4%B8%80%E4%B8%AA%E5%91%BD%E9%A2%98%E5%A6%82%E6%9E%9Cp0%E4%B8%BA%E7%9C%9F%E4%B8%94%E5%BD%93pn%E4%B8%BA%E7%9C%9F%E6%97%B6%E6%9C%89pn%E4%B9%9F%E4%B8%BA%E7%9C%9F%E9%82%A3%E4%B9%88%E5%AF%B9%E4%BB%BB%E6%84%8F%E8%87%AA%E7%84%B6%E6%95%B0n%E9%83%BD%E6%9C%89pn%E4%B8%BA%E7%9C%9F"><span class="nav-number">3.1.5.</span> <span class="nav-text">5.
+（数学归纳法）令\(P(n)\)表示对自然数的任意一个命题，如果\(P(0)\)为真且当\(P(n)\)为真时有\(P(n++)\)也为真，那么对任意自然数\(n\)，都有\(P(n)\)为真。</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E8%87%AA%E7%84%B6%E6%95%B0"><span class="nav-number">3.2.</span> <span class="nav-text">2）构造自然数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E8%BF%90%E7%AE%97"><span class="nav-number">4.</span> <span class="nav-text">四、运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E6%9C%89%E5%BA%8F%E5%AF%B9%E7%AC%9B%E5%8D%A1%E5%B0%94%E7%A7%AF%E5%87%BD%E6%95%B0"><span class="nav-number">4.1.</span> <span class="nav-text">1）关系（有序对、笛卡尔积、函数）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">2）加法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%98%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">3）乘法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%85%B3%E7%B3%BB"><span class="nav-number">4.4.</span> <span class="nav-text">4）序关系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E6%95%B4%E6%95%B0"><span class="nav-number">5.</span> <span class="nav-text">五、整数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E5%8C%96%E6%95%B4%E6%95%B0"><span class="nav-number">5.1.</span> <span class="nav-text">1）形式化整数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E7%9A%84%E8%BF%90%E7%AE%97%E6%B3%95%E5%88%99"><span class="nav-number">5.2.</span> <span class="nav-text">2）整数的运算法则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E5%88%9D%E7%AD%89%E6%95%B0%E8%AE%BA"><span class="nav-number">6.</span> <span class="nav-text">六、初等数论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E9%99%A4"><span class="nav-number">6.1.</span> <span class="nav-text">1）整除</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B4%A8%E6%95%B0"><span class="nav-number">6.2.</span> <span class="nav-text">2）质数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%9C%AF%E5%9F%BA%E6%9C%AC%E5%AE%9A%E7%90%86"><span class="nav-number">6.3.</span> <span class="nav-text">3）算术基本定理</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="He, Sheng"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">He, Sheng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/heshengpku" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;heshengpku" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:heshengpku@gmail.com" title="E-Mail → mailto:heshengpku@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://scholar.google.com/citations?user=2BKQWbIAAAAJ" title="Google → https:&#x2F;&#x2F;scholar.google.com&#x2F;citations?user&#x3D;2BKQWbIAAAAJ" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/heshengpku/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;heshengpku&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://orcid.org/0000-0002-7142-8990" title="ORCiD → https:&#x2F;&#x2F;orcid.org&#x2F;0000-0002-7142-8990" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>ORCiD</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/sheng-he-14" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;sheng-he-14" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="languages">
+    <label class="lang-select-label">
+      <i class="fa fa-language"></i>
+      <span>简体中文</span>
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </label>
+    <select class="lang-select" data-canonical="">
+      
+        <option value="zh-CN" data-href="/2022/10/17/FundArith/" selected="">
+          简体中文
+        </option>
+      
+        <option value="en" data-href="/en/2022/10/17/FundArith/" selected="">
+          English
+        </option>
+      
+    </select>
+  </div>
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">He, Sheng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">54k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:18</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

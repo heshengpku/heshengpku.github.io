@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN,en,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"heshengpku.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="1、SonarQube容器化安装 采用docker-compose方式部署SonarQube服务，但是需要先做一些系统设置才能启动  对sonarqube挂载目录赋权：  12cd &#x2F;opt&#x2F;sonarqube&#x2F;   #与docker-compose.yml文件一致chown -R 999:999 .">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SonarQube代码扫描">
+<meta property="og:url" content="https://heshengpku.github.io/2021/01/22/SonarQube/index.html">
+<meta property="og:site_name" content="何晟">
+<meta property="og:description" content="1、SonarQube容器化安装 采用docker-compose方式部署SonarQube服务，但是需要先做一些系统设置才能启动  对sonarqube挂载目录赋权：  12cd &#x2F;opt&#x2F;sonarqube&#x2F;   #与docker-compose.yml文件一致chown -R 999:999 .">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-22T05:24:14.000Z">
+<meta property="article:modified_time" content="2024-02-20T07:24:52.000Z">
+<meta property="article:author" content="He, Sheng">
+<meta property="article:tag" content="Golang">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://heshengpku.github.io/2021/01/22/SonarQube/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>SonarQube代码扫描 | 何晟</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">何晟</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">HE, SEHNG</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-fw fa-sitemap"></i>站点地图</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404/" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://heshengpku.github.io/2021/01/22/SonarQube/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="He, Sheng">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="何晟">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SonarQube代码扫描
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-22 13:24:14" itemprop="dateCreated datePublished" datetime="2021-01-22T13:24:14+08:00">2021-01-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-02-20 15:24:52" itemprop="dateModified" datetime="2024-02-20T15:24:52+08:00">2024-02-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Tools/" itemprop="url" rel="index"><span itemprop="name">Tools</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="sonarqube容器化安装">1、SonarQube容器化安装</h2>
+<p>采用docker-compose方式部署SonarQube服务，但是需要先做一些系统设置才能启动</p>
+<ul>
+<li>对sonarqube挂载目录赋权：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd /opt/sonarqube/   #与docker-compose.yml文件一致</span><br><span class="line">chown -R 999:999 .</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<ul>
+<li>由于 Elasticsearch 占用内存较高。官方要求 <code>max_map_count</code>
+需要配置到最小 <code>262144</code></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w vm.max_map_count=262144</span><br></pre></td></tr></table></figure>
+<p>看有的文章提到还需要设置
+<code>fs.file-max</code>，但本地部署未设置没有发现问题</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysctl -w fs.file-max=65536</span><br></pre></td></tr></table></figure>
+<p>上述设置是临时生效，如果需要永久生效，需要编辑
+<code>/etc/sysctl.conf</code> 文件加入以下配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vm.max_map_count=262144</span><br><span class="line">fs.file-max=65536</span><br></pre></td></tr></table></figure>
+<p>如果采用永久配置，保险起见，重启系统</p>
+<ul>
+<li>创建docker-compose.yml文件如下</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">postgres:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">postgres:12</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">postgres</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">5432</span><span class="string">:5432</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/postgres/postgresql/:/var/lib/postgresql</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/postgres/data/:/var/lib/postgresql/data</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">TZ:</span> <span class="string">Asia/Shanghai</span></span><br><span class="line">      <span class="attr">POSTGRES_USER:</span> <span class="string">sonar</span></span><br><span class="line">      <span class="attr">POSTGRES_PASSWORD:</span> <span class="string">sonar</span></span><br><span class="line">      <span class="attr">POSTGRES_DB:</span> <span class="string">sonar</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">sonar:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">sonarqube:7.9-community</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">sonar</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">postgres</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/sonarqube/extensions:/opt/sonarqube/extensions</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/sonarqube/logs:/opt/sonarqube/logs</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/sonarqube/data:/opt/sonarqube/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/opt/sonarqube/conf:/opt/sonarqube/conf</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9000</span><span class="string">:9000</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="attr">SONARQUBE_JDBC_USERNAME:</span> <span class="string">sonar</span></span><br><span class="line">      <span class="attr">SONARQUBE_JDBC_PASSWORD:</span> <span class="string">sonar</span></span><br><span class="line">      <span class="attr">SONARQUBE_JDBC_URL:</span> <span class="string">jdbc:postgresql://postgres:5432/sonar</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+<p>在服务器部署时遇到了隔一段时间sonar容器宕机问题，排查可能还是es的jvm设置问题（内存不足导致堆栈溢出）。所以需要在部署文件中sonar的
+<code>environment</code> 增加一项</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">SONARQUBE_SEARCH_JAVAOPTS=&quot;-Xmx1G</span> <span class="string">-Xms1G&quot;</span> <span class="comment">#对于运行ElasticSearch的JVM</span></span><br></pre></td></tr></table></figure>
+<p>如果出现类似的问题，可能需要增加其他jvm设置项</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">SONARQUBE_WEB_JAVAOPTS=&quot;-Xmx1G</span> <span class="string">-Xms1G&quot;</span> <span class="comment">#对于Web Server JVM</span></span><br><span class="line"><span class="string">SONARQUBE_CE_JAVAOPTS=&quot;-Xmx1G</span> <span class="string">-Xms1G&quot;</span> <span class="comment">#对于计算引擎JVM</span></span><br></pre></td></tr></table></figure>
+<p>1G的大小可以根据实际情况调整，一般不少于512m</p>
+<h2 id="配置代码项目的-sonar-project.properties-文件">2、配置代码项目的
+<code>sonar-project.properties</code> 文件</h2>
+<p>需要安装 <code>sonar-scanner</code></p>
+<h3 id="go语言项目">go语言项目</h3>
+<ul>
+<li><p>在 SonarQube &gt; Administration &gt; Marketplace 中安装
+<code>SonarGo</code> 插件</p></li>
+<li><p>采用 <code>golangci-lint</code> 扫描，安装后运行</p></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">golangci-lint run -v --out-format checkstyle &gt; report.xml</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>go test</code>执行单元测试，并输出覆盖率报告</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">go test -coverprofile=coverage.out ./...</span><br><span class="line">go test -json ./... &gt; report.json</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>sonar-project.properties</code> 示例如下：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sonar.host.url=http://localhost:9000</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.login=admin</span><br><span class="line">sonar.password=admin</span><br><span class="line">sonar.projectKey=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectName=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectVersion=1.0</span><br><span class="line">sonar.go.golangci-lint.reportPaths=report.xml</span><br><span class="line">sonar.go.coverage.reportPaths=coverage.out</span><br><span class="line">sonar.go.tests.reportPaths=report.json</span><br><span class="line">sonar.sources=./</span><br><span class="line">sonar.exclusions=**/*_test.go,**/vendor/**</span><br><span class="line">sonar.language=go</span><br><span class="line">sonar.tests=.</span><br><span class="line">sonar.test.inclusions=**/*_test.go</span><br><span class="line">sonar.test.exclusions=**/vendor/**</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行 <code>sonar-scanner</code> 即可</li>
+</ul>
+<h3 id="java项目">Java项目</h3>
+<ul>
+<li><p>在 SonarQube &gt; Administration &gt; Marketplace 中安装
+<code>Java Code Quality and Security</code> 插件</p></li>
+<li><p>Sonarqube扫描Java项目需要先对项目编译，以maven为例</p></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn compile</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>sonar-project.properties</code> 示例如下：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">sonar.host.url=http://localhost:9000</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.login=admin</span><br><span class="line">sonar.password=admin</span><br><span class="line">sonar.projectKey=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectName=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectVersion=1.0</span><br><span class="line">sonar.java.binaries=target/classes</span><br><span class="line">sonar.sources=src</span><br><span class="line">sonar.language=java</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行 <code>sonar-scanner</code> 即可</li>
+</ul>
+<h3 id="javascript项目">JavaScript项目</h3>
+<ul>
+<li><p>在 SonarQube &gt; Administration &gt; Marketplace 中安装
+<code>SonarJS</code> 插件，会自动安装 <code>SonarTS</code> 插件</p></li>
+<li><p><code>sonar-project.properties</code> 示例如下：</p></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">sonar.host.url=http://localhost:9000</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.login=admin</span><br><span class="line">sonar.password=admin</span><br><span class="line">sonar.projectKey=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectName=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectVersion=1.0</span><br><span class="line">sonar.sources=src</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">sonar.tests=<span class="built_in">test</span></span></span><br><span class="line">sonar.language=js</span><br><span class="line">sonar.profile=node</span><br><span class="line"></span><br><span class="line">sonar.dynamicAnalysis=reuseReports</span><br><span class="line"></span><br><span class="line">sonar.javascript.jstest.reportsPath=reports</span><br><span class="line">sonar.javascript.lcov.reportPath=reports/coverage.lcov</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行 <code>sonar-scanner</code> 即可</li>
+</ul>
+<h3 id="rust项目">Rust项目</h3>
+<ul>
+<li><p>在 SonarQube Marketplace 还没有官方 <code>Rust</code>
+插件，需要手动将 <a
+target="_blank" rel="noopener" href="https://github.com/elegoff/sonar-rust"><code>SonarRust</code></a>
+插件安装到 Sonarqube 的 <code>extensions/plugins</code> 目录下，并重启
+Sonarqube</p></li>
+<li><p>采用 <code>cargo clippy</code> 扫描，运行</p></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo clippy --message-format=json &amp;&gt; report.json</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>sonar-project.properties</code> 示例如下：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">sonar.host.url=http://localhost:9000</span><br><span class="line">sonar.sourceEncoding=UTF-8</span><br><span class="line">sonar.projectKey=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectName=&lt;Progect_Name&gt;</span><br><span class="line">sonar.projectVersion=1.0 \</span><br><span class="line">sonar.sources=src \</span><br><span class="line">sonar.exclusions=**/protos/**,**/target/** \</span><br><span class="line">sonar.language=rust \</span><br><span class="line">sonar.rust.clippy.reportPaths=report.json</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行 <code>sonar-scanner</code> 即可</li>
+</ul>
+<h2 id="使用-gitlab-ci-自动集成sonar代码扫描">3、使用
+<code>gitlab-ci</code> 自动集成sonar代码扫描</h2>
+<h3 id="配置go语言项目">配置go语言项目</h3>
+<ul>
+<li>修改ci相关的shell脚本，并在ci文件中加入scanner步骤</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">docker run -i --rm -v $(pwd):/src -w /src &lt;harbor-url&gt;/golangci-lint:latest golangci-lint run -v --timeout 10m --out-format checkstyle &gt; report.xml</span><br><span class="line"></span><br><span class="line">docker run -i --rm -v $(pwd):/src -w /src &lt;harbor-url&gt;/golang:latest go test -coverprofile=coverage.out ./... ; go test -json ./... &gt; report.json</span><br><span class="line"></span><br><span class="line">docker run -i --rm -v $(pwd):/src -w /src &lt;harbor-url&gt;/sonar-scanner-cli:latest sonar-scanner -X \</span><br><span class="line">  -Dsonar.host.url=http://localhost:9000 \</span><br><span class="line">  -Dsonar.sourceEncoding=UTF-8 \</span><br><span class="line">  -Dsonar.login=admin \</span><br><span class="line">  -Dsonar.password=admin \</span><br><span class="line">  -Dsonar.projectKey=&lt;Progect_Name&gt; \</span><br><span class="line">  -Dsonar.projectName=&lt;Progect_Name&gt; \</span><br><span class="line">  -Dsonar.projectVersion=1.0 \</span><br><span class="line">  -Dsonar.go.coverage.reportPaths=coverage.out \</span><br><span class="line">  -Dsonar.go.tests.reportPaths=report.json \</span><br><span class="line">  -Dsonar.sources=./ \</span><br><span class="line">  -Dsonar.exclusions=**/*_test.go,**/vendor/** \</span><br><span class="line">  -Dsonar.language=go \</span><br><span class="line">  -Dsonar.tests=. \</span><br><span class="line">  -Dsonar.working.directory=/tmp \</span><br><span class="line">  -Dsonar.test.inclusions=**/*_test.go \</span><br><span class="line">  -Dsonar.test.exclusions=**/vendor/** \</span><br><span class="line">  -Dsonar.go.golangci-lint.reportPaths=report.xml ; rm -rf report.xml coverage.out report.json</span><br></pre></td></tr></table></figure>
+<h3 id="配置java项目">配置Java项目</h3>
+<ul>
+<li>修改ci相关的shell脚本，并在ci文件中加入scanner步骤</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function scanner()&#123;</span><br><span class="line">    log &quot;scanner begin&quot;</span><br><span class="line">    mvn $&#123;MVN_OPTIONS&#125; compile</span><br><span class="line">    docker run -i --rm -v $(pwd):/src -w /src &lt;harbour-url&gt;/sonar-scanner-cli:latest sonar-scanner -X \</span><br><span class="line">        -Dsonar.host.url=http://localhost:9000 \</span><br><span class="line">        -Dsonar.sourceEncoding=UTF-8 \</span><br><span class="line">        -Dsonar.login=admin \</span><br><span class="line">        -Dsonar.password=admin \</span><br><span class="line">        -Dsonar.projectKey=&lt;Progect_Name&gt; \</span><br><span class="line">        -Dsonar.projectName=&lt;Progect_Name&gt; \</span><br><span class="line">        -Dsonar.projectVersion=1.0 \</span><br><span class="line">        -Dsonar.java.binaries=target/classes \</span><br><span class="line">        -Dsonar.sources=src \</span><br><span class="line">        -Dsonar.language=java \</span><br><span class="line">        -Dsonar.working.directory=/tmp</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="配置javascript项目">配置JavaScript项目</h3>
+<ul>
+<li>修改gitlab-ci.yaml文件即可</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">build:</span></span><br><span class="line">  <span class="attr">stage:</span> <span class="string">build</span></span><br><span class="line">  <span class="attr">script:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">scanner</span></span><br><span class="line"></span><br><span class="line"><span class="string">.import_functions:</span> <span class="string">&amp;import_functions</span> <span class="string">|</span></span><br><span class="line"></span><br><span class="line">  <span class="string">function</span> <span class="string">scanner()</span> &#123;</span><br><span class="line">    <span class="string">docker</span> <span class="string">run</span> <span class="string">-i</span> <span class="string">--rm</span> <span class="string">-v</span> <span class="string">$(pwd):/src</span> <span class="string">-w</span> <span class="string">/src</span> <span class="string">&lt;harbour-url&gt;/sonar-scanner-cli:latest</span> <span class="string">sonar-scanner</span> <span class="string">-X</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.host.url=http://localhost:9000</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.sourceEncoding=UTF-8</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.login=admin</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.password=admin</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.projectKey=$</span>&#123;<span class="string">CI_PROJECT_NAME</span>&#125;  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.projectName=$</span>&#123;<span class="string">CI_PROJECT_NAME</span>&#125;  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.projectVersion=1.0</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.sources=src</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.language=js</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.profile=node</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.working.directory=/tmp</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.dynamicAnalysis=reuseReports</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.javascript.jstest.reportsPath=reports</span>  <span class="string">\</span></span><br><span class="line">        <span class="string">-Dsonar.javascript.lcov.reportPath=reports/coverage.lcov</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="attr">before_script:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="meta">*import_functions</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置rust项目">配置Rust项目</h3>
+<ul>
+<li>修改ci相关的shell脚本，并在ci文件中加入scanner步骤</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">cargo clippy --message-format=json &amp;&gt; report.json</span><br><span class="line"></span><br><span class="line">docker run -i --rm -v $(pwd):/src -w /src &lt;harbour-url&gt;/sonar-scanner-cli:latest sonar-scanner -X \</span><br><span class="line">  -Dsonar.host.url=http://localhost:9000 \</span><br><span class="line">  -Dsonar.sourceEncoding=UTF-8 \</span><br><span class="line">  -Dsonar.projectKey=$&#123;CI_PROJECT_NAME&#125; \</span><br><span class="line">  -Dsonar.projectName=$&#123;CI_PROJECT_NAME&#125; \</span><br><span class="line">  -Dsonar.projectVersion=1.0 \</span><br><span class="line">  -Dsonar.sources=src \</span><br><span class="line">  -Dsonar.exclusions=**/protos/**,**/target/** \</span><br><span class="line">  -Dsonar.language=rust \</span><br><span class="line">  -Dsonar.working.directory=/tmp \</span><br><span class="line">  -Dsonar.rust.clippy.reportPaths=report.json ; rm -rf report.json</span><br></pre></td></tr></table></figure>
+<h2 id="sonarqube从7.9升级到8.9-lts">4、Sonarqube从7.9升级到8.9 LTS</h2>
+<p>参见 <a
+target="_blank" rel="noopener" href="https://docs.sonarqube.org/latest/setup/upgrading/">Sonarqbue官方升级说明</a></p>
+<h3 id="暂停旧服务">暂停旧服务</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose down</span><br></pre></td></tr></table></figure>
+<h3 id="删除不兼容的plugins">删除不兼容的Plugins</h3>
+<p>不兼容的Plugin列表见：<a
+target="_blank" rel="noopener" href="https://docs.sonarqube.org/latest/instance-administration/plugin-version-matrix/">Plugin
+Version Matrix</a></p>
+<h3 id="修改docker-compose.yaml文件">修改docker-compose.yaml文件</h3>
+<p>将</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sonar:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">sonarqube:7.9-community</span></span><br></pre></td></tr></table></figure>
+<p>改为</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">sonar:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">sonarqube:8.9-community</span></span><br></pre></td></tr></table></figure>
+<p>即可</p>
+<h3 id="重新启动服务">重新启动服务</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker-compose up -d</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"><i class="fa fa-tag"></i> Golang</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/06/04/Hyperledger-Explorer/" rel="prev" title="Hyperledger-Explorer">
+      <i class="fa fa-chevron-left"></i> Hyperledger-Explorer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/03/22/TimeTour/" rel="next" title="时间探秘">
+      时间探秘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#sonarqube%E5%AE%B9%E5%99%A8%E5%8C%96%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">1、SonarQube容器化安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%A0%81%E9%A1%B9%E7%9B%AE%E7%9A%84-sonar-project.properties-%E6%96%87%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">2、配置代码项目的
+sonar-project.properties 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#go%E8%AF%AD%E8%A8%80%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.1.</span> <span class="nav-text">go语言项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.2.</span> <span class="nav-text">Java项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#javascript%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.3.</span> <span class="nav-text">JavaScript项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rust%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.4.</span> <span class="nav-text">Rust项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-gitlab-ci-%E8%87%AA%E5%8A%A8%E9%9B%86%E6%88%90sonar%E4%BB%A3%E7%A0%81%E6%89%AB%E6%8F%8F"><span class="nav-number">3.</span> <span class="nav-text">3、使用
+gitlab-ci 自动集成sonar代码扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEgo%E8%AF%AD%E8%A8%80%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.1.</span> <span class="nav-text">配置go语言项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjava%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.2.</span> <span class="nav-text">配置Java项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEjavascript%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.3.</span> <span class="nav-text">配置JavaScript项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AErust%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.4.</span> <span class="nav-text">配置Rust项目</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sonarqube%E4%BB%8E7.9%E5%8D%87%E7%BA%A7%E5%88%B08.9-lts"><span class="nav-number">4.</span> <span class="nav-text">4、Sonarqube从7.9升级到8.9 LTS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9A%82%E5%81%9C%E6%97%A7%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.1.</span> <span class="nav-text">暂停旧服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E4%B8%8D%E5%85%BC%E5%AE%B9%E7%9A%84plugins"><span class="nav-number">4.2.</span> <span class="nav-text">删除不兼容的Plugins</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9docker-compose.yaml%E6%96%87%E4%BB%B6"><span class="nav-number">4.3.</span> <span class="nav-text">修改docker-compose.yaml文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E6%96%B0%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.4.</span> <span class="nav-text">重新启动服务</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="He, Sheng"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">He, Sheng</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">27</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/heshengpku" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;heshengpku" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:heshengpku@gmail.com" title="E-Mail → mailto:heshengpku@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://scholar.google.com/citations?user=2BKQWbIAAAAJ" title="Google → https:&#x2F;&#x2F;scholar.google.com&#x2F;citations?user&#x3D;2BKQWbIAAAAJ" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>Google</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.linkedin.com/in/heshengpku/" title="Linkedin → https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;heshengpku&#x2F;" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Linkedin</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://orcid.org/0000-0002-7142-8990" title="ORCiD → https:&#x2F;&#x2F;orcid.org&#x2F;0000-0002-7142-8990" rel="noopener" target="_blank"><i class="fa fa-fw fa-google"></i>ORCiD</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/sheng-he-14" title="Zhihu → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;sheng-he-14" rel="noopener" target="_blank"><i class="fa fa-fw fa-linkedin"></i>Zhihu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+  <div class="languages">
+    <label class="lang-select-label">
+      <i class="fa fa-language"></i>
+      <span>简体中文</span>
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </label>
+    <select class="lang-select" data-canonical="">
+      
+        <option value="zh-CN" data-href="/2021/01/22/SonarQube/" selected="">
+          简体中文
+        </option>
+      
+        <option value="en" data-href="/en/2021/01/22/SonarQube/" selected="">
+          English
+        </option>
+      
+    </select>
+  </div>
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">He, Sheng</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">54k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">3:18</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
