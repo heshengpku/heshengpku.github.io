@@ -1,6 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Docker命令整理</title>
+    <url>/2017/10/01/Docker/</url>
+    <content><![CDATA[<ul>
+<li>Docker 容器镜像删除</li>
+</ul>
+<span id="more"></span>
+<h2
+id="停止所有的container这样才能够删除其中的images">1.停止所有的container，这样才能够删除其中的images：</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<p>如果想要删除所有container的话再加一个指令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<h2 id="查看当前有些什么images">2.查看当前有些什么images</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<h2
+id="删除images通过image的id来指定删除谁">3.删除images，通过image的id来指定删除谁</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
+<p>想要删除untagged
+images，也就是那些id为&lt;None&gt;的image的话可以用</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi $(docker images | grep &quot;^&lt;none&gt;&quot; | awk &quot;&#123;print $3&#125;&quot;)</span><br></pre></td></tr></table></figure>
+<p>要删除全部image的话</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Fabric chaincode开发调试</title>
+    <url>/2018/01/02/Fabric-Chaincode/</url>
+    <content><![CDATA[<p>链码（<code>Chaincode</code>）即<code>Fabric</code>中的智能合约，作为运行在<code>Fabric</code>区块链网络上的程序，链码在一般的运行模式下是运行在docker容器中的。
+为了方便在开发中调试链码，可以使用开发模式。</p>
+<ul>
+<li>需要已经安装：<code>docker</code>、<code>docker-compose</code>和<code>Fabric</code>的相关镜像，
+<code>Go</code>和<code>Fabric</code>的源码不是必需的，因为调试仍然是在<code>Fabric</code>镜像中进行。</li>
+</ul>
+<span id="more"></span>
+<h3 id="首先下载官方提供的fabric-samples">1.
+首先下载官方提供的fabric-samples：</h3>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/fabric-samples.git</span><br></pre></td></tr></table></figure>
+<p>将需要调试的chaincode源码（比如<code>gocc</code>）放入链码目录（<code>fabric-samples/chaincode</code>）</p>
+<p>如果要使用couchdb作为状态数据库,
+应该在<code>docker-comose-simple.yaml</code>的<code>peer</code>环境变量中添加：
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984</span></span><br></pre></td></tr></table></figure> 在依赖中添加： <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">depends_on:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">orderer</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">couchdb</span></span><br></pre></td></tr></table></figure> 并添加couchdb容器：
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">couchdb:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">couchdb</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-couchdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5984</span><span class="string">:5984</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">DB_URL:</span> <span class="string">http://localhost:5984/member_db</span></span><br></pre></td></tr></table></figure></p>
+<p>为了使用<code>DEBUG</code>模式调试链码，需要在<code>chaincode</code>容器中添加环境变量：
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_CHAINCODE_LOGGING_LEVEL=DEBUG</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="打开终端1">2. 打开终端1</h4>
+<p>启动网络： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd fabric-samples/chaincode-docker-devmode</span><br><span class="line">docker-compose -f docker-compose-simple.yaml up -d</span><br></pre></td></tr></table></figure></p>
+<p>进入链码容器： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it chaincode bash</span><br></pre></td></tr></table></figure></p>
+<p>编译链码（假设链码文件夹为<code>/gocc</code>） <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd gocc</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
+启动链码： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./gocc</span><br></pre></td></tr></table></figure></p>
+<h4 id="打开终端2">3. 打开终端2</h4>
+<p>进入fabric客户端： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it cli bash</span><br></pre></td></tr></table></figure> 安装并实例化： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0</span><br><span class="line">peer chaincode instantiate -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure> 调用
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode invoke -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
+<p>查询 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode query -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
+<h4 id="关闭网络">4. 关闭网络</h4>
+<p>退出终端 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure></p>
+<p>关闭网络： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose -f docker-compose-simple.yaml down</span><br></pre></td></tr></table></figure></p>
+<p>删除<code>myc.block</code>文件，下次才能正常启动网络:
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm myc.block</span><br></pre></td></tr></table></figure></p>
+<h2 id="fabric-couchdb-实现排序查询">Fabric + CouchDB 实现排序查询</h2>
+<p>在<a
+href="localhost:5984/_utils">localhost:5984/_utils</a>可以打开<code>Fauxton</code>直接查看couchdb信息
+为需要排序的字段创建索引文件（index），然后即可在网页客户端或者chaincode中的<code>rich query</code>中查询：
+- 在<code>Design Documents</code>中添加<code>Mango Indexes</code> -
+创建索引文件，例如：</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;index&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;fields&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;data.createTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;chaincodeid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;ddoc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;indexTimeSortDoc&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;indexTimeSortDesc&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;json&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>即为<code>createTime</code>字段创建了一个默认反序排列的索引，其中<code>chaincode</code>与<code>docType</code>必不可少，<code>ddoc</code>与<code>name</code>的具体值随意</li>
+<li>在<code>Run A Query with Mango</code>中即可实现正反序查询：</li>
+</ul>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;selector&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;typename&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sort&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.createTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;chaincodeid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>注意不同的字段排序方法需要创建不同的索引文件</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Blockchain</category>
+      </categories>
+      <tags>
+        <tag>Blockchain</tag>
+        <tag>Hyperledger</tag>
+        <tag>Fabric</tag>
+        <tag>Chaincode</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>以太坊私有链搭建操作指南</title>
     <url>/2017/11/01/Ethereum/</url>
     <content><![CDATA[<p>来源：https://my.oschina.net/u/2349981/blog/865256
@@ -160,144 +250,6 @@ ABI。自己拼接字段既不方便又容易出错，所以一般都使用封�
       </categories>
       <tags>
         <tag>Ethereum</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Fabric chaincode开发调试</title>
-    <url>/2018/01/02/Fabric-Chaincode/</url>
-    <content><![CDATA[<p>链码（<code>Chaincode</code>）即<code>Fabric</code>中的智能合约，作为运行在<code>Fabric</code>区块链网络上的程序，链码在一般的运行模式下是运行在docker容器中的。
-为了方便在开发中调试链码，可以使用开发模式。</p>
-<ul>
-<li>需要已经安装：<code>docker</code>、<code>docker-compose</code>和<code>Fabric</code>的相关镜像，
-<code>Go</code>和<code>Fabric</code>的源码不是必需的，因为调试仍然是在<code>Fabric</code>镜像中进行。</li>
-</ul>
-<span id="more"></span>
-<h3 id="首先下载官方提供的fabric-samples">1.
-首先下载官方提供的fabric-samples：</h3>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/fabric-samples.git</span><br></pre></td></tr></table></figure>
-<p>将需要调试的chaincode源码（比如<code>gocc</code>）放入链码目录（<code>fabric-samples/chaincode</code>）</p>
-<p>如果要使用couchdb作为状态数据库,
-应该在<code>docker-comose-simple.yaml</code>的<code>peer</code>环境变量中添加：
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_STATEDATABASE=CouchDB</span></span><br><span class="line"><span class="bullet">-</span> <span class="string">CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=couchdb:5984</span></span><br></pre></td></tr></table></figure> 在依赖中添加： <figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">depends_on:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">orderer</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">couchdb</span></span><br></pre></td></tr></table></figure> 并添加couchdb容器：
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">couchdb:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">couchdb</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-couchdb</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="number">5984</span><span class="string">:5984</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="attr">DB_URL:</span> <span class="string">http://localhost:5984/member_db</span></span><br></pre></td></tr></table></figure></p>
-<p>为了使用<code>DEBUG</code>模式调试链码，需要在<code>chaincode</code>容器中添加环境变量：
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="string">CORE_CHAINCODE_LOGGING_LEVEL=DEBUG</span></span><br></pre></td></tr></table></figure></p>
-<h4 id="打开终端1">2. 打开终端1</h4>
-<p>启动网络： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd fabric-samples/chaincode-docker-devmode</span><br><span class="line">docker-compose -f docker-compose-simple.yaml up -d</span><br></pre></td></tr></table></figure></p>
-<p>进入链码容器： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it chaincode bash</span><br></pre></td></tr></table></figure></p>
-<p>编译链码（假设链码文件夹为<code>/gocc</code>） <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd gocc</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
-启动链码： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./gocc</span><br></pre></td></tr></table></figure></p>
-<h4 id="打开终端2">3. 打开终端2</h4>
-<p>进入fabric客户端： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker exec -it cli bash</span><br></pre></td></tr></table></figure> 安装并实例化： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode install -p chaincodedev/chaincode/sacc -n mycc -v 0</span><br><span class="line">peer chaincode instantiate -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure> 调用
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode invoke -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
-<p>查询 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">peer chaincode query -n mycc -v 0 -c &#x27;&#123;&quot;Args&quot;:[&quot;...&quot;]&#125;&#x27; -C myc</span><br></pre></td></tr></table></figure></p>
-<h4 id="关闭网络">4. 关闭网络</h4>
-<p>退出终端 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">exit</span><br></pre></td></tr></table></figure></p>
-<p>关闭网络： <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose -f docker-compose-simple.yaml down</span><br></pre></td></tr></table></figure></p>
-<p>删除<code>myc.block</code>文件，下次才能正常启动网络:
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rm myc.block</span><br></pre></td></tr></table></figure></p>
-<h2 id="fabric-couchdb-实现排序查询">Fabric + CouchDB 实现排序查询</h2>
-<p>在<a
-href="localhost:5984/_utils">localhost:5984/_utils</a>可以打开<code>Fauxton</code>直接查看couchdb信息
-为需要排序的字段创建索引文件（index），然后即可在网页客户端或者chaincode中的<code>rich query</code>中查询：
-- 在<code>Design Documents</code>中添加<code>Mango Indexes</code> -
-创建索引文件，例如：</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;index&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;fields&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;data.createTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;chaincodeid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;ddoc&quot;</span><span class="punctuation">:</span> <span class="string">&quot;indexTimeSortDoc&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;indexTimeSortDesc&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;json&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>即为<code>createTime</code>字段创建了一个默认反序排列的索引，其中<code>chaincode</code>与<code>docType</code>必不可少，<code>ddoc</code>与<code>name</code>的具体值随意</li>
-<li>在<code>Run A Query with Mango</code>中即可实现正反序查询：</li>
-</ul>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;selector&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;typename&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sort&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.createTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;chaincodeid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;data.docType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;desc&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<ul>
-<li>注意不同的字段排序方法需要创建不同的索引文件</li>
-</ul>
-]]></content>
-      <categories>
-        <category>Blockchain</category>
-      </categories>
-      <tags>
-        <tag>Blockchain</tag>
-        <tag>Hyperledger</tag>
-        <tag>Fabric</tag>
-        <tag>Chaincode</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Docker命令整理</title>
-    <url>/2017/10/01/Docker/</url>
-    <content><![CDATA[<ul>
-<li>Docker 容器镜像删除</li>
-</ul>
-<span id="more"></span>
-<h2
-id="停止所有的container这样才能够删除其中的images">1.停止所有的container，这样才能够删除其中的images：</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker stop $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<p>如果想要删除所有container的话再加一个指令：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
-<h2 id="查看当前有些什么images">2.查看当前有些什么images</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
-<h2
-id="删除images通过image的id来指定删除谁">3.删除images，通过image的id来指定删除谁</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi &lt;image id&gt;</span><br></pre></td></tr></table></figure>
-<p>想要删除untagged
-images，也就是那些id为&lt;None&gt;的image的话可以用</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi $(docker images | grep &quot;^&lt;none&gt;&quot; | awk &quot;&#123;print $3&#125;&quot;)</span><br></pre></td></tr></table></figure>
-<p>要删除全部image的话</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker rmi $(docker images -q)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Tools</category>
-      </categories>
-      <tags>
-        <tag>Docker</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git命令整理</title>
-    <url>/2017/01/01/Git/</url>
-    <content><![CDATA[<h2 id="git初始化">Git初始化</h2>
-<p>Command line instructions 本地Git全局设置（Git global setup）</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;yourname&quot;</span><br><span class="line">git config --global user.email &quot;your@email&quot;</span><br></pre></td></tr></table></figure>
-<span id="more"></span>
-<p>克隆新仓库（Create a new repository）</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone http://your.repository.address.git</span><br><span class="line">cd repo</span><br><span class="line">touch README.md</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;add README&quot;</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
-<p>对于已经存在的文件夹（Existing folder）</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd existing_folder</span><br><span class="line">git init</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;Initial commit&quot;</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
-<p>对于本地已经存在的仓库（Existing Git repository）</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd existing_repo</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git push -u origin --all</span><br><span class="line">git push -u origin --tags</span><br></pre></td></tr></table></figure>
-<h2 id="git忽略的文件">Git忽略的文件</h2>
-<h3 id="查看所有被git忽略的文件">1. 查看所有被Git忽略的文件</h3>
-<p>Git 1.6+:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git ls-files --others -i --exclude-standard</span><br></pre></td></tr></table></figure>
-<p>Git 1.4, 1.5:</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git ls-files --others -i \</span><br><span class="line">--exclude-from=&quot;`git rev-parse --git-dir`/info/exclude&quot; \</span><br><span class="line">--exclude-per-directory=.gitignore</span><br></pre></td></tr></table></figure>
-<h3 id="清除所有被git忽略的文件或文件夹小心">2.
-清除所有被Git忽略的文件或文件夹(小心)</h3>
-<ul>
-<li>查看在清理之前会做的操作</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clean -Xn</span><br></pre></td></tr></table></figure>
-<ul>
-<li>清除文件或文件夹， -f 选项强制删除，-d删除目录（小心）</li>
-</ul>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clean -Xdf</span><br></pre></td></tr></table></figure>
-<h2 id="git变更远程仓库地址">Git变更远程仓库地址</h2>
-<h3 id="通过命令直接修改远程地址">1. 通过命令直接修改远程地址</h3>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote set-url origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
-<h3 id="通过命令先删除再添加远程仓库">2.
-通过命令先删除再添加远程仓库</h3>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote rm origin</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
-<h2 id="git撤销已同步的远程提交">Git撤销已同步的远程提交</h2>
-<p>先在本地回退到指定版本：</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git reflog // 查看commits记录</span><br><span class="line">git reset --hard &lt;版本号&gt; // 注意使用 --hard 参数会抛弃当前工作区的修改</span><br><span class="line">// git reset HEAD~1 // 撤回至上一个commit</span><br><span class="line">git push origin &lt;分支名&gt; --force</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Tools</category>
-      </categories>
-      <tags>
-        <tag>Git</tag>
-        <tag>GitHub</tag>
-        <tag>GitLab</tag>
       </tags>
   </entry>
   <entry>
@@ -739,10 +691,94 @@ chaincode ,添加两个变量 ‘c’和‘d’: <figure class="highlight shell"
         <category>Blockchain</category>
       </categories>
       <tags>
+        <tag>Docker</tag>
         <tag>Blockchain</tag>
         <tag>Hyperledger</tag>
         <tag>Fabric</tag>
-        <tag>Docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hyperledger-Explorer</title>
+    <url>/2018/06/04/Hyperledger-Explorer/</url>
+    <content><![CDATA[<p>Hyperledger项目提供了一个官方的区块链浏览器（现在只支持Fabric），见<a
+href="https://github.com/hyperledger/blockchain-explorer">官方文档</a>。</p>
+<p>Explorer项目最早使用的是MySQL的数据库，但现在又切换成了PostgresSQL。官方项目没有提供docker部署的方式，这里提供一种用docker-compose部署的方法，则可以不需要安装node和npm了。</p>
+<span id="more"></span>
+<h2 id="git下载源码">git下载源码</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/blockchain-explorer.git</span><br><span class="line">cd blockchain-explorer</span><br></pre></td></tr></table></figure>
+<h2 id="创建dockerfile文件">创建<code>Dockerfile</code>文件</h2>
+<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">6.9</span>.<span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> -p /home/explorer/</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home/explorer/</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . /home/explorer/</span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="language-bash"> /home/explorer/crypto-config/</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install &amp;&amp; <span class="built_in">cd</span> /home/explorer/client/ &amp;&amp; npm install &amp;&amp; npm run build</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> node /home/explorer/main.js</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
+<p>可以创建一个<code>.dockerignore</code>文件避免docker打包不必要的文件：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Dockerfile</span><br><span class="line">.git/</span><br><span class="line">docker-compose.yaml</span><br></pre></td></tr></table></figure>
+<p>这样可以将blockchain-explorer打包成docker镜像，注意修改<code>config.json</code>中的配置，也可以在启动容器是将<code>config.json</code>进行挂载。</p>
+<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;network-config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;org1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peerOrg1&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;mspid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Org1MSP&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org1.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org1.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer0.org1.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org1.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org1.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer1.org1.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;admin&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;cert&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;org2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peerOrg2&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;mspid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Org2MSP&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org2.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org2.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer0.org2.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org2.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org2.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer1.org2.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;admin&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;cert&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;host&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8080&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;channel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mychannel&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;keyValueStore&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/tmp/fabric-client-kvs&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;eventWaitTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;users&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">		   <span class="attr">&quot;username&quot;</span><span class="punctuation">:</span><span class="string">&quot;admin&quot;</span><span class="punctuation">,</span></span><br><span class="line">		   <span class="attr">&quot;secret&quot;</span><span class="punctuation">:</span><span class="string">&quot;adminpw&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	 <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;pg&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;host&quot;</span><span class="punctuation">:</span><span class="string">&quot;db&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5432&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;database&quot;</span><span class="punctuation">:</span> <span class="string">&quot;fabricexplorer&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;postgres&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;passwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;password&quot;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;license&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Apache-2.0&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h2
+id="创建docker-compose.yaml文件">创建<code>docker-compose.yaml</code>文件</h2>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Copyright 2018 He Sheng. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">   <span class="attr">byfn:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">postgres:</span></span><br><span class="line">     <span class="attr">container_name:</span> <span class="string">postgres</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">postgres</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">     <span class="attr">environment:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">POSTGRES_PASSWORD=password</span></span><br><span class="line">     <span class="attr">volumes:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">./app/db/:/docker-entrypoint-initdb.d/</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">&quot;5432:5432&quot;</span></span><br><span class="line">     <span class="attr">networks:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="attr">explorer:</span></span><br><span class="line">     <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">     <span class="attr">container_name:</span> <span class="string">explorer</span></span><br><span class="line">     <span class="attr">volumes:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">$&#123;NETWORK&#125;/crypto-config/:/home/explorer/crypto-config/</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">./config.json:/home/explorer/config.json</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">&quot;8080:8080&quot;</span></span><br><span class="line">     <span class="attr">networks:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line">     <span class="attr">links:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">postgres:db</span></span><br></pre></td></tr></table></figure>
+<p>其中</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">./app/db/:/docker-entrypoint-initdb.d/</span></span><br></pre></td></tr></table></figure>
+<p>可以使<code>postgres</code>容器启动后自动运行<code>app/db/</code>里的数据库文件<code>explorerpg.sql</code>和<code>updatepg.sql</code>。</p>
+<p>注意修改<code>$&#123;NETWORK&#125;</code>为部署Fabric网络对应的证书文件夹位置。</p>
+<h2 id="使用docker-compose部署">使用<code>docker-compose</code>部署</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose -f docker-compose.yaml up</span><br></pre></td></tr></table></figure>
+<p>会自动拉取最新的<code>postgres</code>镜像和生成<code>explorer</code>的镜像。</p>
+]]></content>
+      <categories>
+        <category>Blockchain</category>
+      </categories>
+      <tags>
+        <tag>Blockchain</tag>
+        <tag>Hyperledger</tag>
+        <tag>Fabric</tag>
+        <tag>Explorer</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git命令整理</title>
+    <url>/2017/01/01/Git/</url>
+    <content><![CDATA[<h2 id="git初始化">Git初始化</h2>
+<p>Command line instructions 本地Git全局设置（Git global setup）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git config --global user.name &quot;yourname&quot;</span><br><span class="line">git config --global user.email &quot;your@email&quot;</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>克隆新仓库（Create a new repository）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone http://your.repository.address.git</span><br><span class="line">cd repo</span><br><span class="line">touch README.md</span><br><span class="line">git add README.md</span><br><span class="line">git commit -m &quot;add README&quot;</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>对于已经存在的文件夹（Existing folder）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd existing_folder</span><br><span class="line">git init</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git add .</span><br><span class="line">git commit -m &quot;Initial commit&quot;</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<p>对于本地已经存在的仓库（Existing Git repository）</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cd existing_repo</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br><span class="line">git push -u origin --all</span><br><span class="line">git push -u origin --tags</span><br></pre></td></tr></table></figure>
+<h2 id="git忽略的文件">Git忽略的文件</h2>
+<h3 id="查看所有被git忽略的文件">1. 查看所有被Git忽略的文件</h3>
+<p>Git 1.6+:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git ls-files --others -i --exclude-standard</span><br></pre></td></tr></table></figure>
+<p>Git 1.4, 1.5:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git ls-files --others -i \</span><br><span class="line">--exclude-from=&quot;`git rev-parse --git-dir`/info/exclude&quot; \</span><br><span class="line">--exclude-per-directory=.gitignore</span><br></pre></td></tr></table></figure>
+<h3 id="清除所有被git忽略的文件或文件夹小心">2.
+清除所有被Git忽略的文件或文件夹(小心)</h3>
+<ul>
+<li>查看在清理之前会做的操作</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clean -Xn</span><br></pre></td></tr></table></figure>
+<ul>
+<li>清除文件或文件夹， -f 选项强制删除，-d删除目录（小心）</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clean -Xdf</span><br></pre></td></tr></table></figure>
+<h2 id="git变更远程仓库地址">Git变更远程仓库地址</h2>
+<h3 id="通过命令直接修改远程地址">1. 通过命令直接修改远程地址</h3>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote set-url origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
+<h3 id="通过命令先删除再添加远程仓库">2.
+通过命令先删除再添加远程仓库</h3>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git remote // 查看所有远程仓库</span><br><span class="line">git remote rm origin</span><br><span class="line">git remote add origin http://your.repository.address.git</span><br></pre></td></tr></table></figure>
+<h2 id="git撤销已同步的远程提交">Git撤销已同步的远程提交</h2>
+<p>先在本地回退到指定版本：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git reflog // 查看commits记录</span><br><span class="line">git reset --hard &lt;版本号&gt; // 注意使用 --hard 参数会抛弃当前工作区的修改</span><br><span class="line">// git reset HEAD~1 // 撤回至上一个commit</span><br><span class="line">git push origin &lt;分支名&gt; --force</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>GitHub</tag>
+        <tag>GitLab</tag>
       </tags>
   </entry>
   <entry>
@@ -3058,25 +3094,6 @@ class="math inline">\(\square\)</span></p>
       </tags>
   </entry>
   <entry>
-    <title>Fabric学习笔记</title>
-    <url>/2018/01/28/Hyperledger-Fabric/</url>
-    <content><![CDATA[<h2 id="数据持久化">数据持久化</h2>
-<p>如果需要对peer或CouchDB容器的数据持久化，一种选择是将容器的相关目录挂载到docker主机。</p>
-<p>例如，将下面两行内容放到docker-compose.yaml文件中的对应peer处：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/peer0:/var/hyperledger/production</span></span><br></pre></td></tr></table></figure>
-<p>将下面两行放到对应的CouchDB处：</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/couchdb0:/opt/couchdb/data</span></span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Blockchain</category>
-      </categories>
-      <tags>
-        <tag>Blockchain</tag>
-        <tag>Hyperledger</tag>
-        <tag>Fabric</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hyperledger Composer安装</title>
     <url>/2017/10/11/Hyperledger-Composer/</url>
     <content><![CDATA[<p>由linux基金会主导的超级账本（<code>HyperLeger Fabric</code>)试图为新一代的事务应用创建一种开放的分布式账本标准，支持许可式区块链。</p>
@@ -3271,30 +3288,14 @@ Fabric上的Commodity了。</p>
       </tags>
   </entry>
   <entry>
-    <title>Hyperledger-Explorer</title>
-    <url>/2018/06/04/Hyperledger-Explorer/</url>
-    <content><![CDATA[<p>Hyperledger项目提供了一个官方的区块链浏览器（现在只支持Fabric），见<a
-href="https://github.com/hyperledger/blockchain-explorer">官方文档</a>。</p>
-<p>Explorer项目最早使用的是MySQL的数据库，但现在又切换成了PostgresSQL。官方项目没有提供docker部署的方式，这里提供一种用docker-compose部署的方法，则可以不需要安装node和npm了。</p>
-<span id="more"></span>
-<h2 id="git下载源码">git下载源码</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/hyperledger/blockchain-explorer.git</span><br><span class="line">cd blockchain-explorer</span><br></pre></td></tr></table></figure>
-<h2 id="创建dockerfile文件">创建<code>Dockerfile</code>文件</h2>
-<figure class="highlight docker"><table><tr><td class="code"><pre><span class="line"><span class="keyword">FROM</span> node:<span class="number">6.9</span>.<span class="number">5</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> <span class="built_in">mkdir</span> -p /home/explorer/</span></span><br><span class="line"><span class="keyword">WORKDIR</span><span class="language-bash"> /home/explorer/</span></span><br><span class="line"><span class="keyword">COPY</span><span class="language-bash"> . /home/explorer/</span></span><br><span class="line"><span class="keyword">VOLUME</span><span class="language-bash"> /home/explorer/crypto-config/</span></span><br><span class="line"><span class="keyword">RUN</span><span class="language-bash"> npm install &amp;&amp; <span class="built_in">cd</span> /home/explorer/client/ &amp;&amp; npm install &amp;&amp; npm run build</span></span><br><span class="line"><span class="keyword">CMD</span><span class="language-bash"> node /home/explorer/main.js</span></span><br><span class="line"><span class="keyword">EXPOSE</span> <span class="number">8080</span></span><br></pre></td></tr></table></figure>
-<p>可以创建一个<code>.dockerignore</code>文件避免docker打包不必要的文件：</p>
-<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">Dockerfile</span><br><span class="line">.git/</span><br><span class="line">docker-compose.yaml</span><br></pre></td></tr></table></figure>
-<p>这样可以将blockchain-explorer打包成docker镜像，注意修改<code>config.json</code>中的配置，也可以在启动容器是将<code>config.json</code>进行挂载。</p>
-<figure class="highlight json"><table><tr><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">	<span class="attr">&quot;network-config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">		<span class="attr">&quot;org1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peerOrg1&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;mspid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Org1MSP&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org1.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org1.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer0.org1.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org1.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org1.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer1.org1.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;admin&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;cert&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;org2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">			<span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peerOrg2&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;mspid&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Org2MSP&quot;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer1&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org2.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer0.org2.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer0.org2.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;peer2&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;requests&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org2.example.com:7051&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;events&quot;</span><span class="punctuation">:</span> <span class="string">&quot;grpcs://peer1.org2.example.com:7053&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;server-hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;peer1.org2.example.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;tls_cacerts&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">			<span class="attr">&quot;admin&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">				<span class="attr">&quot;key&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore&quot;</span><span class="punctuation">,</span></span><br><span class="line">				<span class="attr">&quot;cert&quot;</span><span class="punctuation">:</span> <span class="string">&quot;./crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts&quot;</span></span><br><span class="line">			<span class="punctuation">&#125;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;host&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8080&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;channel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mychannel&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;keyValueStore&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/tmp/fabric-client-kvs&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;eventWaitTime&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;users&quot;</span><span class="punctuation">:</span><span class="punctuation">[</span></span><br><span class="line">		<span class="punctuation">&#123;</span></span><br><span class="line">		   <span class="attr">&quot;username&quot;</span><span class="punctuation">:</span><span class="string">&quot;admin&quot;</span><span class="punctuation">,</span></span><br><span class="line">		   <span class="attr">&quot;secret&quot;</span><span class="punctuation">:</span><span class="string">&quot;adminpw&quot;</span></span><br><span class="line">		<span class="punctuation">&#125;</span></span><br><span class="line">	 <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;pg&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;host&quot;</span><span class="punctuation">:</span><span class="string">&quot;db&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5432&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;database&quot;</span><span class="punctuation">:</span> <span class="string">&quot;fabricexplorer&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;username&quot;</span><span class="punctuation">:</span> <span class="string">&quot;postgres&quot;</span><span class="punctuation">,</span></span><br><span class="line">		<span class="attr">&quot;passwd&quot;</span><span class="punctuation">:</span> <span class="string">&quot;password&quot;</span></span><br><span class="line">	<span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">	<span class="attr">&quot;license&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Apache-2.0&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
-<h2
-id="创建docker-compose.yaml文件">创建<code>docker-compose.yaml</code>文件</h2>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="comment"># Copyright 2018 He Sheng. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">&quot;2&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">   <span class="attr">byfn:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">postgres:</span></span><br><span class="line">     <span class="attr">container_name:</span> <span class="string">postgres</span></span><br><span class="line">     <span class="attr">image:</span> <span class="string">postgres</span></span><br><span class="line">     <span class="attr">restart:</span> <span class="string">always</span></span><br><span class="line">     <span class="attr">environment:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">POSTGRES_PASSWORD=password</span></span><br><span class="line">     <span class="attr">volumes:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">./app/db/:/docker-entrypoint-initdb.d/</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">&quot;5432:5432&quot;</span></span><br><span class="line">     <span class="attr">networks:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="attr">explorer:</span></span><br><span class="line">     <span class="attr">build:</span> <span class="string">.</span></span><br><span class="line">     <span class="attr">container_name:</span> <span class="string">explorer</span></span><br><span class="line">     <span class="attr">volumes:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">$&#123;NETWORK&#125;/crypto-config/:/home/explorer/crypto-config/</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">./config.json:/home/explorer/config.json</span></span><br><span class="line">     <span class="attr">ports:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">&quot;8080:8080&quot;</span></span><br><span class="line">     <span class="attr">networks:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line">     <span class="attr">links:</span></span><br><span class="line">       <span class="bullet">-</span> <span class="string">postgres:db</span></span><br></pre></td></tr></table></figure>
-<p>其中</p>
-<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">./app/db/:/docker-entrypoint-initdb.d/</span></span><br></pre></td></tr></table></figure>
-<p>可以使<code>postgres</code>容器启动后自动运行<code>app/db/</code>里的数据库文件<code>explorerpg.sql</code>和<code>updatepg.sql</code>。</p>
-<p>注意修改<code>$&#123;NETWORK&#125;</code>为部署Fabric网络对应的证书文件夹位置。</p>
-<h2 id="使用docker-compose部署">使用<code>docker-compose</code>部署</h2>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker-compose -f docker-compose.yaml up</span><br></pre></td></tr></table></figure>
-<p>会自动拉取最新的<code>postgres</code>镜像和生成<code>explorer</code>的镜像。</p>
+    <title>Fabric学习笔记</title>
+    <url>/2018/01/28/Hyperledger-Fabric/</url>
+    <content><![CDATA[<h2 id="数据持久化">数据持久化</h2>
+<p>如果需要对peer或CouchDB容器的数据持久化，一种选择是将容器的相关目录挂载到docker主机。</p>
+<p>例如，将下面两行内容放到docker-compose.yaml文件中的对应peer处：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/peer0:/var/hyperledger/production</span></span><br></pre></td></tr></table></figure>
+<p>将下面两行放到对应的CouchDB处：</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">/var/hyperledger/couchdb0:/opt/couchdb/data</span></span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>Blockchain</category>
@@ -3303,131 +3304,6 @@ id="创建docker-compose.yaml文件">创建<code>docker-compose.yaml</code>文�
         <tag>Blockchain</tag>
         <tag>Hyperledger</tag>
         <tag>Fabric</tag>
-        <tag>Explorer</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Introduction to Quantum Computing</title>
-    <url>/2024/02/22/QuantumComputing/</url>
-    <content><![CDATA[<h2 id="量子计算概述">量子计算概述</h2>
-<p>介绍量子计算的关键概念、技术、算法、实施方案以及应用等内容。</p>
-<span id="more"></span>
-<h3 id="什么是量子计算">什么是量子计算?</h3>
-<h4 id="传统计算机与量子计算机的区别">传统计算机与量子计算机的区别</h4>
-<p>传统计算机使用二进制比特，每个比特只能是0或1之中的一个状态。量子计算机使用量子比特，每个量子比特可以是0和1的叠加态，表示为<span
-class="math inline">\(\alpha|0&gt; + \beta|1&gt;\)</span>，其中<span
-class="math inline">\(\alpha\)</span>和<span
-class="math inline">\(\beta\)</span>为概率振幅。</p>
-<p>传统计算机的每个比特的状态是确定的，量子计算机的量子比特的状态是概率性的，直到测量时才会坍缩到0或1。</p>
-<p>传统计算机的比特之间是相互独立的，量子计算机的量子比特可以通过纠缠实现相互关联。</p>
-<p>传统计算机依靠扩展物理比特数来实现并行，量子计算机可以利用少量的量子比特就可以代表很大规模的并行状态。</p>
-<h4 id="量子比特和叠加态">量子比特和叠加态</h4>
-<p>量子比特是量子信息的基本单元，它的状态是一个长度为2的向量，用<span
-class="math inline">\(|0&gt;\)</span>和<span
-class="math inline">\(|1&gt;\)</span>表示基态和激发态。</p>
-<p>量子比特可以处于基态和激发态的叠加态，表示为<span
-class="math inline">\(\alpha|0&gt; +
-\beta|1&gt;\)</span>，这被称为叠加态。</p>
-<p>当观察或测量一个量子比特时，它的叠加态会坍缩到基态或激发态，概率是<span
-class="math inline">\(\alpha^2\)</span>和<span
-class="math inline">\(\beta^2\)</span>。这被称为观察者效应。</p>
-<h4 id="量子叠加和量子纠缠">量子叠加和量子纠缠</h4>
-<p>量子叠加：多个量子比特可以处于组合多个基态和激发态的叠加态，这使得少量的量子比特可以代表指数级数量的状态。这是量子计算获得超高并行性的源头。</p>
-<p>量子纠缠：多个量子比特之间的一种相互关联，使得多个量子比特构成一个整体，无法将它们的量子态描述为各个量子比特的独立态的叠加。当观察其中一个量子比特时，相互纠缠的其他量子比特的状态也会受到影响。这使得量子比特之间可以瞬间关联和传递信息。</p>
-<h3 id="量子计算机构建">量子计算机构建</h3>
-<h4 id="量子逻辑门">量子逻辑门</h4>
-<p>混沌门（Hadamard门）：将量子比特的状态从<span
-class="math inline">\(|0&gt;\)</span>转换成<span
-class="math inline">\((|0&gt; +
-|1&gt;)/\sqrt{2}\)</span>，实现把基态叠加到激发态的效果。</p>
-<p>Pauli门：包括位翻转门X、相位翻转门Y和Z门。用于完成量子比特的旋转和位/相位翻转操作。</p>
-<p>受控门（Controlled门）：条件性地对目标量子比特执行操作，实施控制的是控制量子比特。如CNOT门可以将控制量子比特的状态传递给目标量子比特。</p>
-<h4 id="量子电路">量子电路</h4>
-<p>量子电路是由一系列量子逻辑门按时间顺序构成的计算电路，用于设计和实现量子算法。</p>
-<p>量子电路可以对量子寄存器中的多个量子比特执行操作，实现
-evoluation（进化） 和 entanglement（纠缠）。</p>
-<p>量子电路的构建需要考虑量子比特扰动和误差的影响，需要在超短时间内完成计算以保留量子态相干性。</p>
-<h4 id="复杂度和可缩放性">复杂度和可缩放性</h4>
-<p>量子电路中的门数目决定了量子算法的复杂度，但不等同于传统算法的时间复杂度。</p>
-<p>量子算法可以在理论上实现指数级加速，但实际加速效果依赖于使用的量子比特数，这受限于可构建的量子线路规模和控制精度。</p>
-<p>现实中的量子电路误差和噪声会降低量子算法的性能，这也限制了实际可构建的量子线路规模，形成量子计算的可缩放性障碍。</p>
-<h3 id="量子算法">量子算法</h3>
-<ol type="1">
-<li><p>Deutsch-Jozsa算法：用于区分函数是平衡函数还是常数函数，可以在单次调用中解决，而经典算法需要多次调用。这是第一个展示量子计算优势的算法。</p></li>
-<li><p>霍夫曼算法：用于搜索具有<span
-class="math inline">\(2n\)</span>个节点的树形结构，经典算法需要<span
-class="math inline">\(O(n)\)</span>时间，而量子算法只需要<span
-class="math inline">\(O(1)\)</span>时间。</p></li>
-<li><p>Shor算法：可以在复杂度为<span class="math inline">\(O((log
-N)^3)\)</span>时间内因式分解<span
-class="math inline">\(N\)</span>，远远超过目前已知的最佳经典算法。这使其可以破解RSA加密，深刻影响现代密码学体系。Shor算法利用量子Fourier变换在复杂度<span
-class="math inline">\(O(logN)\)</span>下求出周期，进而求得两个大素数的乘积<span
-class="math inline">\(N\)</span>。这表明某些NP难问题在量子计算机上可在多项式时间内解决。</p></li>
-<li><p>Grover算法：用于在<span
-class="math inline">\(N\)</span>个项目未排序数据库中搜索特定项，其时间复杂度为<span
-class="math inline">\(O(N^{0.5})\)</span>，而经典算法为<span
-class="math inline">\(O(N)\)</span>。这使量子计算在特定搜索问题上获得了平方级加速。</p></li>
-<li><p>量子直方图算法：用于在未排序数据集中计算频率直方图，其时间复杂度为<span
-class="math inline">\(O(N^{0.5})\)</span>，优于经典算法的<span
-class="math inline">\(O(N)\)</span>。这是另一种量子搜索算法。</p></li>
-</ol>
-<h3 id="主要的量子计算架构">主要的量子计算架构</h3>
-<ol type="1">
-<li><p>离子阱量子计算机：利用激光操控空间隔离的离子实现量子运算。具有操作精度高和量子比特跃迁寿命长的优点，但量子比特之间的相互作用较弱，不易扩展。例如IonQ和Honeywell的量子计算机。</p></li>
-<li><p>晶体硅量子计算机：利用硅基半导体中的Spin量子比特实现量子算法。控制精度较高但量子比特跃迁寿命较短，难以实现量子纠缠。例如Intel的量子计算机。</p></li>
-<li><p>超导量子计算机：利用超导电路中Josephson接点实现的量子比特，并通过微波脉冲实现量子逻辑门操作。量子比特跃迁寿命较长，更易实现大规模集成，但噪声控制难度大。例如Google的Sycamore量子计算机。</p></li>
-<li><p>拓扑量子计算机：利用低维拓扑材料中的准粒子（如Majorana零模式）实现量子比特，理论上更加稳定和容错。但量子比特操作和读取较难实现，难度较大。例如Microsoft的量子计算机。</p></li>
-<li><p>光学量子计算机：利用光子的量子态实现量子比特和量子运算。光量子比特易于生成和传输但跃迁寿命较短，光学元件难以大规模集成，因而难以构建超大规模量子计算机。</p></li>
-</ol>
-<p>当前主要的量子计算架构各有其优缺点。未来实用的通用量子计算机很可能集成多种架构的优点，例如超导控制电路与离子阱或光学量子比特相结合等。</p>
-<h3 id="量子计算的应用">量子计算的应用</h3>
-<ol type="1">
-<li><p>素数测试：Shor算法可以对大整数进行素数测试，这可以用于加密算法的破解，对网络安全造成威胁。</p></li>
-<li><p>数据库搜索：Grover算法可以实现<span
-class="math inline">\(O(N^{0.5})\)</span>的数据库未排序项搜索，这可以大大提高搜索引擎的效率。</p></li>
-<li><p>机器学习：量子机器学习算法可以利用量子叠加实现指数级并行，大大提高机器学习的速度和效果。例如量子支撑向量机和量子神经网络等。</p></li>
-<li><p>金融预测：量子算法可以应用于量化交易，机器学习和时间序列分析，实现更精确的市场预测和交易决策。这可以带来巨大的经济效益。</p></li>
-<li><p>快速解决旅行商问题：某些量子算法可以在多项式时间内解决NP难问题，如旅行商问题和带权二分图匹配问题等。这可以实现一些传统算法难以达到的效果。</p></li>
-<li><p>破解现代密码学：Shor算法可以破解RSA和ECC加密算法，这将对基于这些算法的网络安全产生重大影响。后量子密码学的研发成为当务之急。</p></li>
-<li><p>量子模拟：量子计算机可以模拟量子系统的动力学过程，用于研究高能物理、化学反应机制和生物系统等现象。这开启了一条新的计算机辅助科研途径。</p></li>
-</ol>
-<p>考虑到实用通用量子计算机尚未实现和商业化，大多数应用还处于理论探讨阶段。</p>
-<h3 id="量子计算面临的挑战">量子计算面临的挑战</h3>
-<ol type="1">
-<li><p>量子比特的非稳定性：量子比特易受环境噪声和扰动影响发生跃迁或失谐，这限制了量子线路的规模和复杂度。提高量子比特的稳定性和寿命是关键所在。</p></li>
-<li><p>量子门的误差：实施量子门操作难以达到理想效果，误差会累积并影响量子算法的正确性。降低量子门误差和提高量子线路的纠错码容错能力是重要挑战。</p></li>
-<li><p>量子纠缠的脆弱性：量子纠缠易受环境影响失效，但它是许多量子算法实现量子优势的关键。加强量子纠缠的稳定性和扩大量子纠缠范围是重要目标。</p></li>
-<li><p>将来展望：</p>
-<ul>
-<li>集成多种量子技术的优势实现更稳定和可扩展的量子计算平台。</li>
-<li>发展通用量子软件栈和编程环境，让更多软件工程师参与到量子计算的开发和应用中来。</li>
-<li>增强量子芯片、控制系统和量子线路的集成和自动优化设计能力。</li>
-<li>发展能更好映射到量子计算框架下的机器学习算法和优化方法。</li>
-<li>量子计算标准化和商业化道路还很长，需要技术突破和生态系统建设。</li>
-<li>防范量子计算带来的安全威胁，后量子密码学和防御技术成为新要点。</li>
-</ul></li>
-</ol>
-<p>实用通用量子计算机需要在量子比特可控性、量子门准确性、量子线路稳定性等方面取得重大突破。与此同时，量子软件栈、算法优化和应用生态建设也同样重要。</p>
-<h3 id="参考文献及扩展阅读">参考文献及扩展阅读</h3>
-<ol type="1">
-<li><p>Michael A. Nielsen， Isaac L. Chuang， 《Quantum Computation and
-Quantum Information》， Cambridge University Press，2000.</p></li>
-<li><p>John Preskill， 《Quantum Computing since Democritus》，Cambridge
-University Press， 2018.</p></li>
-<li><p>Eleanor G. Rieffel and Wolfgang H. Polak， 《Quantum Computing：
-A Gentle Introduction》， MIT Press， 2011.</p></li>
-<li><p>Yanofsky， Noson S. and Mirko Draca， 《Quantum Computing for
-Computer Scientists》， Cambridge University Press， 2008.</p></li>
-<li><p>Christopher Bernhardt， 《Quantum Computing for Everyone》， MIT
-Press， 2019.</p></li>
-</ol>
-<p>这些参考书籍和网络资源对量子计算技术和发展进行了详尽而系统的介绍，是学习和研究量子计算的重要参考。其中，前3本书是关于量子计算原理和技术的权威教材和导引，后2本书从计算机科学的角度更易于理解，适合初学者。</p>
-]]></content>
-      <categories>
-        <category>Technologies</category>
-      </categories>
-      <tags>
-        <tag>Quantum Computing</tag>
       </tags>
   </entry>
   <entry>
@@ -3608,20 +3484,197 @@ class="math inline">\(\square\)</span></p>
       </tags>
   </entry>
   <entry>
-    <title>Shell命令整理</title>
-    <url>/2017/05/01/Shell/</url>
-    <content><![CDATA[<h3 id="加解压缩">加/解压缩</h3>
-<p>压缩 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar -zcvf **.tar.gz **/</span><br></pre></td></tr></table></figure></p>
-<p>解压 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar -xvf **.tar.gz </span><br></pre></td></tr></table></figure></p>
-<p>文件传输 ``` scp **.tar.gz username@123.456.78.9:/home/...</p>
+    <title>Introduction to Quantum Computing</title>
+    <url>/2024/02/22/QuantumComputing/</url>
+    <content><![CDATA[<h2 id="量子计算概述">量子计算概述</h2>
+<p>介绍量子计算的关键概念、技术、算法、实施方案以及应用等内容。</p>
+<span id="more"></span>
+<h3 id="什么是量子计算">什么是量子计算?</h3>
+<h4 id="传统计算机与量子计算机的区别">传统计算机与量子计算机的区别</h4>
+<p>传统计算机使用二进制比特，每个比特只能是0或1之中的一个状态。量子计算机使用量子比特，每个量子比特可以是0和1的叠加态，表示为<span
+class="math inline">\(\alpha|0&gt; + \beta|1&gt;\)</span>，其中<span
+class="math inline">\(\alpha\)</span>和<span
+class="math inline">\(\beta\)</span>为概率振幅。</p>
+<p>传统计算机的每个比特的状态是确定的，量子计算机的量子比特的状态是概率性的，直到测量时才会坍缩到0或1。</p>
+<p>传统计算机的比特之间是相互独立的，量子计算机的量子比特可以通过纠缠实现相互关联。</p>
+<p>传统计算机依靠扩展物理比特数来实现并行，量子计算机可以利用少量的量子比特就可以代表很大规模的并行状态。</p>
+<h4 id="量子比特和叠加态">量子比特和叠加态</h4>
+<p>量子比特是量子信息的基本单元，它的状态是一个长度为2的向量，用<span
+class="math inline">\(|0&gt;\)</span>和<span
+class="math inline">\(|1&gt;\)</span>表示基态和激发态。</p>
+<p>量子比特可以处于基态和激发态的叠加态，表示为<span
+class="math inline">\(\alpha|0&gt; +
+\beta|1&gt;\)</span>，这被称为叠加态。</p>
+<p>当观察或测量一个量子比特时，它的叠加态会坍缩到基态或激发态，概率是<span
+class="math inline">\(\alpha^2\)</span>和<span
+class="math inline">\(\beta^2\)</span>。这被称为观察者效应。</p>
+<h4 id="量子叠加和量子纠缠">量子叠加和量子纠缠</h4>
+<p>量子叠加：多个量子比特可以处于组合多个基态和激发态的叠加态，这使得少量的量子比特可以代表指数级数量的状态。这是量子计算获得超高并行性的源头。</p>
+<p>量子纠缠：多个量子比特之间的一种相互关联，使得多个量子比特构成一个整体，无法将它们的量子态描述为各个量子比特的独立态的叠加。当观察其中一个量子比特时，相互纠缠的其他量子比特的状态也会受到影响。这使得量子比特之间可以瞬间关联和传递信息。</p>
+<h3 id="量子计算机构建">量子计算机构建</h3>
+<h4 id="量子逻辑门">量子逻辑门</h4>
+<p>混沌门（Hadamard门）：将量子比特的状态从<span
+class="math inline">\(|0&gt;\)</span>转换成<span
+class="math inline">\((|0&gt; +
+|1&gt;)/\sqrt{2}\)</span>，实现把基态叠加到激发态的效果。</p>
+<p>Pauli门：包括位翻转门X、相位翻转门Y和Z门。用于完成量子比特的旋转和位/相位翻转操作。</p>
+<p>受控门（Controlled门）：条件性地对目标量子比特执行操作，实施控制的是控制量子比特。如CNOT门可以将控制量子比特的状态传递给目标量子比特。</p>
+<h4 id="量子电路">量子电路</h4>
+<p>量子电路是由一系列量子逻辑门按时间顺序构成的计算电路，用于设计和实现量子算法。</p>
+<p>量子电路可以对量子寄存器中的多个量子比特执行操作，实现
+evoluation（进化） 和 entanglement（纠缠）。</p>
+<p>量子电路的构建需要考虑量子比特扰动和误差的影响，需要在超短时间内完成计算以保留量子态相干性。</p>
+<h4 id="复杂度和可缩放性">复杂度和可缩放性</h4>
+<p>量子电路中的门数目决定了量子算法的复杂度，但不等同于传统算法的时间复杂度。</p>
+<p>量子算法可以在理论上实现指数级加速，但实际加速效果依赖于使用的量子比特数，这受限于可构建的量子线路规模和控制精度。</p>
+<p>现实中的量子电路误差和噪声会降低量子算法的性能，这也限制了实际可构建的量子线路规模，形成量子计算的可缩放性障碍。</p>
+<h3 id="量子算法">量子算法</h3>
+<ol type="1">
+<li><p>Deutsch-Jozsa算法：用于区分函数是平衡函数还是常数函数，可以在单次调用中解决，而经典算法需要多次调用。这是第一个展示量子计算优势的算法。</p></li>
+<li><p>霍夫曼算法：用于搜索具有<span
+class="math inline">\(2n\)</span>个节点的树形结构，经典算法需要<span
+class="math inline">\(O(n)\)</span>时间，而量子算法只需要<span
+class="math inline">\(O(1)\)</span>时间。</p></li>
+<li><p>Shor算法：可以在复杂度为<span class="math inline">\(O((log
+N)^3)\)</span>时间内因式分解<span
+class="math inline">\(N\)</span>，远远超过目前已知的最佳经典算法。这使其可以破解RSA加密，深刻影响现代密码学体系。Shor算法利用量子Fourier变换在复杂度<span
+class="math inline">\(O(logN)\)</span>下求出周期，进而求得两个大素数的乘积<span
+class="math inline">\(N\)</span>。这表明某些NP难问题在量子计算机上可在多项式时间内解决。</p></li>
+<li><p>Grover算法：用于在<span
+class="math inline">\(N\)</span>个项目未排序数据库中搜索特定项，其时间复杂度为<span
+class="math inline">\(O(N^{0.5})\)</span>，而经典算法为<span
+class="math inline">\(O(N)\)</span>。这使量子计算在特定搜索问题上获得了平方级加速。</p></li>
+<li><p>量子直方图算法：用于在未排序数据集中计算频率直方图，其时间复杂度为<span
+class="math inline">\(O(N^{0.5})\)</span>，优于经典算法的<span
+class="math inline">\(O(N)\)</span>。这是另一种量子搜索算法。</p></li>
+</ol>
+<h3 id="主要的量子计算架构">主要的量子计算架构</h3>
+<ol type="1">
+<li><p>离子阱量子计算机：利用激光操控空间隔离的离子实现量子运算。具有操作精度高和量子比特跃迁寿命长的优点，但量子比特之间的相互作用较弱，不易扩展。例如IonQ和Honeywell的量子计算机。</p></li>
+<li><p>晶体硅量子计算机：利用硅基半导体中的Spin量子比特实现量子算法。控制精度较高但量子比特跃迁寿命较短，难以实现量子纠缠。例如Intel的量子计算机。</p></li>
+<li><p>超导量子计算机：利用超导电路中Josephson接点实现的量子比特，并通过微波脉冲实现量子逻辑门操作。量子比特跃迁寿命较长，更易实现大规模集成，但噪声控制难度大。例如Google的Sycamore量子计算机。</p></li>
+<li><p>拓扑量子计算机：利用低维拓扑材料中的准粒子（如Majorana零模式）实现量子比特，理论上更加稳定和容错。但量子比特操作和读取较难实现，难度较大。例如Microsoft的量子计算机。</p></li>
+<li><p>光学量子计算机：利用光子的量子态实现量子比特和量子运算。光量子比特易于生成和传输但跃迁寿命较短，光学元件难以大规模集成，因而难以构建超大规模量子计算机。</p></li>
+</ol>
+<p>当前主要的量子计算架构各有其优缺点。未来实用的通用量子计算机很可能集成多种架构的优点，例如超导控制电路与离子阱或光学量子比特相结合等。</p>
+<h3 id="量子计算的应用">量子计算的应用</h3>
+<ol type="1">
+<li><p>素数测试：Shor算法可以对大整数进行素数测试，这可以用于加密算法的破解，对网络安全造成威胁。</p></li>
+<li><p>数据库搜索：Grover算法可以实现<span
+class="math inline">\(O(N^{0.5})\)</span>的数据库未排序项搜索，这可以大大提高搜索引擎的效率。</p></li>
+<li><p>机器学习：量子机器学习算法可以利用量子叠加实现指数级并行，大大提高机器学习的速度和效果。例如量子支撑向量机和量子神经网络等。</p></li>
+<li><p>金融预测：量子算法可以应用于量化交易，机器学习和时间序列分析，实现更精确的市场预测和交易决策。这可以带来巨大的经济效益。</p></li>
+<li><p>快速解决旅行商问题：某些量子算法可以在多项式时间内解决NP难问题，如旅行商问题和带权二分图匹配问题等。这可以实现一些传统算法难以达到的效果。</p></li>
+<li><p>破解现代密码学：Shor算法可以破解RSA和ECC加密算法，这将对基于这些算法的网络安全产生重大影响。后量子密码学的研发成为当务之急。</p></li>
+<li><p>量子模拟：量子计算机可以模拟量子系统的动力学过程，用于研究高能物理、化学反应机制和生物系统等现象。这开启了一条新的计算机辅助科研途径。</p></li>
+</ol>
+<p>考虑到实用通用量子计算机尚未实现和商业化，大多数应用还处于理论探讨阶段。</p>
+<h3 id="量子计算面临的挑战">量子计算面临的挑战</h3>
+<ol type="1">
+<li><p>量子比特的非稳定性：量子比特易受环境噪声和扰动影响发生跃迁或失谐，这限制了量子线路的规模和复杂度。提高量子比特的稳定性和寿命是关键所在。</p></li>
+<li><p>量子门的误差：实施量子门操作难以达到理想效果，误差会累积并影响量子算法的正确性。降低量子门误差和提高量子线路的纠错码容错能力是重要挑战。</p></li>
+<li><p>量子纠缠的脆弱性：量子纠缠易受环境影响失效，但它是许多量子算法实现量子优势的关键。加强量子纠缠的稳定性和扩大量子纠缠范围是重要目标。</p></li>
+<li><p>将来展望：</p>
+<ul>
+<li>集成多种量子技术的优势实现更稳定和可扩展的量子计算平台。</li>
+<li>发展通用量子软件栈和编程环境，让更多软件工程师参与到量子计算的开发和应用中来。</li>
+<li>增强量子芯片、控制系统和量子线路的集成和自动优化设计能力。</li>
+<li>发展能更好映射到量子计算框架下的机器学习算法和优化方法。</li>
+<li>量子计算标准化和商业化道路还很长，需要技术突破和生态系统建设。</li>
+<li>防范量子计算带来的安全威胁，后量子密码学和防御技术成为新要点。</li>
+</ul></li>
+</ol>
+<p>实用通用量子计算机需要在量子比特可控性、量子门准确性、量子线路稳定性等方面取得重大突破。与此同时，量子软件栈、算法优化和应用生态建设也同样重要。</p>
+<h3 id="参考文献及扩展阅读">参考文献及扩展阅读</h3>
+<ol type="1">
+<li><p>Michael A. Nielsen， Isaac L. Chuang， 《Quantum Computation and
+Quantum Information》， Cambridge University Press，2000.</p></li>
+<li><p>John Preskill， 《Quantum Computing since Democritus》，Cambridge
+University Press， 2018.</p></li>
+<li><p>Eleanor G. Rieffel and Wolfgang H. Polak， 《Quantum Computing：
+A Gentle Introduction》， MIT Press， 2011.</p></li>
+<li><p>Yanofsky， Noson S. and Mirko Draca， 《Quantum Computing for
+Computer Scientists》， Cambridge University Press， 2008.</p></li>
+<li><p>Christopher Bernhardt， 《Quantum Computing for Everyone》， MIT
+Press， 2019.</p></li>
+</ol>
+<p>这些参考书籍和网络资源对量子计算技术和发展进行了详尽而系统的介绍，是学习和研究量子计算的重要参考。其中，前3本书是关于量子计算原理和技术的权威教材和导引，后2本书从计算机科学的角度更易于理解，适合初学者。</p>
 ]]></content>
       <categories>
-        <category>Tools</category>
+        <category>Technologies</category>
       </categories>
       <tags>
-        <tag>Shell</tag>
-        <tag>Linux</tag>
-        <tag>Ubuntu</tag>
+        <tag>Quantum Computing</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Roots Formula of Quadratics, Cubics and Quartics</title>
+    <url>/2023/03/27/RootFormula/</url>
+    <content><![CDATA[<h2
+id="一元二次三次四次方程的求根公式">一元二次、三次、四次方程的求根公式</h2>
+<p>整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part
+1，2015）的Chapter A-1。</p>
+<span id="more"></span>
+<h3 id="一元二次方程求根公式">一元二次方程求根公式</h3>
+<p>对于一元二次方程：</p>
+<p><span class="math display">\[ ax^2+bx+c = 0 \]</span></p>
+<p>通过配方可以得到：</p>
+<p><span class="math display">\[ (x+b/2a)^2 = -c/a+b^2/4a^2
+\]</span></p>
+<p>令判别式为：</p>
+<p><span class="math display">\[ \Delta = b^2-4ac \]</span></p>
+<p>可以得到求根公式为：</p>
+<p><span class="math display">\[ x_1 = \frac{-b+\sqrt{\Delta}}{2a}
+\]</span> <span class="math display">\[ x_2 =
+\frac{-b-\sqrt{\Delta}}{2a} \]</span></p>
+<h3 id="一元三次方程求根公式">一元三次方程求根公式</h3>
+<p>对于一元三次方程：</p>
+<p><span class="math display">\[ ax^3+bx^2+cx+d = 0 \]</span></p>
+<p>做变量代换<span class="math inline">\(X =
+x-\frac{b}{3a}\)</span>得到不包括二次项的形式：</p>
+<p><span class="math display">\[ x^3+qx+r= 0 \]</span></p>
+<p>可以得到求根公式为：</p>
+<p><span class="math display">\[ x_1 = g+h \]</span> <span
+class="math display">\[ x_2 = \omega g + \omega ^2 h\]</span> <span
+class="math display">\[ x_3 = \omega ^2 g + \omega h \]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[ g^3 = \frac{-r+\sqrt{R}}{2} \]</span>
+<span class="math display">\[ h = -\frac{q}{3g} \]</span></p>
+<p>其中：</p>
+<p><span class="math display">\[ R = r^2+\frac{4}{27}q^3 \]</span> <span
+class="math display">\[ \omega = -\frac{1}{2}+i\frac{\sqrt{3}}{2}
+\]</span></p>
+<h3 id="一元四次方程求根公式">一元四次方程求根公式</h3>
+<p>对于一元四次方程：</p>
+<p><span class="math display">\[ ax^4+bx^3+cx^2+dx+e = 0 \]</span></p>
+<p>做变量代换<span class="math inline">\(X =
+x-\frac{b}{4a}\)</span>得到不包括三次项的形式：</p>
+<p><span class="math display">\[ x^4+qx^2+rx+s = 0 \]</span></p>
+<p>左边可以化为一元二次方程的形式：</p>
+<p><span class="math display">\[ x^4+qx^2+rx+s = (x^2+jx+l)(x^2-jx+m)
+\]</span></p>
+<p>可以求得：</p>
+<p><span class="math display">\[ l+m-j^2 = q \]</span> <span
+class="math display">\[ j(m-l) = r \]</span> <span
+class="math display">\[ lm = s \]</span></p>
+<p>前两个方程可以得到：</p>
+<p><span class="math display">\[ 2m = j^2 + q + r/j \]</span> <span
+class="math display">\[ 2l = j^2 + q - r/j \]</span></p>
+<p>代入第三个方程，可以得到<span
+class="math inline">\(j^2\)</span>的三次方程：</p>
+<p><span class="math display">\[ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2
+= 0 \]</span></p>
+<p>通过一元三次方程的求根公式，可以得到<span
+class="math inline">\(j^2\)</span>，然后得到<span
+class="math inline">\(m\)</span>和<span
+class="math inline">\(l\)</span>，再利用一元二次方程的求根公式得到最终的结果。</p>
+]]></content>
+      <categories>
+        <category>Mathematics</category>
+      </categories>
+      <tags>
+        <tag>Algebra</tag>
+        <tag>Roots Formula</tag>
       </tags>
   </entry>
   <entry>
@@ -3783,76 +3836,6 @@ Lenstra提出的，它使用了在有限域上定义的椭圆曲线。我们在�
       </tags>
   </entry>
   <entry>
-    <title>Roots Formula of Quadratics, Cubics and Quartics</title>
-    <url>/2023/03/27/RootFormula/</url>
-    <content><![CDATA[<h2
-id="一元二次三次四次方程的求根公式">一元二次、三次、四次方程的求根公式</h2>
-<p>整理自Joseph J. Rotman的《Advanced Modern Algebra》（Part
-1，2015）的Chapter A-1。</p>
-<span id="more"></span>
-<h3 id="一元二次方程求根公式">一元二次方程求根公式</h3>
-<p>对于一元二次方程：</p>
-<p><span class="math display">\[ ax^2+bx+c = 0 \]</span></p>
-<p>通过配方可以得到：</p>
-<p><span class="math display">\[ (x+b/2a)^2 = -c/a+b^2/4a^2
-\]</span></p>
-<p>令判别式为：</p>
-<p><span class="math display">\[ \Delta = b^2-4ac \]</span></p>
-<p>可以得到求根公式为：</p>
-<p><span class="math display">\[ x_1 = \frac{-b+\sqrt{\Delta}}{2a}
-\]</span> <span class="math display">\[ x_2 =
-\frac{-b-\sqrt{\Delta}}{2a} \]</span></p>
-<h3 id="一元三次方程求根公式">一元三次方程求根公式</h3>
-<p>对于一元三次方程：</p>
-<p><span class="math display">\[ ax^3+bx^2+cx+d = 0 \]</span></p>
-<p>做变量代换<span class="math inline">\(X =
-x-\frac{b}{3a}\)</span>得到不包括二次项的形式：</p>
-<p><span class="math display">\[ x^3+qx+r= 0 \]</span></p>
-<p>可以得到求根公式为：</p>
-<p><span class="math display">\[ x_1 = g+h \]</span> <span
-class="math display">\[ x_2 = \omega g + \omega ^2 h\]</span> <span
-class="math display">\[ x_3 = \omega ^2 g + \omega h \]</span></p>
-<p>其中：</p>
-<p><span class="math display">\[ g^3 = \frac{-r+\sqrt{R}}{2} \]</span>
-<span class="math display">\[ h = -\frac{q}{3g} \]</span></p>
-<p>其中：</p>
-<p><span class="math display">\[ R = r^2+\frac{4}{27}q^3 \]</span> <span
-class="math display">\[ \omega = -\frac{1}{2}+i\frac{\sqrt{3}}{2}
-\]</span></p>
-<h3 id="一元四次方程求根公式">一元四次方程求根公式</h3>
-<p>对于一元四次方程：</p>
-<p><span class="math display">\[ ax^4+bx^3+cx^2+dx+e = 0 \]</span></p>
-<p>做变量代换<span class="math inline">\(X =
-x-\frac{b}{4a}\)</span>得到不包括三次项的形式：</p>
-<p><span class="math display">\[ x^4+qx^2+rx+s = 0 \]</span></p>
-<p>左边可以化为一元二次方程的形式：</p>
-<p><span class="math display">\[ x^4+qx^2+rx+s = (x^2+jx+l)(x^2-jx+m)
-\]</span></p>
-<p>可以求得：</p>
-<p><span class="math display">\[ l+m-j^2 = q \]</span> <span
-class="math display">\[ j(m-l) = r \]</span> <span
-class="math display">\[ lm = s \]</span></p>
-<p>前两个方程可以得到：</p>
-<p><span class="math display">\[ 2m = j^2 + q + r/j \]</span> <span
-class="math display">\[ 2l = j^2 + q - r/j \]</span></p>
-<p>代入第三个方程，可以得到<span
-class="math inline">\(j^2\)</span>的三次方程：</p>
-<p><span class="math display">\[ (j^2)^3 + 2q(j^2)^2 + (q^2-4s)j^2 - r^2
-= 0 \]</span></p>
-<p>通过一元三次方程的求根公式，可以得到<span
-class="math inline">\(j^2\)</span>，然后得到<span
-class="math inline">\(m\)</span>和<span
-class="math inline">\(l\)</span>，再利用一元二次方程的求根公式得到最终的结果。</p>
-]]></content>
-      <categories>
-        <category>Mathematics</category>
-      </categories>
-      <tags>
-        <tag>Algebra</tag>
-        <tag>Roots Formula</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>SonarQube代码扫描</title>
     <url>/2021/01/22/SonarQube/</url>
     <content><![CDATA[<h2 id="sonarqube容器化安装">1、SonarQube容器化安装</h2>
@@ -3995,6 +3978,23 @@ Version Matrix</a></p>
       </categories>
       <tags>
         <tag>Golang</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Shell命令整理</title>
+    <url>/2017/05/01/Shell/</url>
+    <content><![CDATA[<h3 id="加解压缩">加/解压缩</h3>
+<p>压缩 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar -zcvf **.tar.gz **/</span><br></pre></td></tr></table></figure></p>
+<p>解压 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar -xvf **.tar.gz </span><br></pre></td></tr></table></figure></p>
+<p>文件传输 ``` scp **.tar.gz username@123.456.78.9:/home/...</p>
+]]></content>
+      <categories>
+        <category>Tools</category>
+      </categories>
+      <tags>
+        <tag>Shell</tag>
+        <tag>Linux</tag>
+        <tag>Ubuntu</tag>
       </tags>
   </entry>
   <entry>
