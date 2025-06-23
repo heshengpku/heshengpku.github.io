@@ -1,5 +1,6 @@
 https://heshengpku.github.io/en/about/index.html
 https://heshengpku.github.io/about/index.html
+https://heshengpku.github.io/2025/06/04/Ollama-DeepSeek-R1/
 https://heshengpku.github.io/2024/10/11/Url-VBA-Excel/
 https://heshengpku.github.io/2022/10/17/FundArith/
 https://heshengpku.github.io/2022/03/22/TimeTour/
@@ -53,6 +54,9 @@ https://heshengpku.github.io/tags/Life/
 https://heshengpku.github.io/tags/Philosophy/
 https://heshengpku.github.io/tags/Physics/
 https://heshengpku.github.io/tags/Excel/
+https://heshengpku.github.io/tags/Ollama/
+https://heshengpku.github.io/tags/DeepSeek/
+https://heshengpku.github.io/tags/LLM/
 https://heshengpku.github.io/categories/Blockchain/
 https://heshengpku.github.io/categories/Tools/
 https://heshengpku.github.io/categories/Mathematics/
