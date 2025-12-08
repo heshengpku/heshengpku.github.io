@@ -1,3 +1,4 @@
+https://heshengpku.github.io/2025/12/08/SemanticLayer/
 https://heshengpku.github.io/en/about/index.html
 https://heshengpku.github.io/about/index.html
 https://heshengpku.github.io/2025/09/09/Spark/
@@ -60,7 +61,11 @@ https://heshengpku.github.io/tags/DeepSeek/
 https://heshengpku.github.io/tags/LLM/
 https://heshengpku.github.io/tags/Spark/
 https://heshengpku.github.io/tags/RDD/
+https://heshengpku.github.io/tags/DataCloud/
+https://heshengpku.github.io/tags/ChatBI/
+https://heshengpku.github.io/tags/SemanticLayer/
 https://heshengpku.github.io/categories/Blockchain/
 https://heshengpku.github.io/categories/Tools/
 https://heshengpku.github.io/categories/Mathematics/
 https://heshengpku.github.io/categories/Technologies/
+https://heshengpku.github.io/categories/Products/
